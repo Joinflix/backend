@@ -1,0 +1,70 @@
+  server:
+    port: ${SERVER_PORT:8080}
+    error:
+      include-stacktrace: ${ERROR_STACKTRACE:always}
+      include-message: ${ERROR_MESSAGE:always}
+
+  spring:
+    application:
+      name: joinflex
+    profiles:
+      active: ${SPRING_PROFILES_ACTIVE:dev}
+    output:
+      ansi:
+        enabled: ${ANSI_ENABLED:always}
+    datasource:
+      url: ${DATABASE_URL:jdbc:mysql://localhost:3306/joinflix?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+      username: ${DB_USERNAME:root}
+      password: ${DB_PASSWORD:password}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+      show-sql: ${JPA_SHOW_SQL:true}
+      hibernate:
+        ddl-auto: ${JPA_DDL_AUTO:update}
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQLDialect
+          format_sql: ${JPA_FORMAT_SQL:true}
+          use_sql_comments: ${JPA_SQL_COMMENTS:true}
+          generate_statistics: ${JPA_STATISTICS:true}
+    devtools:
+      restart:
+        enabled: ${DEVTOOLS_RESTART:true}
+      livereload:
+        enabled: ${DEVTOOLS_LIVERELOAD:true}
+    docker:
+      compose:
+        stop:
+          command: down
+
+  #actuator
+  management:
+    endpoints:
+      web:
+        base-path: ${ACTUATOR_BASE_PATH:/actuator}
+        exposure:
+          include: ${ACTUATOR_ENDPOINTS:*}
+    endpoint:
+      health:
+        show-details: ${ACTUATOR_HEALTH_DETAILS:always}
+      env:
+        show-values: ${ACTUATOR_SHOW_VALUES:always}
+    security:
+      enabled: ${ACTUATOR_SECURITY:false}
+
+  logging:
+    level:
+      root: ${ROOT_LOG_LEVEL:INFO}
+      org.springframework.security:  ${SECURITY_LOG_LEVEL:TRACE}
+      org.hibernate.SQL: ${HIBERNATE_SQL_LOG:DEBUG}
+      org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_PARAM_LOG:TRACE}
+      org.springframework.web: ${WEB_LOG_LEVEL:DEBUG}
+      org.springframework.transaction: ${TRANSACTION_LOG_LEVEL:DEBUG}
+      com.yurakim.readingtrace: ${APP_LOG_LEVEL:DEBUG}
+      org.springframework.web.socket: ${WEBSOCKET_LOG_LEVEL:DEBUG}
+      org.springframework.messaging.simp: ${SIMPLE_LOG_LEVEL:DEBUG}
+    file:
+      name: ${LOG_FILE:}
+    pattern:
+      console: ${CONSOLE_LOG_PATTERN:%clr(%d{HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+      file: ${LOG_PATTERN:%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n}
