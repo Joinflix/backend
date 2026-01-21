@@ -16,7 +16,6 @@
       url: ${DATABASE_URL:jdbc:mysql://localhost:3306/joinflix?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC}
       username: ${DB_USERNAME:root}
       password: ${DB_PASSWORD:password}
-      driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
       show-sql: ${JPA_SHOW_SQL:true}
       hibernate:
@@ -32,10 +31,6 @@
         enabled: ${DEVTOOLS_RESTART:true}
       livereload:
         enabled: ${DEVTOOLS_LIVERELOAD:true}
-    docker:
-      compose:
-        stop:
-          command: down
 
   #actuator
   management:
@@ -60,7 +55,7 @@
       org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_PARAM_LOG:TRACE}
       org.springframework.web: ${WEB_LOG_LEVEL:DEBUG}
       org.springframework.transaction: ${TRANSACTION_LOG_LEVEL:DEBUG}
-      com.yurakim.readingtrace: ${APP_LOG_LEVEL:DEBUG}
+      com.sesac.joinflex: ${APP_LOG_LEVEL:DEBUG}
       org.springframework.web.socket: ${WEBSOCKET_LOG_LEVEL:DEBUG}
       org.springframework.messaging.simp: ${SIMPLE_LOG_LEVEL:DEBUG}
     file:
