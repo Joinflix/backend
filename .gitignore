@@ -21,10 +21,13 @@ bin/
 .idea
 *.iws
 *.iml
+**/*.iml
 *.ipr
+.idea/**/*.xml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+*.local
 
 ### NetBeans ###
 /nbproject/private/
@@ -35,3 +38,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# macOS
+.DS_Store
+
+# IntelliJ IDEA user-specific files
+.idea/shelf/
+
+# env
+.env
