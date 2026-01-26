@@ -45,5 +45,22 @@ public class PartyRoom extends BaseEntity {
 
     private String passCode;
 
+    private PartyRoom(String roomName, User host, Movie movie, Boolean isPublic,
+        Boolean hostControl, String passCode) {
+        this.roomName = roomName;
+        this.host = host;
+        this.movie = movie;
+        this.isPublic = isPublic;
+        this.hostControl = hostControl;
+        this.passCode = passCode;
+    }
+
+    public static PartyRoom create(String roomName, User host, Movie movie, Boolean isPublic, Boolean hostControl, String passCode) {
+        if (isPublic) {
+            return new PartyRoom(roomName, host, movie, true, true, null);
+        } else {
+            return new PartyRoom(roomName, host, movie, false, hostControl, passCode);
+        }
+    }
 
 }
