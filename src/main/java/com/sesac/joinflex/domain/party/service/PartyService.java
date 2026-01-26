@@ -20,6 +20,7 @@ public class PartyService {
     private final PartyRoomRepository partyRoomRepository;
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
+    private final PartyInviteService partyInviteService;
 
     @Transactional
     public Long createPartyRoom(@Valid PartyRoomRequest request, Long userId) {
@@ -36,6 +37,9 @@ public class PartyService {
             PartyRoom.create(request.roomName(), host, movie, request.isPublic(),
                 request.hostControl(),
                 request.passCode()));
+
+        // 친구 초대
+        partyInviteService.inviteUsers(savedRoom, request.invitedUserIds());
 
         return savedRoom.getId();
     }

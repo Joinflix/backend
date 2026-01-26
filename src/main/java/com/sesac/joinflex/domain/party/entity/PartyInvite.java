@@ -32,4 +32,13 @@ public class PartyInvite extends BaseEntity {
     @JoinColumn(name = "guest_id", nullable = false)
     private User guest;
 
+    private PartyInvite(PartyRoom partyRoom, User guest) {
+        this.partyRoom = partyRoom;
+        this.guest = guest;
+    }
+
+    public static PartyInvite create(PartyRoom partyRoom, User guest) {
+        return new PartyInvite(partyRoom, guest);
+    }
+
 }
