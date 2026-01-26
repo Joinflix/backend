@@ -1,10 +1,14 @@
 package com.sesac.joinflex.domain.party.entity;
 
+import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,7 +24,12 @@ public class PartyInvite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // PartyRoom
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "party_room_id", nullable = false)
+    private PartyRoom partyRoom;
 
-    // GuestId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "guest_id", nullable = false)
+    private User guest;
+
 }
