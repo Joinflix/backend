@@ -28,10 +28,10 @@ VALUES ('범죄도시4', NOW(), NOW()),
        ('파묘', NOW(), NOW());
 
 -- 4. 파티방 (Party Rooms)
-INSERT INTO party_rooms (host_id, movie_id, created_at, updated_at)
-VALUES (1, 1, NOW(), NOW()), -- ID 1: 김철수 방
-       (2, 3, NOW(), NOW()), -- ID 2: 이영희 방
-       (5, 5, NOW(), NOW()); -- ID 3: 정우성 방
+INSERT INTO party_rooms (host_id, movie_id, room_name, is_public, host_control, created_at, updated_at)
+VALUES (1, 1, '흥미진진', false, true, NOW(), NOW()), -- ID 1: 김철수 방
+       (2, 3, '재밌겠다', false, true, NOW(), NOW()), -- ID 2: 이영희 방
+       (5, 5, '같이 영화봐요', false, true, NOW(), NOW()); -- ID 3: 정우성 방
 
 -- 5. 파티 초대 (Party Invites)
 INSERT INTO party_invites (party_room_id, guest_id, created_at, updated_at)

@@ -3,6 +3,7 @@ package com.sesac.joinflex.domain.party.entity;
 import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,8 +34,16 @@ public class PartyRoom extends BaseEntity {
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    // 공개 / 비공개 여부
+    @Column(nullable = false)
+    private String roomName;
 
-    // 비밀번호
+    @Column(nullable = false)
+    private Boolean isPublic;
+
+    @Column(nullable = false)
+    private Boolean hostControl;
+
+    private String passCode;
+
 
 }
