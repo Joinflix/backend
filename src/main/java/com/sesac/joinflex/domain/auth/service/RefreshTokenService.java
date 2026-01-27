@@ -64,7 +64,7 @@ public class RefreshTokenService {
     }
 
     // 토큰 존재 여부 확인 (이메일 기반 조회)
-    public boolean existsRefresh(String email, String token) {
+    public Boolean existsRefresh(String email, String token) {
         String key = RT_PREFIX + email;
         List<UserSession> sessions = (List<UserSession>) redisTemplate.opsForValue().get(key);
 

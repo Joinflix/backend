@@ -18,12 +18,12 @@ public class Membership extends BaseEntity {
 
     private String displayName;
     private String description;
-    private int price;
+    private Integer price;
     private String resolution;
-    private int maxConcurrent; // 동시 접속 제한 수치
+    private Integer maxConcurrent; // 동시 접속 제한 수치
 
     @Builder
-    private Membership(int maxConcurrent, String resolution, int price, String description, String displayName, MembershipType type) {
+    private Membership(Integer maxConcurrent, String resolution, Integer price, String description, String displayName, MembershipType type) {
         this.maxConcurrent = maxConcurrent;
         this.resolution = resolution;
         this.price = price;

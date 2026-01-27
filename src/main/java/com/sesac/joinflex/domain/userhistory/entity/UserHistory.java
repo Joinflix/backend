@@ -27,7 +27,7 @@ public class UserHistory extends BaseEntity {
     private String ip;
 
     @Column(name = "is_success", nullable = false)
-    private boolean isSuccess;
+    private Boolean isSuccess;
 
     private String userAgent; // 접속 브라우저/기기 정보
 
@@ -39,7 +39,7 @@ public class UserHistory extends BaseEntity {
     private SocialProviderType loginType; // 로그인 시 어떤 수단이었는지 기록
 
     @Builder
-    private UserHistory(String email, UserAction action, String ip, boolean isSuccess, String userAgent, String sessionId, String details, SocialProviderType loginType) {
+    private UserHistory(String email, UserAction action, String ip, Boolean isSuccess, String userAgent, String sessionId, String details, SocialProviderType loginType) {
         this.email = email;
         this.action = action;
         this.ip = ip;

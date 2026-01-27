@@ -5,6 +5,7 @@ import com.sesac.joinflex.domain.user.entity.UserRoleType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,9 +32,9 @@ public class JwtProvider {
 
     // Access/Refresh 생성 메서드
     public String createToken(String category, UserResponse userResponse, String sessionId) {
-        long targetExpiration = category.equals("access") ? accessExpiration : refreshExpiration;
+        Long targetExpiration = category.equals("access") ? accessExpiration : refreshExpiration;
 
-        var builder = Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
                 .subject(String.valueOf(userResponse.getId()))
                 .claim("category", category) // access / refresh 구분
                 .claim("sessionId", sessionId) // 동시 접속 제어 (요구사항 4번 핵심)
@@ -100,7 +101,7 @@ public class JwtProvider {
                 .getPayload();
     }
 
-    public boolean validateToken(String token) {
+    public Boolean validateToken(String token) {
         try {
             Jwts.parser()
                     .verifyWith(key)

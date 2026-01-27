@@ -28,7 +28,7 @@ public class EmailVerificationService {
     private static final String AUTH_PREFIX = "AUTH:";
     private static final String LIMIT_PREFIX = "LIMIT:";
     private static final String VERIFIED_PREFIX = "VERIFIED:";
-    private static final int EXPIRE_MINUTES = 5;
+    private static final int EXPIRE_MINUTES = 15;
 
     public void sendAuthCode(String email, HttpServletRequest httpRequest) {
         String ip = NetworkUtil.getClientIp(httpRequest);
@@ -44,7 +44,7 @@ public class EmailVerificationService {
 
         try {
             sendMail(email, code);
-            // 2. Redis에 인증 코드 저장 (5분 만료)
+            // 2. Redis에 인증 코드 저장 (15분 만료)
             redisTemplate.opsForValue().set(AUTH_PREFIX + email, code, Duration.ofMinutes(EXPIRE_MINUTES));
             // 3. 발송 횟수 증가 및 만료 시간 설정
             incrementSendCount(email);

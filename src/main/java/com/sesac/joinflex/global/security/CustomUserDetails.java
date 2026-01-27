@@ -16,9 +16,9 @@ public class CustomUserDetails implements UserDetails {
     private final String email;
     private final String nickName;
     private final String password;
-    private final boolean isLock;
+    private final Boolean isLock;
     private final String role;
-    private final boolean hasMembership;
+    private final Boolean hasMembership;
 
     public CustomUserDetails(User user) {
         this.id = user.getId();

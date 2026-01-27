@@ -18,7 +18,7 @@ public class UserHistoryService {
     private final UserHistoryRepository userHistoryRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW) // 독립적인 트랜잭션 생성
-    public void saveLog(String email, UserAction action, String ip, String userAgent, boolean isSuccess, String details) {
+    public void saveLog(String email, UserAction action, String ip, String userAgent, Boolean isSuccess, String details) {
         UserHistory log = UserHistory.builder()
                 .email(email)
                 .action(action)
@@ -31,7 +31,7 @@ public class UserHistoryService {
     }
 
     // 로그인 시도 제한 횟수 초과 여부
-    public boolean isLoginAttemptExceeded(String email) {
+    public Boolean isLoginAttemptExceeded(String email) {
         // TODO: 테스트 시 1시간 -> 1분, 5회 -> 2회로 수정
         long failCount = userHistoryRepository.countByEmailAndIsSuccessFalseAndCreatedAtAfter(
                 email, LocalDateTime.now().minusHours(1));

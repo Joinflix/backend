@@ -85,7 +85,7 @@ public class DataInitializer implements CommandLineRunner {
         );
     }
 
-    private void createMembershipIfNotFound(MembershipType type, String displayName, String description, int price, String resolution, int maxConcurrent) {
+    private void createMembershipIfNotFound(MembershipType type, String displayName, String description, Integer price, String resolution, Integer maxConcurrent) {
         // MembershipRepository에 findByType 또는 existsByType 메서드가 필요합니다.
         if (!membershipRepository.existsByType(type)) {
             Membership membership = Membership.builder()

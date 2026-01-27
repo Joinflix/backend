@@ -81,7 +81,7 @@ public class User extends BaseEntity {
     }
 
     // 멤버십 업데이트 (결제 완료 후 호출)
-    public void updateMembership(Membership membership, int days) {
+    public void updateMembership(Membership membership, Integer days) {
         this.membership = membership;
         if (days <= 0) {
             this.membershipExpiryDate = null;
@@ -91,7 +91,7 @@ public class User extends BaseEntity {
     }
 
     // 서비스 이용 가능 여부 확인
-    public boolean canUseService() {
+    public Boolean canUseService() {
         return this.membership != null &&
                 (membershipExpiryDate != null && membershipExpiryDate.isAfter(LocalDateTime.now()));
     }
