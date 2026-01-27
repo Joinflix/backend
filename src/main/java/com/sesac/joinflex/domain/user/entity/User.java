@@ -1,5 +1,6 @@
 package com.sesac.joinflex.domain.user.entity;
 
+import com.sesac.joinflex.domain.membership.entity.Membership;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,9 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +19,19 @@ public class User extends BaseEntity {
     @Column(name = "password") // 소셜 계정은 비밀번호 없을 수 있음
     private String password;
 
-    @Builder.Default
     @Column(name = "is_lock", nullable = false)
-    private Boolean isLock = false;
+    private Boolean isLock;
 
-    @Builder.Default
     @Column(name = "is_social", nullable = false)
-    private Boolean isSocial = false;
+    private Boolean isSocial;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "social_provider_type")
     private SocialProviderType socialProviderType;
 
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "role_type", nullable = false)
-    private UserRoleType roleType = UserRoleType.USER;
+    private UserRoleType roleType;
 
     @Column(name = "nickname", nullable = false, length = 100)
     private String nickname;
@@ -51,12 +47,27 @@ public class User extends BaseEntity {
     @Column(name = "last_login_ip")
     private String lastLoginIp;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "membership_id")
-//    private Membership membership;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "membership_id")
+    private Membership membership;
 
     @Column(name = "membership_expiry_date")
     private LocalDateTime membershipExpiryDate;
+
+    @Builder
+    private User(String email, String password, String nickname, String signupIp,
+                 Boolean isLock, Boolean isSocial, SocialProviderType socialProviderType,
+                 UserRoleType roleType, String profileImageUrl) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.signupIp = signupIp;
+        this.isLock = (isLock != null) ? isLock : false;
+        this.isSocial = (isSocial != null) ? isSocial : false;
+        this.roleType = (roleType != null) ? roleType : UserRoleType.USER;
+        this.socialProviderType = socialProviderType;
+        this.profileImageUrl = profileImageUrl;
+    }
 
     // 로그인 시 호출할 메서드
     public void updateLoginInfo(String ip) {
@@ -69,18 +80,21 @@ public class User extends BaseEntity {
         this.socialProviderType = providerType;
     }
 
-//    // 멤버십 업데이트 (결제 완료 후 호출)
-//    public void updateMembership(Membership membership, int days) {
-//        this.membership = membership;
-//        if(days <= 0) {this.membershipExpiryDate = null;}
-//        else{this.membershipExpiryDate = LocalDateTime.now().plusDays(days);}
-//    }
-//
-//    // 서비스 이용 가능 여부 확인
-//    public boolean canUseService() {
-//        return this.membership != null &&
-//                (membershipExpiryDate != null && membershipExpiryDate.isAfter(LocalDateTime.now()));
-//    }
+    // 멤버십 업데이트 (결제 완료 후 호출)
+    public void updateMembership(Membership membership, int days) {
+        this.membership = membership;
+        if (days <= 0) {
+            this.membershipExpiryDate = null;
+        } else {
+            this.membershipExpiryDate = LocalDateTime.now().plusDays(days);
+        }
+    }
+
+    // 서비스 이용 가능 여부 확인
+    public boolean canUseService() {
+        return this.membership != null &&
+                (membershipExpiryDate != null && membershipExpiryDate.isAfter(LocalDateTime.now()));
+    }
 
     // 사용자 프로필 수정
     public void updateProfile(String nickname, String profileImageUrl) {
