@@ -7,7 +7,6 @@ import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import com.sesac.joinflex.domain.party.repository.PartyRoomRepository;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,7 @@ public class PartyService {
     private final PartyInviteService partyInviteService;
 
     @Transactional
-    public Long createPartyRoom(@Valid PartyRoomRequest request, Long userId) {
+    public Long createPartyRoom(PartyRoomRequest request, Long userId) {
         Movie movie = movieRepository.findById(request.movieId())
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 영화입니다."));
 
