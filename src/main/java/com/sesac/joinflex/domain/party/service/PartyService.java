@@ -39,7 +39,7 @@ public class PartyService {
                 request.passCode()));
 
         // 친구 초대
-        partyInviteService.inviteUsers(savedRoom, request.invitedUserIds());
+        partyInviteService.inviteUsers(savedRoom, host, request.invitedUserIds());
 
         return savedRoom.getId();
     }

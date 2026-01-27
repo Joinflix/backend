@@ -23,11 +23,11 @@ public class PartyInviteService {
     private final EmailService emailService;
 
 
-    public void inviteUsers(PartyRoom room, List<Long> userIds) {
-        List<User> guests = userRepository.findAllById(userIds);
+    public void inviteUsers(PartyRoom room, User host, List<Long> userIds) {
+        List<User> guests = userRepository.findFriendsByHostAndIds(host, userIds);
 
         if (guests.size() != userIds.size()) {
-            throw new IllegalArgumentException("존재하지 않는 사용자가 포함되어 있습니다.");
+            throw new IllegalArgumentException("친구 관계가 아니거나 존재하지 않는 사용자가 포함되어 있습니다.");
         }
 
         for (User guest : guests) {
