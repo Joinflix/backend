@@ -1,5 +1,6 @@
 package com.sesac.joinflex.domain.party.dto.request;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -32,5 +33,14 @@ public record PartyRoomRequest(
 
     public PartyRoomRequest {
         invitedUserIds = (invitedUserIds == null) ? List.of() : List.copyOf(invitedUserIds);
+    }
+
+    @AssertTrue(message = "비공개 방은 비밀번호(passCode)가 필수입니다.")
+    private boolean isPassCodeValid() {
+        if (Boolean.TRUE.equals(isPublic)) {
+            return true;
+        }
+
+        return passCode != null && !passCode.isBlank();
     }
 }
