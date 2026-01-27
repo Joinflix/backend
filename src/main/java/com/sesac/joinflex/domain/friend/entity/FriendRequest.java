@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "friendRequests")
+@Table(name = "friend_requests",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"sender_id", "receiver_id"})})
 @Entity
 public class FriendRequest extends BaseEntity {
 

@@ -13,11 +13,11 @@ VALUES ('kim@joinflex.com', '김철수', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5
         NOW(), NOW()); -- ID: 5
 
 -- 2. 친구 요청 (Friend Requests)
-INSERT INTO friend_requests (sender_id, receiver_id, is_accepted, created_at, updated_at)
-VALUES (1, 2, true, NOW(), NOW()),
-       (2, 3, true, NOW(), NOW()),
-       (1, 5, false, NOW(), NOW()),
-       (4, 1, false, NOW(), NOW());
+INSERT INTO friend_requests (sender_id, receiver_id, status, created_at, updated_at)
+VALUES (1, 2, 'ACCEPTED', NOW(), NOW()),
+       (2, 3, 'ACCEPTED', NOW(), NOW()),
+       (1, 5, 'PENDING', NOW(), NOW()),
+       (4, 1, 'PENDING', NOW(), NOW());
 
 -- 3. 영화 (Movies)
 INSERT INTO movies (title, created_at, updated_at)
