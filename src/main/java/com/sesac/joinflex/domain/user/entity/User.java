@@ -33,13 +33,16 @@ public class User extends BaseEntity {
     @Column(name = "role_type", nullable = false)
     private UserRoleType roleType;
 
-    @Column(name = "nickname", nullable = false, length = 100)
+    @Column(name = "nickname", nullable = false, unique = true, length = 100)
     private String nickname;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     private String profileImageUrl;
+
+    @Column(name = "is_online", nullable = false)
+    private Boolean isOnline;
 
     @Column(name = "signup_ip")
     private String signupIp;
@@ -57,7 +60,7 @@ public class User extends BaseEntity {
     @Builder
     private User(String email, String password, String nickname, String signupIp,
                  Boolean isLock, Boolean isSocial, SocialProviderType socialProviderType,
-                 UserRoleType roleType, String profileImageUrl) {
+                 UserRoleType roleType, String profileImageUrl, Boolean isOnline) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -65,6 +68,7 @@ public class User extends BaseEntity {
         this.isLock = (isLock != null) ? isLock : false;
         this.isSocial = (isSocial != null) ? isSocial : false;
         this.roleType = (roleType != null) ? roleType : UserRoleType.USER;
+        this.isOnline = (isOnline != null) ? isOnline : false;
         this.socialProviderType = socialProviderType;
         this.profileImageUrl = profileImageUrl;
     }
@@ -72,6 +76,7 @@ public class User extends BaseEntity {
     // 로그인 시 호출할 메서드
     public void updateLoginInfo(String ip) {
         this.lastLoginIp = ip;
+        this.isOnline = true;
     }
 
     // 자체 가입 유저가 소셜 로그인 시 연동 처리
@@ -81,7 +86,7 @@ public class User extends BaseEntity {
     }
 
     // 멤버십 업데이트 (결제 완료 후 호출)
-    public void updateMembership(Membership membership, int days) {
+    public void updateMembership(Membership membership, Integer days) {
         this.membership = membership;
         if (days <= 0) {
             this.membershipExpiryDate = null;
@@ -91,7 +96,7 @@ public class User extends BaseEntity {
     }
 
     // 서비스 이용 가능 여부 확인
-    public boolean canUseService() {
+    public Boolean canUseService() {
         return this.membership != null &&
                 (membershipExpiryDate != null && membershipExpiryDate.isAfter(LocalDateTime.now()));
     }
@@ -100,6 +105,11 @@ public class User extends BaseEntity {
     public void updateProfile(String nickname, String profileImageUrl) {
         if (nickname != null) this.nickname = nickname;
         if (profileImageUrl != null) this.profileImageUrl = profileImageUrl;
+    }
+
+    // 사용자 상태 변경(온라인 -> 오프라인)
+    public void updateOfflineStatus() {
+        this.isOnline = false;
     }
 
     // 계정 잠금

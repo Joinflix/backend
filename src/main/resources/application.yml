@@ -31,11 +31,45 @@
       init:
         mode: always
 
+    # Redis 설정 (RefreshToken 저장용)
+    data:
+      redis:
+        host: ${REDIS_HOST:localhost}
+        port: ${REDIS_PORT:6379}
+
+    # Mail Server Configuration (Gmail)
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: ${GOOGLE_USERNAME}@gmail.com
+      password: ${GOOGLE_MAIL_PASSWORD}
+      default-encoding: UTF-8
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
+
     devtools:
       restart:
         enabled: ${DEVTOOLS_RESTART:true}
       livereload:
         enabled: ${DEVTOOLS_LIVERELOAD:true}
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: ${GOOGLE_USERNAME}@gmail.com
+      password: ${GOOGLE_MAIL_PASSWORD}
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
+
+      default-encoding: UTF-8
+
 
   #actuator
   management:
@@ -68,3 +102,31 @@
     pattern:
       console: ${CONSOLE_LOG_PATTERN:%clr(%d{HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
       file: ${LOG_PATTERN:%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n}
+
+  # 커스텀 설정 (JWT, OAuth, 결제 등)
+
+  # JWT 설정
+  jwt:
+    # Access Token: 1 hour (현재 테스트를 위해 1분으로 설정됨)
+    access-expiration: ${JWT_ACCESS_EXPIRATION:60000}
+    # Refresh Token: 7 days
+    refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+    secret: ${JWT_SECRET:mySecretKeyForJwtTokenGenerationMustBeLongEnough12345678901234567890}
+
+  # Kakao OAuth 설정
+  oauth:
+    kakao:
+      client-id: ${KAKAO_CLIENT_ID}
+      client-secret: ${KAKAO_CLIENT_SECRET}
+      redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:3000/oauth/kakao/callback}
+      token-uri: https://kauth.kakao.com/oauth/token
+      user-info-uri: https://kapi.kakao.com/v2/user/me
+
+  # File Upload 설정
+  file:
+    upload-dir: ${FILE_UPLOAD_DIR:/uploads}
+
+  # Portone 결제 설정
+  portone:
+    apiKey: ${PORTONE_APIKEY}
+    apiSecret: ${PORTONE_SECRET}

@@ -1,5 +1,6 @@
 package com.sesac.joinflex.global.common.dto;
 
+import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
 import java.util.List;
 import lombok.Getter;
@@ -21,6 +22,13 @@ public class ApiError {
 
     public static ApiError of(ErrorCode errorCode, List<?> details) {
         return new ApiError(errorCode.name(), errorCode.getMessage(), details);
+    }
+
+    public static ApiError of(ErrorCode errorCode, String message) {
+        return new ApiError(
+                errorCode.name(),
+                message,
+                List.of());
     }
 
 
