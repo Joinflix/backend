@@ -33,7 +33,7 @@ public class User extends BaseEntity {
     @Column(name = "role_type", nullable = false)
     private UserRoleType roleType;
 
-    @Column(name = "nickname", nullable = false, length = 100)
+    @Column(name = "nickname", nullable = false, unique = true, length = 100)
     private String nickname;
 
     @Column(name = "email", nullable = false, unique = true)

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE) // 인스턴스화 방지
 public final class ApiPath {
 
-    public static final String API_PREFIX = "/api/";
+    public static final String API_PREFIX = "/api";
 
     // auth
     public static final String AUTH = API_PREFIX + "/auth";

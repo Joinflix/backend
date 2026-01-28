@@ -16,7 +16,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleCustomException(CustomException e) {
-        ApiError error = ApiError.of(e.getErrorCode());
+
+        ApiError error;
+
+        if (e.getData() != null) {
+            error =  ApiError.of(e.getErrorCode(), e.getMessage());
+
+        } else {
+            error = ApiError.of(e.getErrorCode());
+        }
 
         return ResponseEntity
             .status(e.getErrorCode().getStatus())

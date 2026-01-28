@@ -20,6 +20,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService userDetailsService;
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final String TOKEN_TYPE_ACCESS = "access";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -33,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             // 토큰 종류 확인
             String category = jwtProvider.getCategory(token);
-            if (!category.equals("access")) {
+            if (!category.equals(TOKEN_TYPE_ACCESS)) {
                 filterChain.doFilter(request, response); // 혹은 401 응답 처리
                 return;
             }
@@ -53,8 +56,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
         return null;

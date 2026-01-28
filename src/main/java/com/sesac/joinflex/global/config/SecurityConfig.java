@@ -1,5 +1,6 @@
 package com.sesac.joinflex.global.config;
 
+import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.JwtAuthenticationEntryPoint;
 import com.sesac.joinflex.global.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").permitAll() //로그인, 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
