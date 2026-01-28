@@ -10,6 +10,7 @@ import com.sesac.joinflex.domain.auth.service.AuthService;
 import com.sesac.joinflex.domain.auth.service.EmailVerificationService;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
 import com.sesac.joinflex.global.common.constants.ApiPath;
+import com.sesac.joinflex.global.security.CustomUserDetails;
 import com.sesac.joinflex.global.util.CookieUtil;
 import com.sesac.joinflex.global.util.NetworkUtil;
 import jakarta.mail.MessagingException;
@@ -18,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,10 +91,12 @@ public class AuthController {
 
     // 6. 로그아웃
     @PostMapping(ApiPath.LOGOUT)
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> logout(HttpServletRequest request,
+                                         HttpServletResponse response,
+                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
         String refresh = cookieUtil.getCookieValue(request, REFRESH_TOKEN_COOKIE_NAME);
         try {
-            authService.logout(refresh, request);
+            authService.logout(refresh, request, userDetails.getId());
         } finally {
             cookieUtil.deleteCookie(response, REFRESH_TOKEN_COOKIE_NAME);
         }

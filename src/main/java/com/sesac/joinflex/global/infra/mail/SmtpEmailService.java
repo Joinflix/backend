@@ -1,5 +1,7 @@
 package com.sesac.joinflex.global.infra.mail;
 
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,7 +22,7 @@ public class SmtpEmailService implements EmailService {
             message.setText(text);
             javaMailSender.send(message);
         } catch (Exception e) {
-            throw new RuntimeException("메일 발송 실패");
+            throw new CustomException(ErrorCode.EMAIL_SEND_ERROR);
         }
     }
 }

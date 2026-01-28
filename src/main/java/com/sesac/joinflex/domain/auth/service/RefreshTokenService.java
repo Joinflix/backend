@@ -36,7 +36,7 @@ public class RefreshTokenService {
 
         // 2. 멤버십 등급에 따른 최대 허용 세션 수 확인
         // 멤버십이 없으면 기본값 1, 있으면 해당 멤버십의 설정값 사용
-        // TODO: maxConfig 1 -> 2
+        // maxConfig 1 -> 2
         int maxConfig = 1;
         if (user.canUseService()) {
             maxConfig = user.getMembership().getMaxConcurrent();

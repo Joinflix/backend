@@ -43,6 +43,7 @@ public class DataInitializer implements CommandLineRunner {
                             .roleType(UserRoleType.USER)
                             .isSocial(false)
                             .isLock(false)
+                            .isOnline(false)
                             .build()
             );
 

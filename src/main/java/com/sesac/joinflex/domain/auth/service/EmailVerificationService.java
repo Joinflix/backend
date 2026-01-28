@@ -47,14 +47,9 @@ public class EmailVerificationService {
         }
 
         String code = generateVerificationCode();
-        try {
-            emailService.sendEmail(email, "[Joinflix] 이메일 인증 번호입니다.", "인증 번호: " + code);
-            redisTemplate.opsForValue().set(AUTH_PREFIX + email, code, Duration.ofMinutes(EXPIRE_MINUTES));
-            userHistoryService.saveLog(email, UserAction.EMAIL_AUTH, ip, ua, true, "인증 코드 발송 성공");
-        } catch (RuntimeException e) {
-            userHistoryService.saveLog(email, UserAction.EMAIL_AUTH, ip, ua, false, "메일 발송 실패");
-            throw new CustomException(ErrorCode.EMAIL_SEND_ERROR);
-        }
+        emailService.sendEmail(email, "[Joinflix] 이메일 인증 번호입니다.", "인증 번호: " + code);
+        redisTemplate.opsForValue().set(AUTH_PREFIX + email, code, Duration.ofMinutes(EXPIRE_MINUTES));
+        userHistoryService.saveLog(email, UserAction.EMAIL_AUTH, ip, ua, true, "인증 코드 발송 성공");
     }
 
     // 인증 코드 검증
@@ -71,12 +66,15 @@ public class EmailVerificationService {
             handleVerifyFailure(email, ip, ua);
         }
 
-        // 성공 시 클린업
+        handleVerificationSuccess(email);
+        userHistoryService.saveLog(email, UserAction.EMAIL_AUTH, ip, ua, true, "이메일 인증 완료");
+    }
+
+    // 성공 시 클린업
+    private void handleVerificationSuccess(String email) {
         redisTemplate.delete(AUTH_PREFIX + email);
         redisTemplate.delete(FAIL_COUNT_PREFIX + email);
         redisTemplate.opsForValue().set(VERIFIED_PREFIX + email, "true", Duration.ofMinutes(10));
-
-        userHistoryService.saveLog(email, UserAction.EMAIL_AUTH, ip, ua, true, "이메일 인증 완료");
     }
 
     // 인증 실패 처리

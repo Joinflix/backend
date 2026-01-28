@@ -42,7 +42,7 @@ public class UserService {
     // 사용자 유효성 체크
     public void validateNewUser(String email, String nickname, String ip) {
         // IP 기반 가입 횟수 제한 (24시간 내 5회)
-        // TODO: 테스트 시 24시간 -> 1분, 5회 -> 2회로 설정
+        // 테스트 시 24시간 -> 1분, 5회 -> 2회로 설정
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
         long signupCount = userRepository.countBySignupIpAndCreatedAtAfter(ip, oneDayAgo);
 

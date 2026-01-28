@@ -154,11 +154,19 @@ public class AuthService {
 
     // 로그아웃
     @Transactional
-    public void logout(String refresh, HttpServletRequest httpRequest) {
+    public void logout(String refresh, HttpServletRequest httpRequest, Long userId) {
         if (refresh == null || refresh.isBlank()) return; // 토큰 없으면 그냥 종료
-
         String ip = NetworkUtil.getClientIp(httpRequest);
         String ua = NetworkUtil.getUserAgent(httpRequest);
+
+        User user = userService.findById(userId);
+        user.updateOfflineStatus(); // 온라인 상태 해제
+
+        if (refresh == null || refresh.isBlank()) {
+            userHistoryService.saveLog(user.getEmail(), UserAction.LOGOUT, ip, ua, true, "토큰 없이 로그아웃 시도(상태 해제)");
+            return;
+        }
+
         String email = jwtProvider.getEmail(refresh);
 
         try {
@@ -168,7 +176,6 @@ public class AuthService {
             }
         } catch (Exception e) {
             userHistoryService.saveLog(email, UserAction.LOGOUT, ip, ua, false, "로그아웃 실패: " + e.getMessage());
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
 
@@ -176,13 +183,22 @@ public class AuthService {
     private void validateToken(String email, String token) {
         if (token == null || !jwtProvider.validateToken(token) ||
                 !jwtProvider.getCategory(token).equals(TOKEN_TYPE_REFRESH)) {
+            expireSession(token);
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
         // Redis에 해당 이메일의 세션 리스트 중 해당 토큰이 있는지 확인
         if (!refreshTokenService.existsRefresh(email, token)) {
+            expireSession(token);
             throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
+    }
+
+    // 세션 만료 시 오프라인 처리
+    private void expireSession(String token) {
+        Long userId = jwtProvider.getUserId(token);
+        User user = userService.findById(userId);
+        user.updateOfflineStatus();
     }
 
     public Cookie createRefreshTokenCookie(String refresh) {
