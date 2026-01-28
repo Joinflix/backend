@@ -37,12 +37,15 @@ public class AuthService {
     private final StringRedisTemplate redisTemplate;
     private static final String VERIFIED_PREFIX = "VERIFIED:";
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "accessToken";
     private static final String TOKEN_TYPE_ACCESS = "access";
     private static final String TOKEN_TYPE_REFRESH = "refresh";
 
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
 
+    @Value("${jwt.access-expiration}")
+    private long accessExpiration;
     // 회원가입
     @Transactional
     public UserResponse signup(SignupRequest request, String ip, String ua) {
@@ -203,5 +206,9 @@ public class AuthService {
 
     public Cookie createRefreshTokenCookie(String refresh) {
         return cookieUtil.createCookie(REFRESH_TOKEN_COOKIE_NAME, refresh, refreshExpiration);
+    }
+    //accessToken 쿠키 생성 (SSE 지원용)
+    public Cookie createAccessTokenCookie(String access) {
+        return cookieUtil.createCookie(ACCESS_TOKEN_COOKIE_NAME, access, accessExpiration);
     }
 }

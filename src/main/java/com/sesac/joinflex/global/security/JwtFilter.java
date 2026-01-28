@@ -1,5 +1,6 @@
 package com.sesac.joinflex.global.security;
 
+import com.sesac.joinflex.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,9 +21,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final CookieUtil cookieUtil;
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String TOKEN_TYPE_ACCESS = "access";
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "accessToken";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -59,6 +62,12 @@ public class JwtFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
+        }
+
+        // 2. 쿠키에서 토큰 추출 (Authorization 헤더 우선, 쿠키 fallback)- SSE 연결 시 쿠키에서 accessToken 읽기
+        String cookieToken = cookieUtil.getCookieValue(request, ACCESS_TOKEN_COOKIE_NAME);
+        if (StringUtils.hasText(cookieToken)) {
+            return cookieToken;
         }
         return null;
     }

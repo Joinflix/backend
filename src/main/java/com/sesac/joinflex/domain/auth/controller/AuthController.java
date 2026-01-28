@@ -113,6 +113,7 @@ public class AuthController {
     private void setTokenResponse(HttpServletResponse response, TokenResponse token) {
         response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + token.getAccessToken());
         response.addCookie(authService.createRefreshTokenCookie(token.getRefreshToken()));
+        response.addCookie(authService.createAccessTokenCookie(token.getAccessToken()));  // SSE용
     }
 
 }

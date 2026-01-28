@@ -28,13 +28,9 @@ public class SecurityContextUserResolver implements CurrentUserResolver {
         }
 
 
-        if (principal instanceof UserDetails userDetails) {
-
-            try {
-                return Long.parseLong(userDetails.getUsername());
-            } catch (NumberFormatException e) {
-                throw new CustomException(ErrorCode.UNAUTHORIZED);
-            }
+        // ===== CustomUserDetails에서 userId 추출 =====
+        if (principal instanceof CustomUserDetails userDetails) {
+            return userDetails.getId();
         }
 
         throw new CustomException(ErrorCode.UNAUTHORIZED);
