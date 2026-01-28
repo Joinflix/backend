@@ -3,6 +3,8 @@ package com.sesac.joinflex.domain.party.entity;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,13 +34,17 @@ public class PartyInvite extends BaseEntity {
     @JoinColumn(name = "guest_id", nullable = false)
     private User guest;
 
-    private PartyInvite(PartyRoom partyRoom, User guest) {
+    @Enumerated(EnumType.STRING)
+    private InviteStatus status;
+
+    private PartyInvite(PartyRoom partyRoom, User guest, InviteStatus status) {
         this.partyRoom = partyRoom;
         this.guest = guest;
+        this.status = status;
     }
 
     public static PartyInvite create(PartyRoom partyRoom, User guest) {
-        return new PartyInvite(partyRoom, guest);
+        return new PartyInvite(partyRoom, guest, InviteStatus.PENDING);
     }
 
 }
