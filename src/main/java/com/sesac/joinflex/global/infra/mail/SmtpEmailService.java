@@ -26,3 +26,4 @@ public class SmtpEmailService implements EmailService {
         }
     }
 }
+
