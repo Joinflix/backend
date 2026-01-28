@@ -14,6 +14,8 @@ public interface PartyRoomRepository extends JpaRepository<PartyRoom, Long> {
     @Query(
         """
               select pr from PartyRoom pr
+              join fetch pr.movie
+              join fetch pr.host
               where pr.id < :cursorId
               order by pr.id desc
             """
