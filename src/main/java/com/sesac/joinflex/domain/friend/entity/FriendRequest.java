@@ -43,10 +43,12 @@ public class FriendRequest extends BaseEntity {
     }
 
 
-    public void accept(){ this.status = FriendRequestStatus.ACCEPTED; }
-    public void reject(){ this.status = FriendRequestStatus.REJECTED; }
-    public void cancel(){ this.status = FriendRequestStatus.CANCELED; }
+    public void accept(){
+        this.status = FriendRequestStatus.ACCEPTED;
+    }
 
-    public boolean isPending() {return this.status == FriendRequestStatus.PENDING;}
+    public boolean isPending() {
+        return this.status == FriendRequestStatus.PENDING;
+    }
 
 }

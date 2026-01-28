@@ -49,7 +49,7 @@ public class FriendRequestService {
     @Transactional
     public FriendRequestResponse acceptRequest(Long userId, Long requestId) {
         FriendRequest request = findRequestById(requestId);
-        validateReceiverAccess(request, userId);
+        validateAccess(request, userId, false);
         validatePendingState(request);
 
         request.accept();
@@ -59,24 +59,21 @@ public class FriendRequestService {
 
 
     @Transactional
-    public FriendRequestResponse rejectRequest(Long userId, Long requestId) {
+    public void rejectRequest(Long userId, Long requestId) {
         FriendRequest request = findRequestById(requestId);
-        validateReceiverAccess(request, userId);
+        validateAccess(request, userId, false);
         validatePendingState(request);
-
-        request.reject();
-        return FriendRequestResponse.from(request);
+        friendRequestRepository.delete(request);
     }
 
 
     @Transactional
-    public FriendRequestResponse cancelRequest(Long userId, Long requestId) {
+    public void cancelRequest(Long userId, Long requestId) {
         FriendRequest request = findRequestById(requestId);
-        validateSenderAccess(request, userId);
+        validateAccess(request, userId, true);
         validatePendingState(request);
 
-        request.cancel();
-        return FriendRequestResponse.from(request);
+        friendRequestRepository.delete(request);
     }
 
     @Transactional
@@ -134,18 +131,13 @@ public class FriendRequestService {
     }
 
 
-    private void validateReceiverAccess(FriendRequest request, Long userId) {
-        if (!request.getReceiver().getId().equals(userId)) {
+
+    private void validateAccess(FriendRequest request, Long userId, boolean isSender) {
+        Long targetId = isSender ? request.getSender().getId() : request.getReceiver().getId();
+        if (!targetId.equals(userId)) {
             throw new CustomException(ErrorCode.FRIEND_REQUEST_NOT_AUTHORIZED);
         }
     }
-
-    private void validateSenderAccess(FriendRequest request, Long userId) {
-        if (!request.getSender().getId().equals(userId)) {
-            throw new CustomException(ErrorCode.FRIEND_REQUEST_NOT_AUTHORIZED);
-        }
-    }
-
     private void validatePendingState(FriendRequest request) {
         if (!request.isPending()) {
             throw new CustomException(ErrorCode.FRIEND_REQUEST_INVALID_STATE);
