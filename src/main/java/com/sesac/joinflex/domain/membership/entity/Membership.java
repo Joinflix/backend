@@ -7,7 +7,7 @@ import lombok.*;
 @Entity
 @Getter
 @Table(name = "memberships")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Membership extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
