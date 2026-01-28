@@ -44,9 +44,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() //로그인, 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/payment-test.html", "/auth-test.html", "/static/**", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/api/v1/payments/**", "/api/v1/refunds/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -61,7 +58,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

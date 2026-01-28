@@ -35,15 +35,17 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final CookieUtil cookieUtil;
     private final StringRedisTemplate redisTemplate;
+    private static final String VERIFIED_PREFIX = "VERIFIED:";
+    private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+    private static final String TOKEN_TYPE_ACCESS = "access";
+    private static final String TOKEN_TYPE_REFRESH = "refresh";
 
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
 
     // 회원가입
     @Transactional
-    public UserResponse signup(SignupRequest request, HttpServletRequest httpRequest) {
-        String ip = NetworkUtil.getClientIp(httpRequest);
-        String ua = NetworkUtil.getUserAgent(httpRequest);
+    public UserResponse signup(SignupRequest request, String ip, String ua) {
         String email = request.getEmail();
 
         try {
@@ -51,7 +53,7 @@ public class AuthService {
             userService.validateNewUser(email, request.getNickname(), ip);
 
             // 2. 이메일 인증 체크 (Redis에서 확인)
-            String isVerified = redisTemplate.opsForValue().get("VERIFIED:" + email);
+            String isVerified = redisTemplate.opsForValue().get(VERIFIED_PREFIX + email);
             if (isVerified == null) {
                 throw new CustomException(ErrorCode.EMAIL_NOT_VERIFIED);
             }
@@ -67,7 +69,7 @@ public class AuthService {
             User savedUser = userService.save(user);
 
             // 4. 가입 완료 후 Redis 인증 마크 삭제
-            redisTemplate.delete("VERIFIED:" + email);
+            redisTemplate.delete(VERIFIED_PREFIX + email);
 
             // 5. 히스토리 기록
             userHistoryService.saveLog(email, UserAction.SIGNUP, ip, ua, true, "회원가입 성공");
@@ -101,8 +103,8 @@ public class AuthService {
             String sessionId = UUID.randomUUID().toString();
             UserResponse userResponse = UserResponse.from(user);
 
-            String access = jwtProvider.createToken("access", userResponse, sessionId);
-            String refresh = jwtProvider.createToken("refresh", userResponse, sessionId);
+            String access = jwtProvider.createToken(TOKEN_TYPE_ACCESS, userResponse, sessionId);
+            String refresh = jwtProvider.createToken(TOKEN_TYPE_REFRESH, userResponse, sessionId);
 
             refreshTokenService.saveRefreshToken(user, refresh, sessionId, refreshExpiration, ip, userAgent);
             // 5. 로그인IP 저장 및 히스토리 저장
@@ -138,8 +140,8 @@ public class AuthService {
         UserResponse userResponse = UserResponse.from(user);
 
         // 4. 새 토큰 생성
-        String newAccess = jwtProvider.createToken("access", userResponse, sessionId);
-        String newRefresh = jwtProvider.createToken("refresh", userResponse, sessionId);
+        String newAccess = jwtProvider.createToken(TOKEN_TYPE_ACCESS, userResponse, sessionId);
+        String newRefresh = jwtProvider.createToken(TOKEN_TYPE_REFRESH, userResponse, sessionId);
 
         // 5. Redis Rotation 적용 (이메일 파라미터 추가)
         refreshTokenService.rotateToken(refresh, email, newRefresh, sessionId, refreshExpiration);
@@ -173,7 +175,7 @@ public class AuthService {
     // 토큰 유효성 체크
     private void validateToken(String email, String token) {
         if (token == null || !jwtProvider.validateToken(token) ||
-                !jwtProvider.getCategory(token).equals("refresh")) {
+                !jwtProvider.getCategory(token).equals(TOKEN_TYPE_REFRESH)) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
@@ -184,6 +186,6 @@ public class AuthService {
     }
 
     public Cookie createRefreshTokenCookie(String refresh) {
-        return cookieUtil.createCookie("refreshToken", refresh, refreshExpiration);
+        return cookieUtil.createCookie(REFRESH_TOKEN_COOKIE_NAME, refresh, refreshExpiration);
     }
 }

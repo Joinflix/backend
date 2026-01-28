@@ -32,7 +32,7 @@ public enum ErrorCode {
     EXPIRED_VERIFICATION_CODE(HttpStatus.GONE, "인증 번호가 만료되었습니다."),
     INVALID_VERIFICATION_CODE(HttpStatus.BAD_REQUEST, "인증 번호가 일치하지 않습니다."),
     EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송 중 오류가 발생했습니다."),
-    TOO_MANY_VERIFICATION_ATTEMPTS(HttpStatus.TOO_MANY_REQUESTS, "인증 시도 횟수를 초과했습니다. 잠시 후 다시 시도해주세요."),
+    TOO_MANY_VERIFICATION_ATTEMPTS(HttpStatus.TOO_MANY_REQUESTS, "인증 시도 5회를 초과했습니다."),
 
     // Profile Image (기존과 동일)
     IMAGE_EMPTY(HttpStatus.BAD_REQUEST, "업로드할 이미지 파일이 선택되지 않았습니다."),

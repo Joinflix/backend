@@ -4,6 +4,7 @@ import com.sesac.joinflex.domain.user.dto.request.ProfileUpdateRequest;
 import com.sesac.joinflex.domain.user.dto.response.UserProfileResponse;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
 import com.sesac.joinflex.domain.user.service.UserService;
+import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -14,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping(ApiPath.USER)
 public class UserController {
 
     private final UserService userService;
 
     // 사용자 프로필 조회
-    @GetMapping("/{id}")
+    @GetMapping(ApiPath.ID_PATH)
     public ResponseEntity<UserProfileResponse> getProfile(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     // 사용자 프로필 수정
-    @PutMapping("/{id}")
+    @PutMapping(ApiPath.ID_PATH)
     public ResponseEntity<UserResponse> updateProfile(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails,

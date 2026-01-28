@@ -32,7 +32,7 @@ public class UserHistoryService {
 
     // 로그인 시도 제한 횟수 초과 여부
     public Boolean isLoginAttemptExceeded(String email) {
-        // TODO: 테스트 시 1시간 -> 1분, 5회 -> 2회로 수정
+        //테스트 시 1시간 -> 1분, 5회 -> 2회로 수정
         long failCount = userHistoryRepository.countByEmailAndIsSuccessFalseAndCreatedAtAfter(
                 email, LocalDateTime.now().minusHours(1));
         return failCount >= 5;
