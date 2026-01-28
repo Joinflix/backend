@@ -1,14 +1,12 @@
 package com.sesac.joinflex.domain.auth.controller;
 
-import com.sesac.joinflex.domain.auth.dto.request.EmailSendRequest;
-import com.sesac.joinflex.domain.auth.dto.request.EmailVerifyRequest;
-import com.sesac.joinflex.domain.auth.dto.request.LoginRequest;
-import com.sesac.joinflex.domain.auth.dto.request.SignupRequest;
+import com.sesac.joinflex.domain.auth.dto.request.*;
 import com.sesac.joinflex.domain.auth.dto.response.AuthResponse;
 import com.sesac.joinflex.domain.auth.dto.response.TokenResponse;
 import com.sesac.joinflex.domain.auth.service.AuthService;
 import com.sesac.joinflex.domain.auth.service.EmailVerificationService;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
+import com.sesac.joinflex.domain.user.service.UserService;
 import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.CustomUserDetails;
 import com.sesac.joinflex.global.util.CookieUtil;
@@ -34,6 +32,7 @@ public class AuthController {
 
     private final EmailVerificationService emailService;
     private final AuthService authService;
+    private final UserService userService;
     private final CookieUtil cookieUtil;
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -55,6 +54,13 @@ public class AuthController {
         String ua = NetworkUtil.getUserAgent(httpRequest);
         emailService.verifyCode(request, ip, ua);
         return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
+    }
+
+    // 3. 닉네임 중복 체크
+    @PostMapping(ApiPath.NICKNAME_DUPLICATE)
+    public ResponseEntity<String> nicknameDuplicate(@Valid @RequestBody NicknameRequest request, HttpServletRequest httpRequest) {
+        userService.validateNickname(request.getNickname());
+        return ResponseEntity.ok("사용 가능한 닉네임입니다.");
     }
 
     // 3. 최종 회원가입

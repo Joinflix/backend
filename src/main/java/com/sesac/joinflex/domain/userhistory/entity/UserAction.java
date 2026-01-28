@@ -8,6 +8,7 @@ public enum UserAction {
     LOGOUT,         // 로그아웃
     SOCIAL_LINK,    // 소셜 연동 (isSocial: false -> true)
     PWD_CHG,        // 비밀번호 변경
+    NICKNAME_CHK,   // 닉네임 중복 확인
     NICKNAME_CHG,   // 닉네임 변경
     ACCOUNT_LOCK,   // 계정 잠금
     ACCOUNT_UNLOCK, // 계정 해제

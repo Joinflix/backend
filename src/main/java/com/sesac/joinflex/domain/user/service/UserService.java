@@ -39,6 +39,13 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    // 닉네임 중복 체크
+    public void validateNickname(String nickname){
+        if(userRepository.existsByNickname(nickname)){
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+    }
+
     // 사용자 유효성 체크
     public void validateNewUser(String email, String nickname, String ip) {
         // IP 기반 가입 횟수 제한 (24시간 내 5회)
