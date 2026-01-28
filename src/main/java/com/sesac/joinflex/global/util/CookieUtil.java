@@ -21,7 +21,7 @@ public class CookieUtil {
     }
 
     // 쿠키 생성
-    public Cookie createCookie(String name, String value, long maxAge) {
+    public Cookie createCookie(String name, String value, Long maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);// JS 접근 방지 (XSS 방어)
         cookie.setPath("/");
