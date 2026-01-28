@@ -10,6 +10,7 @@ import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 public class FriendRequestService {
     private final FriendRequestRepository friendRequestRepository;
     private final UserRepository userRepository;
-
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public FriendRequestResponse createRequest(Long senderId, Long receiverId) {
@@ -40,7 +41,7 @@ public class FriendRequestService {
 
         FriendRequest request = FriendRequest.create(sender, receiver);
         FriendRequest saved = friendRequestRepository.save(request);
-
+        eventPublisher.publishEvent(new FriendRequestCreatedEvent(saved));
         return FriendRequestResponse.from(saved);
     }
 
@@ -52,7 +53,7 @@ public class FriendRequestService {
         validatePendingState(request);
 
         request.accept();
-
+        eventPublisher.publishEvent(new FriendRequestAcceptedEvent(request));
         return FriendRequestResponse.from(request);
     }
 
@@ -141,5 +142,14 @@ public class FriendRequestService {
             throw new CustomException(ErrorCode.FRIEND_REQUEST_INVALID_STATE);
         }
     }
+    //sse용
+    public List<Long> getFriendIds(Long userId) {
+        return friendRequestRepository.findAcceptedFriends(userId, FriendRequestStatus.ACCEPTED)
+            .stream()
+            .map(request -> request.getSender().getId().equals(userId) ? request.getReceiver().getId() : request.getSender().getId())
+            .toList();
+    }
 
+    public record FriendRequestCreatedEvent(FriendRequest request) {}
+    public record FriendRequestAcceptedEvent(FriendRequest request) {}
 }
