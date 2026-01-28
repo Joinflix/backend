@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(name = "user_histories")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserHistory extends BaseEntity {
     @Id

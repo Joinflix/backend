@@ -15,8 +15,6 @@ public class PortOneConfig {
 
     @Bean
     public IamportClient iamportClient() {
-        System.out.println("주입된 API KEY: " + apikey);
-        System.out.println("주입된 API SECRET KEY: " + apiSecret);
         return new IamportClient(apikey, apiSecret);
     }
 }

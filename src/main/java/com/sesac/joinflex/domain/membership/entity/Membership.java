@@ -6,6 +6,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Table(name = "memberships")
 @NoArgsConstructor
 public class Membership extends BaseEntity {
     @Id
