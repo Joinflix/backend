@@ -36,6 +36,20 @@
         enabled: ${DEVTOOLS_RESTART:true}
       livereload:
         enabled: ${DEVTOOLS_LIVERELOAD:true}
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: ${GOOGLE_USERNAME}@gmail.com
+      password: ${GOOGLE_MAIL_PASSWORD}
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
+
+      default-encoding: UTF-8
+
 
   #actuator
   management:
