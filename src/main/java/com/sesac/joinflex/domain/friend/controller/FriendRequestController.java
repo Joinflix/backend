@@ -4,6 +4,7 @@ import com.sesac.joinflex.domain.friend.dto.request.FriendRequestCreateRequest;
 import com.sesac.joinflex.domain.friend.dto.response.FriendRequestResponse;
 import com.sesac.joinflex.domain.friend.dto.response.FriendResponse;
 import com.sesac.joinflex.domain.friend.service.FriendRequestService;
+import com.sesac.joinflex.domain.notification.service.SseService;
 import com.sesac.joinflex.global.security.CurrentUserResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ public class FriendRequestController {
 
     private final FriendRequestService friendRequestService;
     private final CurrentUserResolver currentUserResolver;
-
+    private final SseService sseService;
 
     @PostMapping("/friend-requests")
     public ResponseEntity<FriendRequestResponse> createRequest(@Valid @RequestBody FriendRequestCreateRequest request, HttpServletRequest httpRequest) {
@@ -81,5 +82,14 @@ public class FriendRequestController {
         Long userId = currentUserResolver.resolve(httpRequest);
         friendRequestService.deleteFriend(userId, friendId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/friends/online")
+    public ResponseEntity<List<FriendResponse>> getOnlineFriends(HttpServletRequest httpRequest) {
+        Long userId = currentUserResolver.resolve(httpRequest);
+        List<Long> friendIds = friendRequestService.getFriendIds(userId);
+        List<Long> onlineUserIds = sseService.getOnlineUserIds(friendIds);
+        List<FriendResponse> responses = friendRequestService.getOnlineFriends(userId, onlineUserIds);
+        return ResponseEntity.ok(responses);
     }
 }

@@ -114,6 +114,15 @@ public class FriendRequestService {
             .toList();
     }
 
+    public List<FriendResponse> getOnlineFriends(Long userId, List<Long> onlineUserIds) {
+        return friendRequestRepository.findAcceptedFriends(userId, FriendRequestStatus.ACCEPTED)
+            .stream()
+            .map(request -> request.getSender().getId().equals(userId) ? request.getReceiver() : request.getSender())
+            .filter(friend -> onlineUserIds.contains(friend.getId()))
+            .map(FriendResponse::from)
+            .toList();
+    }
+
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

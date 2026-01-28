@@ -1,13 +1,12 @@
 package com.sesac.joinflex.domain.notification.service;
 import com.sesac.joinflex.domain.friend.service.FriendRequestService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
+
 @Component
 @RequiredArgsConstructor
 public class SseNotificationListener {
@@ -34,7 +33,6 @@ public class SseNotificationListener {
             "senderId", senderId
         ));
 
-        log.debug("SSE: {} -> userId={}", EVENT_FRIEND_REQUEST_RECEIVED, receiverId);
     }
 
     // 친구 요청 수락 시 sender에게 알림
@@ -49,7 +47,6 @@ public class SseNotificationListener {
             "acceptedBy", receiverId
         ));
 
-        log.debug("SSE: {} -> userId={}", EVENT_FRIEND_REQUEST_ACCEPTED, senderId);
     }
 
 
@@ -58,7 +55,6 @@ public class SseNotificationListener {
         List<Long> friendIds = friendRequestService.getFriendIds(userId);
         if (!friendIds.isEmpty()) {
             sseService.sendToMany(friendIds, EVENT_PRESENCE_ONLINE, Map.of("userId", userId));
-            log.debug("Presence ONLINE: userId={} -> {} friends", userId, friendIds.size());
         }
     }
 
@@ -67,7 +63,6 @@ public class SseNotificationListener {
         List<Long> friendIds = friendRequestService.getFriendIds(userId);
         if (!friendIds.isEmpty()) {
             sseService.sendToMany(friendIds, EVENT_PRESENCE_OFFLINE, Map.of("userId", userId));
-            log.debug("Presence OFFLINE: userId={} -> {} friends", userId, friendIds.size());
         }
     }
 }

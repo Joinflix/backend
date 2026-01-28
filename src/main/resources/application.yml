@@ -13,9 +13,9 @@
       ansi:
         enabled: ${ANSI_ENABLED:always}
     datasource:
-      url: ${DATABASE_URL:jdbc:mysql://localhost:3306/joinflix?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+      url: ${DATABASE_URL:jdbc:mysql://localhost:3306/joinflix}
       username: ${DB_USERNAME:root}
-      password: ${DB_PASSWORD:password}
+      password: ${DB_PASSWORD:1q2w3e4r@@}
     jpa:
       show-sql: ${JPA_SHOW_SQL:true}
       hibernate:

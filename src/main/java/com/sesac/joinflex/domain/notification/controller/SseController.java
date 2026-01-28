@@ -1,5 +1,6 @@
 package com.sesac.joinflex.domain.notification.controller;
 
+import com.sesac.joinflex.domain.friend.service.FriendRequestService;
 import com.sesac.joinflex.domain.notification.service.SseNotificationListener;
 import com.sesac.joinflex.domain.notification.service.SseService;
 import com.sesac.joinflex.global.security.CurrentUserResolver;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -25,6 +28,7 @@ public class SseController {
     private final SseService sseService;
     private final SseNotificationListener notificationListener;
     private final CurrentUserResolver currentUserResolver;
+    private final FriendRequestService friendRequestService;
 
     // GET /api/sse/subscribe
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -67,9 +71,17 @@ public class SseController {
 
     private boolean sendOpenEvent(SseEmitter emitter, Long userId) {
         try {
+            List<Long> friendIds = friendRequestService.getFriendIds(userId);
+            List<Long> onlineFriends = sseService.getOnlineUserIds(friendIds);
+
+            Map<String, Object> openData = Map.of(
+                "message", "connected",
+                "onlineFriends", onlineFriends
+            );
+
             emitter.send(SseEmitter.event()
                 .name("open")
-                .data("{\"message\":\"connected\"}")
+                .data(openData)
                 .reconnectTime(3000));
             return true;
         } catch (IOException e) {

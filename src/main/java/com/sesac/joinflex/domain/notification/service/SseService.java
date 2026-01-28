@@ -31,7 +31,6 @@ public class SseService {
     public void register(Long userId, SseEmitter emitter) {
         emitters.computeIfAbsent(userId, k -> new CopyOnWriteArraySet<>())
             .add(emitter);
-        log.debug("SSE emitter registered for userId: {}", userId);
     }
 
 
@@ -42,7 +41,6 @@ public class SseService {
             if (userEmitters.isEmpty()) {
                 emitters.remove(userId);
             }
-            log.debug("SSE emitter removed for userId: {}", userId);
         }
     }
 
@@ -52,6 +50,11 @@ public class SseService {
         return userEmitters != null && !userEmitters.isEmpty();
     }
 
+    public List<Long> getOnlineUserIds(List<Long> userIds) {
+        return userIds.stream()
+            .filter(this::isOnline)
+            .toList();
+    }
 
     public void send(Long userId, String eventType, Object data) {
         Set<SseEmitter> userEmitters = emitters.getOrDefault(userId, Set.of());
@@ -70,7 +73,6 @@ public class SseService {
             .data(jsonData);
 
         sendToEmitters(userId, userEmitters, event);
-        log.debug("SSE event sent to userId: {}, type: {}", userId, eventType);
     }
 
     public void sendToMany(List<Long> userIds, String eventType, Object data) {
@@ -89,7 +91,6 @@ public class SseService {
                 try {
                     emitter.send(SseEmitter.event().comment("heartbeat"));
                 } catch (IOException e) {
-                    log.debug("Heartbeat failed for userId: {}, removing emitter", userId);
                     remove(userId, emitter);
                 }
             }
