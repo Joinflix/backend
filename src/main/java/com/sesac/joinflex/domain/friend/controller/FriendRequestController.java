@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/friends")
 @RequiredArgsConstructor
 public class FriendRequestController {
 
@@ -22,7 +22,7 @@ public class FriendRequestController {
     private final CurrentUserResolver currentUserResolver;
 
 
-    @PostMapping("/friend-requests")
+    @PostMapping("/requests")
     public ResponseEntity<FriendRequestResponse> createRequest(@Valid @RequestBody FriendRequestCreateRequest request, HttpServletRequest httpRequest) {
         Long senderId = currentUserResolver.resolve(httpRequest);
         FriendRequestResponse response = friendRequestService.createRequest(senderId, request.receiverId());
@@ -30,7 +30,7 @@ public class FriendRequestController {
     }
 
 
-    @GetMapping("/friend-requests/incoming")
+    @GetMapping("/requests/incoming")
     public ResponseEntity<List<FriendRequestResponse>> getIncomingRequests(HttpServletRequest httpRequest) {
         Long userId = currentUserResolver.resolve(httpRequest);
         List<FriendRequestResponse> responses = friendRequestService.getIncomingRequests(userId);
@@ -38,14 +38,14 @@ public class FriendRequestController {
     }
 
 
-    @GetMapping("/friend-requests/outgoing")
+    @GetMapping("/requests/outgoing")
     public ResponseEntity<List<FriendRequestResponse>> getOutgoingRequests(HttpServletRequest httpRequest) {
         Long userId = currentUserResolver.resolve(httpRequest);
         List<FriendRequestResponse> responses = friendRequestService.getOutgoingRequests(userId);
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/friend-requests/{requestId}/accept")
+    @PostMapping("/requests/{requestId}/accept")
     public ResponseEntity<FriendRequestResponse> acceptRequest(@PathVariable Long requestId, HttpServletRequest httpRequest) {
         Long userId = currentUserResolver.resolve(httpRequest);
         FriendRequestResponse response = friendRequestService.acceptRequest(userId, requestId);
@@ -53,30 +53,30 @@ public class FriendRequestController {
     }
 
 
-    @PostMapping("/friend-requests/{requestId}/reject")
-    public ResponseEntity<FriendRequestResponse> rejectRequest(@PathVariable Long requestId, HttpServletRequest httpRequest) {
+    @PostMapping("/requests/{requestId}/reject")
+    public ResponseEntity<Void> rejectRequest(@PathVariable Long requestId, HttpServletRequest httpRequest) {
         Long userId = currentUserResolver.resolve(httpRequest);
-        FriendRequestResponse response = friendRequestService.rejectRequest(userId, requestId);
-        return ResponseEntity.ok(response);
+        friendRequestService.rejectRequest(userId, requestId);
+        return ResponseEntity.noContent().build();
     }
 
 
-    @PostMapping("/friend-requests/{requestId}/cancel")
-    public ResponseEntity<FriendRequestResponse> cancelRequest(@PathVariable Long requestId, HttpServletRequest httpRequest) {
+    @PostMapping("/requests/{requestId}/cancel")
+    public ResponseEntity<Void> cancelRequest(@PathVariable Long requestId, HttpServletRequest httpRequest) {
         Long userId = currentUserResolver.resolve(httpRequest);
-        FriendRequestResponse response = friendRequestService.cancelRequest(userId, requestId);
-        return ResponseEntity.ok(response);
+        friendRequestService.cancelRequest(userId, requestId);
+        return ResponseEntity.noContent().build();
     }
 
 
-    @GetMapping("/friends")
+    @GetMapping
     public ResponseEntity<List<FriendResponse>> getFriends(HttpServletRequest httpRequest) {
         Long userId = currentUserResolver.resolve(httpRequest);
         List<FriendResponse> responses = friendRequestService.getFriends(userId);
         return ResponseEntity.ok(responses);
     }
 
-    @DeleteMapping("/friends/{friendId}")
+    @DeleteMapping("/{friendId}")
     public ResponseEntity<Void> deleteFriend(@PathVariable Long friendId, HttpServletRequest httpRequest) {
         Long userId = currentUserResolver.resolve(httpRequest);
         friendRequestService.deleteFriend(userId, friendId);

@@ -58,24 +58,21 @@ public class FriendRequestService {
 
 
     @Transactional
-    public FriendRequestResponse rejectRequest(Long userId, Long requestId) {
+    public void rejectRequest(Long userId, Long requestId) {
         FriendRequest request = findRequestById(requestId);
         validateReceiverAccess(request, userId);
         validatePendingState(request);
-
-        request.reject();
-        return FriendRequestResponse.from(request);
+        friendRequestRepository.delete(request);
     }
 
 
     @Transactional
-    public FriendRequestResponse cancelRequest(Long userId, Long requestId) {
+    public void cancelRequest(Long userId, Long requestId) {
         FriendRequest request = findRequestById(requestId);
         validateSenderAccess(request, userId);
         validatePendingState(request);
 
-        request.cancel();
-        return FriendRequestResponse.from(request);
+        friendRequestRepository.delete(request);
     }
 
     @Transactional
