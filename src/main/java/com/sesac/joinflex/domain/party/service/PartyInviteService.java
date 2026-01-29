@@ -1,7 +1,7 @@
 package com.sesac.joinflex.domain.party.service;
 
-import com.sesac.joinflex.domain.notification.message.InviteMessageTemplate;
-import com.sesac.joinflex.domain.notification.service.NotificationService;
+import com.sesac.joinflex.domain.notification2.message.InviteMessageTemplate;
+import com.sesac.joinflex.domain.notification2.service.NotificationService;
 import com.sesac.joinflex.domain.party.entity.PartyInvite;
 import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import com.sesac.joinflex.domain.party.repository.PartyInviteRepository;

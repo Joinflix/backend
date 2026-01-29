@@ -1,6 +1,6 @@
-package com.sesac.joinflex.domain.notification.controller;
+package com.sesac.joinflex.domain.notification2.controller;
 
-import com.sesac.joinflex.domain.notification.service.NotificationService;
+import com.sesac.joinflex.domain.notification2.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
