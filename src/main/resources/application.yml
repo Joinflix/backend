@@ -117,3 +117,6 @@
   portone:
     apiKey: ${PORTONE_APIKEY}
     apiSecret: ${PORTONE_SECRET}
+
+  app:
+    domain-url: ${APP_DOMAIN_URL:http://localhost:8080}
