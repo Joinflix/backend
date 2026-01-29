@@ -121,15 +121,28 @@ public class SseController {
             List<Long> friendIds = friendRequestService.getFriendIds(userId);
             List<Long> onlineFriends = sseService.getOnlineUserIds(friendIds);
 
-            Map<String, Object> openData = Map.of(
-                "message", "connected",
-                "onlineFriends", onlineFriends
-            );
+            // 오프라인 동안 받은 PENDING 친구 요청 조회
+            List<Map<String, Object>> pendingRequests = friendRequestService.getIncomingRequests(userId)
+                .stream()
+                .map(req -> Map.<String, Object>of(
+                    "requestId", req.requestId(),
+                    "senderId", req.senderId(),
+                    "createdAt", req.createdAt().toString()
+                ))
+                .toList();
+
+            Map<String, Object> openData = new java.util.HashMap<>();
+            openData.put("message", "connected");
+            openData.put("onlineFriends", onlineFriends);
+            openData.put("pendingRequests", pendingRequests);  // 오프라인 동안 받은 요청
 
             emitter.send(SseEmitter.event()
-                .name("open")
-                .data(openData)
-                .reconnectTime(3000));
+                .name("open") //이벤트 이름
+                .data(openData) // 이벤트 데이터
+                .reconnectTime(3000)); //재연결 대기시간
+
+            log.info("SSE open event sent: userId={}, pendingRequests={}", userId, pendingRequests.size());
+
             return true;
         } catch (IOException e) {
             log.error("Failed to send open event for userId: {}", userId, e);
