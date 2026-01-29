@@ -63,7 +63,14 @@ public enum ErrorCode {
     REFUND_ALREADY_PROCESSED(HttpStatus.CONFLICT, "이미 처리된 환불 요청입니다."),
     REFUND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "환불 처리에 실패했습니다. 잠시 후 다시 시도해 주세요."),
     UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "환불 권한이 없습니다."),
-    INVALID_REFUND_STATUS(HttpStatus.BAD_REQUEST, "결제 완료 상태가 아니어서 환불을 처리할 수 없습니다.");
+    INVALID_REFUND_STATUS(HttpStatus.BAD_REQUEST, "결제 완료 상태가 아니어서 환불을 처리할 수 없습니다."),
+
+    // Movie
+    MOVIE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 영화입니다."),
+
+
+    // Party
+    INVALID_PARTY_INVITE_TARGET(HttpStatus.BAD_REQUEST, "친구가 아니거나 존재하지 않는 사용자는 파티에 초대할 수 없습니다.");
 
 
 
