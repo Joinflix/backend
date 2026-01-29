@@ -5,10 +5,21 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    Boolean existsByEmail(String email);
+
+    Boolean existsByNickname(String nickname);
+
+    Optional<User> findByEmail(String email);
+
+    Optional<User> findByEmailAndIsLockAndIsSocial(String email, Boolean isLock, Boolean isSocial);
+
+    // 특정 IP로 특정 시간 이후에 가입한 사용자 수 조회
+    long countBySignupIpAndCreatedAtAfter(String signupIp, LocalDateTime dateTime);
 
     @Query(
         """
