@@ -28,4 +28,18 @@ public final class ApiPath {
     // file
     public static final String FILE = API_PREFIX + "/files";
     public static final String UPLOADFILE = "/upload";
+
+    // friend
+    public static final String FRIEND = API_PREFIX + "/friends";
+
+    public static final String FRIEND_REQUESTS = "/requests";
+    public static final String FRIEND_REQUESTS_INCOMING = FRIEND_REQUESTS + "/incoming";
+    public static final String FRIEND_REQUESTS_OUTGOING = FRIEND_REQUESTS + "/outgoing";
+
+    private static final String FRIEND_REQUEST_BY_ID = FRIEND_REQUESTS + "/{requestId}";
+    public static final String FRIEND_REQUESTS_ACCEPT = FRIEND_REQUEST_BY_ID + "/accept";
+    public static final String FRIEND_REQUESTS_REJECT = FRIEND_REQUEST_BY_ID + "/reject";
+    public static final String FRIEND_REQUESTS_CANCEL = FRIEND_REQUEST_BY_ID + "/cancel";
+
+    public static final String FRIEND_DELETE = "/{friendId}";
 }
