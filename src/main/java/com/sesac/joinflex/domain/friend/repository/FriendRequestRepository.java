@@ -14,15 +14,14 @@ import java.util.Optional;
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
 
     @Query("""
-        SELECT fr FROM FriendRequest fr
-        JOIN FETCH fr.sender
-        JOIN FETCH fr.receiver
-        WHERE fr.status = :status
-          AND (fr.sender.id = :userId OR fr.receiver.id = :userId)
-        """)
+            SELECT fr FROM FriendRequest fr
+            JOIN FETCH fr.sender
+            JOIN FETCH fr.receiver
+            WHERE fr.status = :status
+              AND (fr.sender.id = :userId OR fr.receiver.id = :userId)
+            """)
     List<FriendRequest> findAcceptedFriends(@Param("userId") Long userId, @Param("status") FriendRequestStatus status);
 
-    Optional<FriendRequest> findBySenderIdAndReceiverId(Long senderId, Long receiverId);
 
     @Query("""
             SELECT fr FROM FriendRequest fr
@@ -43,17 +42,19 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
             @Param("status") FriendRequestStatus status);
 
     @Query("""
-        SELECT COUNT(fr) > 0 FROM FriendRequest fr
-        WHERE (fr.sender.id = :userId1 AND fr.receiver.id = :userId2 AND fr.status IN :statuses)
-           OR (fr.sender.id = :userId2 AND fr.receiver.id = :userId1 AND fr.status IN :statuses)
-        """)
-    boolean existsBidirectionalRequest(@Param("userId1") Long userId1, @Param("userId2") Long userId2, @Param("statuses") List<FriendRequestStatus> statuses);
+            SELECT COUNT(fr) > 0 FROM FriendRequest fr
+            WHERE (fr.sender.id = :userId1 AND fr.receiver.id = :userId2 AND fr.status IN :statuses)
+               OR (fr.sender.id = :userId2 AND fr.receiver.id = :userId1 AND fr.status IN :statuses)
+            """)
+    boolean existsBidirectionalRequest(@Param("userId1") Long userId1, @Param("userId2") Long userId2,
+            @Param("statuses") List<FriendRequestStatus> statuses);
 
     @Query("""
-        SELECT fr FROM FriendRequest fr
-        WHERE fr.status = :status
-          AND ((fr.sender.id = :userId AND fr.receiver.id = :friendId)
-               OR (fr.sender.id = :friendId AND fr.receiver.id = :userId))
-        """)
-    Optional<FriendRequest> findAcceptedFriendship(@Param("userId") Long userId, @Param("friendId") Long friendId, @Param("status") FriendRequestStatus status);
+            SELECT fr FROM FriendRequest fr
+            WHERE fr.status = :status
+              AND ((fr.sender.id = :userId AND fr.receiver.id = :friendId)
+                   OR (fr.sender.id = :friendId AND fr.receiver.id = :userId))
+            """)
+    Optional<FriendRequest> findAcceptedFriendship(@Param("userId") Long userId, @Param("friendId") Long friendId,
+            @Param("status") FriendRequestStatus status);
 }
