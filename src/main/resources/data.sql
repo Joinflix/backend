@@ -18,11 +18,11 @@ VALUES ('test@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64
        ('jung@joinflex.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '정우성', '127.0.0.6', 'USER', false, false, false, 1,  NOW(), NOW());
 
 -- 3. 친구 요청 (Friend Requests)
-INSERT INTO friend_requests (sender_id, receiver_id, is_accepted, created_at, updated_at)
-VALUES (1, 2, true, NOW(), NOW()),
-       (2, 3, true, NOW(), NOW()),
-       (1, 5, false, NOW(), NOW()),
-       (4, 1, false, NOW(), NOW());
+INSERT INTO friend_requests (sender_id, receiver_id, status, created_at, updated_at)
+VALUES (1, 2, 'ACCEPTED', NOW(), NOW()),
+       (2, 3, 'ACCEPTED', NOW(), NOW()),
+       (1, 5, 'PENDING', NOW(), NOW()),
+       (4, 1, 'PENDING', NOW(), NOW());
 
 -- 4. 영화 (Movies)
 INSERT INTO movies (title, created_at, updated_at)
