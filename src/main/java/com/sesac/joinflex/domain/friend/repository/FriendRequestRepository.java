@@ -41,21 +41,21 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     List<FriendRequest> findBySenderIdAndStatus(@Param("senderId") Long senderId,
             @Param("status") FriendRequestStatus status);
 
-        @Query("""
-                        SELECT CASE WHEN EXISTS (
-                            SELECT 1 FROM FriendRequest fr
-                            WHERE (fr.sender.id = :userId1 AND fr.receiver.id = :userId2 AND fr.status IN :statuses)
-                               OR (fr.sender.id = :userId2 AND fr.receiver.id = :userId1 AND fr.status IN :statuses)
-                        ) THEN true ELSE false END
-                        """)
+    @Query("""
+           SELECT CASE WHEN EXISTS (
+           SELECT 1 FROM FriendRequest fr
+           WHERE (fr.sender.id = :userId1 AND fr.receiver.id = :userId2 AND fr.status IN :statuses)
+           OR (fr.sender.id = :userId2 AND fr.receiver.id = :userId1 AND fr.status IN :statuses)
+           ) THEN true ELSE false END
+           """)
         boolean existsBidirectionalRequest(@Param("userId1") Long userId1, @Param("userId2") Long userId2,
                         @Param("statuses") List<FriendRequestStatus> statuses);
 
     @Query("""
             SELECT fr FROM FriendRequest fr
             WHERE fr.status = :status
-              AND ((fr.sender.id = :userId AND fr.receiver.id = :friendId)
-                   OR (fr.sender.id = :friendId AND fr.receiver.id = :userId))
+            AND ((fr.sender.id = :userId AND fr.receiver.id = :friendId)
+            OR (fr.sender.id = :friendId AND fr.receiver.id = :userId))
             """)
     Optional<FriendRequest> findAcceptedFriendship(@Param("userId") Long userId, @Param("friendId") Long friendId,
             @Param("status") FriendRequestStatus status);
