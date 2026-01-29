@@ -103,7 +103,7 @@ public class FriendRequestService {
 
     public List<FriendResponse> getOnlineFriends(Long userId) {
         return getFriendUsers(userId).stream()
-                .filter(friend -> Boolean.TRUE.equals(friend.getIsOnline()))
+                .filter(User::getIsOnline)
                 .map(FriendResponse::from)
                 .toList();
     }

@@ -41,13 +41,15 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     List<FriendRequest> findBySenderIdAndStatus(@Param("senderId") Long senderId,
             @Param("status") FriendRequestStatus status);
 
-    @Query("""
-            SELECT COUNT(fr) > 0 FROM FriendRequest fr
-            WHERE (fr.sender.id = :userId1 AND fr.receiver.id = :userId2 AND fr.status IN :statuses)
-               OR (fr.sender.id = :userId2 AND fr.receiver.id = :userId1 AND fr.status IN :statuses)
-            """)
-    boolean existsBidirectionalRequest(@Param("userId1") Long userId1, @Param("userId2") Long userId2,
-            @Param("statuses") List<FriendRequestStatus> statuses);
+        @Query("""
+                        SELECT CASE WHEN EXISTS (
+                            SELECT 1 FROM FriendRequest fr
+                            WHERE (fr.sender.id = :userId1 AND fr.receiver.id = :userId2 AND fr.status IN :statuses)
+                               OR (fr.sender.id = :userId2 AND fr.receiver.id = :userId1 AND fr.status IN :statuses)
+                        ) THEN true ELSE false END
+                        """)
+        boolean existsBidirectionalRequest(@Param("userId1") Long userId1, @Param("userId2") Long userId2,
+                        @Param("statuses") List<FriendRequestStatus> statuses);
 
     @Query("""
             SELECT fr FROM FriendRequest fr
