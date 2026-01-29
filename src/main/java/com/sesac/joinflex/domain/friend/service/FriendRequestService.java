@@ -21,7 +21,6 @@ public class FriendRequestService {
     private final FriendRequestRepository friendRequestRepository;
     private final UserRepository userRepository;
 
-
     @Transactional
     public FriendRequestResponse createRequest(Long senderId, Long receiverId) {
 
@@ -44,7 +43,6 @@ public class FriendRequestService {
         return FriendRequestResponse.from(saved);
     }
 
-
     @Transactional
     public FriendRequestResponse acceptRequest(Long userId, Long requestId) {
         FriendRequest request = findRequestById(requestId);
@@ -56,7 +54,6 @@ public class FriendRequestService {
         return FriendRequestResponse.from(request);
     }
 
-
     @Transactional
     public void rejectRequest(Long userId, Long requestId) {
         FriendRequest request = findRequestById(requestId);
@@ -64,7 +61,6 @@ public class FriendRequestService {
         validatePendingState(request);
         friendRequestRepository.delete(request);
     }
-
 
     @Transactional
     public void cancelRequest(Long userId, Long requestId) {
@@ -100,14 +96,28 @@ public class FriendRequestService {
     }
 
     public List<FriendResponse> getFriends(Long userId) {
+        return getFriendUsers(userId).stream()
+                .map(FriendResponse::from)
+                .toList();
+    }
+
+    public List<FriendResponse> getOnlineFriends(Long userId) {
+        return getFriendUsers(userId).stream()
+                .filter(friend -> Boolean.TRUE.equals(friend.getIsOnline()))
+                .map(FriendResponse::from)
+                .toList();
+    }
+
+    private List<User> getFriendUsers(Long userId) {
         return friendRequestRepository.findAcceptedFriends(userId, FriendRequestStatus.ACCEPTED)
-            .stream()
-            .map(request -> {
-                // 내가 sender면 receiver가 친구, 내가 receiver면 sender가 친구
-                User friend = request.getSender().getId().equals(userId) ? request.getReceiver() : request.getSender();
-                return FriendResponse.from(friend);
-            })
-            .toList();
+                .stream()
+                .map(request -> extractFriend(request, userId))
+                .toList();
+    }
+
+    private User extractFriend(FriendRequest request, Long userId) {
+        // 내가 sender면 receiver가 친구, 내가 receiver면 sender가 친구
+        return request.getSender().getId().equals(userId) ? request.getReceiver() : request.getSender();
     }
 
     private User findUserById(Long userId) {
@@ -119,8 +129,6 @@ public class FriendRequestService {
         return friendRequestRepository.findById(requestId)
             .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_REQUEST_NOT_FOUND));
     }
-
-
 
     private void validateAccess(FriendRequest request, Long userId, boolean isSender) {
         Long targetId = isSender ? request.getSender().getId() : request.getReceiver().getId();

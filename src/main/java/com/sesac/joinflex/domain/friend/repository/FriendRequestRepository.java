@@ -24,9 +24,23 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
 
     Optional<FriendRequest> findBySenderIdAndReceiverId(Long senderId, Long receiverId);
 
-    List<FriendRequest> findByReceiverIdAndStatus(Long receiverId, FriendRequestStatus status);
+    @Query("""
+            SELECT fr FROM FriendRequest fr
+            JOIN FETCH fr.sender
+            JOIN FETCH fr.receiver
+            WHERE fr.receiver.id = :receiverId AND fr.status = :status
+            """)
+    List<FriendRequest> findByReceiverIdAndStatus(@Param("receiverId") Long receiverId,
+            @Param("status") FriendRequestStatus status);
 
-    List<FriendRequest> findBySenderIdAndStatus(Long senderId, FriendRequestStatus status);
+    @Query("""
+            SELECT fr FROM FriendRequest fr
+            JOIN FETCH fr.sender
+            JOIN FETCH fr.receiver
+            WHERE fr.sender.id = :senderId AND fr.status = :status
+            """)
+    List<FriendRequest> findBySenderIdAndStatus(@Param("senderId") Long senderId,
+            @Param("status") FriendRequestStatus status);
 
     @Query("""
         SELECT COUNT(fr) > 0 FROM FriendRequest fr

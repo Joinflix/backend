@@ -84,6 +84,15 @@ public class FriendRequestController {
         return ResponseEntity.ok(responses);
     }
 
+    // 온라인 친구 목록
+    // http://localhost:8080/api/friends/online
+    @GetMapping(ApiPath.FRIEND_ONLINE)
+    public ResponseEntity<List<FriendResponse>> getOnlineFriends(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getId();
+        List<FriendResponse> responses = friendRequestService.getOnlineFriends(userId);
+        return ResponseEntity.ok(responses);
+    }
+
     // 친구 삭제
     // http://localhost:8080/api/friends/{friendId}
     @DeleteMapping(ApiPath.FRIEND_DELETE)

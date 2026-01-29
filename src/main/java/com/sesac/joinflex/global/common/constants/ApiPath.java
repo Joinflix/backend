@@ -21,7 +21,7 @@ public final class ApiPath {
     public static final String EMAIL_VERIFY = "/email-verify";
     public static final String NICKNAME_DUPLICATE = "/nickname-duplicate";
 
-    //user
+    // user
     public static final String USER = API_PREFIX + "/users";
     public static final String ID_PATH = "/{id}";
 
@@ -42,4 +42,5 @@ public final class ApiPath {
     public static final String FRIEND_REQUESTS_CANCEL = FRIEND_REQUEST_BY_ID + "/cancel";
 
     public static final String FRIEND_DELETE = "/{friendId}";
+    public static final String FRIEND_ONLINE = "/online";
 }
