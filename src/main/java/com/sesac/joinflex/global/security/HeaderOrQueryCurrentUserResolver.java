@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 
 //  X-User-Id 헤더 or userId 쿼리 파라미터로 유저 확인
-@Component
+//@Component
 public class HeaderOrQueryCurrentUserResolver implements CurrentUserResolver{
 
     private static final String HEADER_NAME = "X-User-Id";
