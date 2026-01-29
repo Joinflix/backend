@@ -5,6 +5,8 @@ import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import com.sesac.joinflex.domain.party.repository.PartyInviteRepository;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import com.sesac.joinflex.global.infra.mail.EmailService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ public class PartyInviteService {
         List<User> guests = userRepository.findFriendsByHostAndIds(host, userIds);
 
         if (guests.size() != userIds.size()) {
-            throw new IllegalArgumentException("친구 관계가 아니거나 존재하지 않는 사용자가 포함되어 있습니다.");
+            throw new CustomException(ErrorCode.INVALID_PARTY_INVITE_TARGET);
         }
 
         for (User guest : guests) {
