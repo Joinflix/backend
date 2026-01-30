@@ -69,9 +69,15 @@ public enum ErrorCode {
     MOVIE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 영화입니다."),
 
     // Party
-    INVALID_PARTY_INVITE_TARGET(HttpStatus.BAD_REQUEST, "친구가 아니거나 존재하지 않는 사용자는 파티에 초대할 수 없습니다.");
+    INVALID_PARTY_INVITE_TARGET(HttpStatus.BAD_REQUEST, "친구가 아니거나 존재하지 않는 사용자는 파티에 초대할 수 없습니다."),
 
-
+    // Friend
+    FRIEND_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "친구 요청을 찾을 수 없습니다."),
+    FRIEND_REQUEST_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 친구 요청이 존재합니다."),
+    FRIEND_REQUEST_SELF(HttpStatus.BAD_REQUEST, "자기 자신에게 친구 요청을 보낼 수 없습니다."),
+    FRIEND_REQUEST_INVALID_STATE(HttpStatus.BAD_REQUEST, "유효하지 않은 친구 요청 상태입니다."),
+    FRIEND_REQUEST_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "해당 친구 요청에 대한 권한이 없습니다."),
+    FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 친구 관계를 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
