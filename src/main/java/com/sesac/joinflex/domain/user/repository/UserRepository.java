@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                  select u from User u
                  where u.id in :userIds
                  and exists (select 1 from FriendRequest fr
-                             where fr.isAccepted = true
+                             where fr.status = 'ACCEPTED'
                              and fr.sender = :host and fr.receiver = u
                              or fr.receiver = :host and fr.sender = u
                             )
