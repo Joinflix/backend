@@ -3,6 +3,7 @@ package com.sesac.joinflex.domain.party.controller;
 import com.sesac.joinflex.domain.party.dto.request.PartyRoomRequest;
 import com.sesac.joinflex.domain.party.dto.response.PartyRoomResponse;
 import com.sesac.joinflex.domain.party.service.PartyService;
+import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/parties")
+@RequestMapping(ApiPath.PARTY)
 @RequiredArgsConstructor
 public class PartyController {
 
