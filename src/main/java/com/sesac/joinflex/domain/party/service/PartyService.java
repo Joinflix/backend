@@ -8,6 +8,8 @@ import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import com.sesac.joinflex.domain.party.repository.PartyRoomRepository;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,11 +29,10 @@ public class PartyService {
     @Transactional
     public Long createPartyRoom(PartyRoomRequest request, Long userId) {
         Movie movie = movieRepository.findById(request.movieId())
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 영화입니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
-        // Todo security 구현 시 제거 예정
         User host = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // Todo membership 검증 예정 (결제한 사람만 파티 생성 가능)
 
