@@ -68,7 +68,6 @@ public enum ErrorCode {
     // Movie
     MOVIE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 영화입니다."),
 
-
     // Party
     INVALID_PARTY_INVITE_TARGET(HttpStatus.BAD_REQUEST, "친구가 아니거나 존재하지 않는 사용자는 파티에 초대할 수 없습니다.");
 
