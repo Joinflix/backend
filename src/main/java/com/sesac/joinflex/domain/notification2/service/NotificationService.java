@@ -3,6 +3,7 @@ package com.sesac.joinflex.domain.notification2.service;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -12,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationService {
 
     private final Map<Long, SseEmitter> emitterMap = new ConcurrentHashMap<>();
-    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60; // 1시간
+    private static final Long DEFAULT_TIMEOUT = TimeUnit.HOURS.toMillis(1); // 1시간
 
     // SSE 구독
     public SseEmitter subscribe(Long userId) {
