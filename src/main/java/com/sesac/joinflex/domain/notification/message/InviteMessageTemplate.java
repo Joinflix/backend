@@ -1,4 +1,4 @@
-package com.sesac.joinflex.domain.notification2.message;
+package com.sesac.joinflex.domain.notification.message;
 
 import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import lombok.experimental.UtilityClass;
