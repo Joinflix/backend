@@ -34,4 +34,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     )
     List<User> findFriendsByHostAndIds(@Param("host") User host,
         @Param("userIds") List<Long> userIds);
+
+    // 키워드로 이메일 또는 닉네임 검색 (OR 조건)
+    @Query("""
+        SELECT u FROM User u 
+        WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) 
+           OR LOWER(u.nickname) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        """)
+    List<User> searchByKeyword(@Param("keyword") String keyword);
 }

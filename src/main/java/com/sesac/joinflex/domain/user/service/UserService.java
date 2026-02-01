@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional(readOnly=true)
@@ -94,5 +95,21 @@ public class UserService {
     private User getUser(Long id){
         return userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    // 전체 사용자 조회
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponse::from)
+                .toList();
+    }
+
+    // 키워드로 사용자 검색 (이메일 또는 닉네임 부분 일치)
+    public List<UserResponse> searchUsers(String keyword) {
+        return userRepository.searchByKeyword(keyword)
+                .stream()
+                .map(UserResponse::from)
+                .toList();
     }
 }

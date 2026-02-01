@@ -8,6 +8,7 @@ import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,6 +38,20 @@ public class UserController {
             @Valid @RequestBody ProfileUpdateRequest request,
             HttpServletRequest httpRequest) {
         UserResponse response = userService.updateProfile(id, userDetails.getId(), request, httpRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    // 전체 사용자 조회
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> response = userService.getAllUsers();
+        return ResponseEntity.ok(response);
+    }
+
+    // 사용자 검색 (키워드로 이메일 또는 닉네임 검색)
+    @GetMapping(ApiPath.SEARCH)
+    public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String keyword) {
+        List<UserResponse> response = userService.searchUsers(keyword);
         return ResponseEntity.ok(response);
     }
 }
