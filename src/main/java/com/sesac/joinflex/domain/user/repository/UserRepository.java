@@ -16,7 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    Optional<User> findByEmailAndIsLockAndIsSocial(String email, Boolean isLock, Boolean isSocial);
 
     // 특정 IP로 특정 시간 이후에 가입한 사용자 수 조회
     long countBySignupIpAndCreatedAtAfter(String signupIp, LocalDateTime dateTime);
@@ -37,8 +36,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 키워드로 이메일 또는 닉네임 검색 (OR 조건)
     @Query("""
-        SELECT u FROM User u 
-        WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) 
+        SELECT u FROM User u
+        WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
            OR LOWER(u.nickname) LIKE LOWER(CONCAT('%', :keyword, '%'))
         """)
     List<User> searchByKeyword(@Param("keyword") String keyword);
