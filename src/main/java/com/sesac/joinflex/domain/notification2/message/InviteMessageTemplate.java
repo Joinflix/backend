@@ -20,4 +20,16 @@ public class InviteMessageTemplate {
         return String.format("%s님이 %s님을 '%s' 파티에 초대했습니다.", host, guest, roomName);
     }
 
+    public String friendRequest(String senderNickname) {
+        return String.format("%s님이 친구 신청을 하였습니다.", senderNickname);
+    }
+
+    public String friendAccept(String receiverNickname) {
+        return String.format("%s님이 친구 신청을 수락하였습니다.", receiverNickname);
+    }
+
+    public String friendReject(String receiverNickname) {
+        return String.format("%s님이 친구 신청을 거절하였습니다.", receiverNickname);
+    }
+
 }

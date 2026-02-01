@@ -5,6 +5,8 @@ import com.sesac.joinflex.domain.friend.dto.response.FriendResponse;
 import com.sesac.joinflex.domain.friend.entity.FriendRequest;
 import com.sesac.joinflex.domain.friend.entity.FriendRequestStatus;
 import com.sesac.joinflex.domain.friend.repository.FriendRequestRepository;
+import com.sesac.joinflex.domain.notification2.message.InviteMessageTemplate;
+import com.sesac.joinflex.domain.notification2.service.NotificationService;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
@@ -20,6 +22,7 @@ import java.util.List;
 public class FriendRequestService {
     private final FriendRequestRepository friendRequestRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public FriendRequestResponse createRequest(Long senderId, Long receiverId) {
@@ -40,6 +43,12 @@ public class FriendRequestService {
         FriendRequest request = FriendRequest.create(sender, receiver);
         FriendRequest saved = friendRequestRepository.save(request);
 
+        try {
+            notificationService.send(receiverId, InviteMessageTemplate.friendRequest(sender.getNickname()));
+        } catch (Exception e) {
+            //"SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정"
+        }
+
         return FriendRequestResponse.from(saved);
     }
 
@@ -51,6 +60,13 @@ public class FriendRequestService {
 
         request.accept();
 
+        try {
+            notificationService.send(request.getSender().getId(), 
+                InviteMessageTemplate.friendAccept(request.getReceiver().getNickname()));
+        } catch (Exception e) {
+            //"SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정"
+        }
+
         return FriendRequestResponse.from(request);
     }
 
@@ -59,6 +75,14 @@ public class FriendRequestService {
         FriendRequest request = findRequestById(requestId);
         validateAccess(request, userId, false);
         validatePendingState(request);
+
+        try {
+            notificationService.send(request.getSender().getId(), 
+                InviteMessageTemplate.friendReject(request.getReceiver().getNickname()));
+        } catch (Exception e) {
+            //"SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정"
+        }
+
         friendRequestRepository.delete(request);
     }
 
