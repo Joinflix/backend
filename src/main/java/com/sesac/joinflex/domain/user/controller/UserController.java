@@ -22,6 +22,7 @@ public class UserController {
     private final UserService userService;
 
     // 사용자 프로필 조회
+    // http://localhost:8080/api/users/{id}
     @GetMapping(ApiPath.ID_PATH)
     public ResponseEntity<UserProfileResponse> getProfile(
             @PathVariable Long id,
@@ -31,6 +32,7 @@ public class UserController {
     }
 
     // 사용자 프로필 수정
+    // http://localhost:8080/api/users/{id}
     @PutMapping(ApiPath.ID_PATH)
     public ResponseEntity<UserResponse> updateProfile(
             @PathVariable Long id,
@@ -42,6 +44,7 @@ public class UserController {
     }
 
     // 전체 사용자 조회
+    // http://localhost:8080/api/users
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> response = userService.getAllUsers();
@@ -49,6 +52,7 @@ public class UserController {
     }
 
     // 사용자 검색 (키워드로 이메일 또는 닉네임 검색)
+    // http://localhost:8080/api/users/search?keyword={keyword}
     @GetMapping(ApiPath.SEARCH)
     public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String keyword) {
         List<UserResponse> response = userService.searchUsers(keyword);
