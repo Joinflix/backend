@@ -25,6 +25,10 @@ public final class ApiPath {
     public static final String USER = API_PREFIX + "/users";
     public static final String ID_PATH = "/{id}";
 
+    //payment
+    public static final String PAYMENT = API_PREFIX + "/payments";
+    public static final String PAYMENT_COMPLETE = "/complete";
+
     // file
     public static final String FILE = API_PREFIX + "/files";
     public static final String UPLOADFILE = "/upload";
