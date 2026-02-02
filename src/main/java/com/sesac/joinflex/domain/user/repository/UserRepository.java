@@ -21,6 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    Optional < User > findByEmailAndIsLockAndIsSocial ( String  email , Boolean  isLock , Boolean  isSocial );
 
     // 특정 IP로 특정 시간 이후에 가입한 사용자 수 조회
     long countBySignupIpAndCreatedAtAfter(String signupIp, LocalDateTime dateTime);
