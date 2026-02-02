@@ -43,11 +43,7 @@ public class FriendRequestService {
         FriendRequest request = FriendRequest.create(sender, receiver);
         FriendRequest saved = friendRequestRepository.save(request);
 
-        try {
-            notificationService.send(receiverId, InviteMessageTemplate.friendRequest(sender.getNickname()));
-        } catch (Exception e) {
-            //"SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정"
-        }
+        sendNotification(receiverId, InviteMessageTemplate.friendRequest(sender.getNickname()));
 
         return FriendRequestResponse.from(saved);
     }
@@ -60,12 +56,8 @@ public class FriendRequestService {
 
         request.accept();
 
-        try {
-            notificationService.send(request.getSender().getId(), 
-                InviteMessageTemplate.friendAccept(request.getReceiver().getNickname()));
-        } catch (Exception e) {
-            //"SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정"
-        }
+        sendNotification(request.getSender().getId(),
+            InviteMessageTemplate.friendAccept(request.getReceiver().getNickname()));
 
         return FriendRequestResponse.from(request);
     }
@@ -76,12 +68,8 @@ public class FriendRequestService {
         validateAccess(request, userId, false);
         validatePendingState(request);
 
-        try {
-            notificationService.send(request.getSender().getId(), 
-                InviteMessageTemplate.friendReject(request.getReceiver().getNickname()));
-        } catch (Exception e) {
-            //"SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정"
-        }
+        sendNotification(request.getSender().getId(),
+            InviteMessageTemplate.friendReject(request.getReceiver().getNickname()));
 
         friendRequestRepository.delete(request);
     }
@@ -163,6 +151,14 @@ public class FriendRequestService {
     private void validatePendingState(FriendRequest request) {
         if (!request.isPending()) {
             throw new CustomException(ErrorCode.FRIEND_REQUEST_INVALID_STATE);
+        }
+    }
+
+    private void sendNotification(Long userId, String message) {
+        try {
+            notificationService.send(userId, message);
+        } catch (Exception e) {
+            // SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정
         }
     }
 
