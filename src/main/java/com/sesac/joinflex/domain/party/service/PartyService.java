@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PartyService {
 
     private final PartyRoomRepository partyRoomRepository;
+    private final PartyMemberRepository partyMemberRepository;
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
     private final PartyInviteService partyInviteService;
@@ -66,8 +67,54 @@ public class PartyService {
         ));
     }
 
+
+    @Transactional
+    public void joinParty(Long partyId, PartyJoinRequest request, Long userId) {
+        // 파티방 존재 여부 검증
+        PartyRoom partyRoom = partyRoomRepository.findById(partyId)
+            .orElseThrow(() -> new CustomException(ErrorCode.PARTY_NOT_FOUND));
+
+        // 사용자 검증
+        User user = getUser(userId);
+
+        // Todo membership 검증 예정 (결제한 사람만 파티 참여 가능)
+
+        if (partyMemberRepository.existsByPartyRoomAndMemberAndStatus(partyRoom, user,
+            MemberStatus.JOINED)) {
+            throw new CustomException(ErrorCode.ALREADY_JOINED_PARTY);
+        }
+
+        // 방장이면 바로 입장
+        if (partyRoom.isHost(user)) {
+            addMember(partyRoom, user, MemberRole.HOST);
+            return;
+        }
+
+        // 공개방이면 바로 입장
+        if (partyRoom.isPublicRoom()) {
+            addMember(partyRoom, user, MemberRole.GUEST);
+            return;
+        }
+
+        // 초대받은 사용자인지 검증
+        partyInviteService.validateInvitation(partyRoom, user);
+
+        // 비밀번호 일치 여부
+        if (!partyRoom.isPasswordMatch(request.passCode())) {
+            throw new CustomException(ErrorCode.INVALID_PARTY_PASSWORD);
+        }
+
+        addMember(partyRoom, user, MemberRole.GUEST);
+    }
+
     private User getUser(Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
+
+    private void addMember(PartyRoom partyRoom, User user, MemberRole role) {
+        partyMemberRepository.save(PartyMember.create(partyRoom, user, role));
+        partyRoom.addMember();
+    }
+
 }
