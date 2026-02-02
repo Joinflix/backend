@@ -104,6 +104,6 @@ public class UserService {
         if (keyword == null || keyword.isBlank()) {
             return userRepository.findAllBy(pageable).map(UserResponse::from);
         }
-        return userRepository.searchByKeyword(keyword, pageable).map(UserResponse::from);
+        return userRepository.searchByKeyword(keyword.trim(), pageable).map(UserResponse::from);
     }
 }
