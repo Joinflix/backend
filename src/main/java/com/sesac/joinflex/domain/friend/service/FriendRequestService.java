@@ -7,6 +7,7 @@ import com.sesac.joinflex.domain.friend.entity.FriendRequestStatus;
 import com.sesac.joinflex.domain.friend.repository.FriendRequestRepository;
 import com.sesac.joinflex.domain.notification.message.InviteMessageTemplate;
 import com.sesac.joinflex.domain.notification.service.NotificationService;
+import com.sesac.joinflex.domain.notification.type.NotificationType;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
@@ -43,7 +44,7 @@ public class FriendRequestService {
         FriendRequest request = FriendRequest.create(sender, receiver);
         FriendRequest saved = friendRequestRepository.save(request);
 
-        sendNotification(receiverId, InviteMessageTemplate.friendRequest(sender.getNickname()));
+        sendNotification(receiverId, InviteMessageTemplate.friendRequest(sender.getNickname()), NotificationType.FRIEND_REQUEST);
 
         return FriendRequestResponse.from(saved);
     }
@@ -57,7 +58,7 @@ public class FriendRequestService {
         request.accept();
 
         sendNotification(request.getSender().getId(),
-            InviteMessageTemplate.friendAccept(request.getReceiver().getNickname()));
+            InviteMessageTemplate.friendAccept(request.getReceiver().getNickname()), NotificationType.FRIEND_ACCEPT);
 
         return FriendRequestResponse.from(request);
     }
@@ -69,7 +70,7 @@ public class FriendRequestService {
         validatePendingState(request);
 
         sendNotification(request.getSender().getId(),
-            InviteMessageTemplate.friendReject(request.getReceiver().getNickname()));
+            InviteMessageTemplate.friendReject(request.getReceiver().getNickname()), NotificationType.FRIEND_REJECT);
 
         friendRequestRepository.delete(request);
     }
@@ -154,11 +155,16 @@ public class FriendRequestService {
         }
     }
 
-    private void sendNotification(Long userId, String message) {
+    private void sendNotification(Long userId, String message, NotificationType type) {
         try {
             notificationService.send(userId, message);
         } catch (Exception e) {
-            // SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정
+            switch (type) {
+                // SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정
+                case FRIEND_REQUEST -> { /* 친구 요청 알림 실패 시 처리 */ }
+                case FRIEND_ACCEPT -> { /* 친구 수락 알림 실패 시 처리 */ }
+                case FRIEND_REJECT -> { /* 친구 거절 알림 실패 시 처리 */ }
+            }
         }
     }
 
