@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JoinFlex | 멤버십 선택</title>
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 50px 20px; }
+        h1 { margin-bottom: 30px; color: #1a1a1a; }
+        .membership-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 1000px; }
+        .card { background: white; border-radius: 16px; padding: 30px; width: 260px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s ease, border 0.3s ease; border: 2px solid transparent; }
+        .card:hover { transform: translateY(-10px); border-color: #3182f6; }
+        .plan-name { font-size: 18px; font-weight: bold; color: #555; margin-bottom: 10px; }
+        .price { font-size: 28px; font-weight: 800; color: #3182f6; margin-bottom: 20px; }
+        .desc { font-size: 14px; color: #777; margin-bottom: 25px; line-height: 1.5; min-height: 45px; }
+        button { background: #3182f6; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 15px; width: 100%; font-weight: 600; }
+        button:hover { background: #1b64da; }
+        #result { margin-top: 40px; background: white; padding: 20px; width: 100%; max-width: 600px; border-radius: 12px; border: 1px solid #ddd; font-size: 13px; white-space: pre-wrap; }
+        .badge { font-size: 12px; padding: 6px 15px; border-radius: 20px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="authBadge" class="badge">인증 상태 확인 중...</div>
+<h1>멤버십 플랜을 선택하세요</h1>
+
+<div class="membership-container">
+    <div class="card">
+        <div class="plan-name">광고형 스탠다드</div>
+        <div class="price">100원</div>
+        <div class="desc">일부 콘텐츠 제외<br>1080p 해상도</div>
+        <button type="button" onclick="requestPay(2, 100, '광고형 스탠다드')">선택하기</button>
+    </div>
+
+    <div class="card" style="border-color: #e2e8f0;">
+        <div class="plan-name">스탠다드</div>
+        <div class="price">200원</div>
+        <div class="desc">무광고 시청<br>2대 동시 접속</div>
+        <button type="button" onclick="requestPay(3, 200, '스탠다드')">선택하기</button>
+    </div>
+
+    <div class="card">
+        <div class="plan-name">프리미엄</div>
+        <div class="price">300원</div>
+        <div class="desc">4K + HDR 화질<br>4대 동시 접속</div>
+        <button type="button" onclick="requestPay(4, 300, '프리미엄')">선택하기</button>
+    </div>
+</div>
+
+<div id="result">결제할 멤버십을 선택해 주세요.</div>
+
+<script>
+    // const IMP 선언을 삭제하고 window.IMP를 직접 사용합니다.
+    if (window.IMP) {
+        window.IMP.init("imp10502566");
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    // 함수 선언은 그대로 둡니다.
+    function requestPay(membershipId, amount, planName) {
+        if (!token) {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+
+        const merchantUid = "ORD-" + membershipId + "-" + new Date().getTime();
+
+        // window.IMP로 호출
+        window.IMP.request_pay({
+            pg: "html5_inicis",
+            pay_method: "card",
+            merchant_uid: merchantUid,
+            name: "JoinFlex " + planName,
+            amount: amount,
+            buyer_email: "test@test.com"
+        }, function (rsp) {
+            if (rsp.success) {
+                sendToServer(rsp, membershipId);
+            } else {
+                alert("결제 실패: " + rsp.error_msg);
+            }
+        });
+    }
+
+    function sendToServer(rsp, membershipId) {
+        // 백엔드 API 주소가 /api/v1/payments/complete 인지 다시 확인!
+        fetch("/api/payments/complete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                imp_uid: rsp.imp_uid,
+                merchant_uid: rsp.merchant_uid,
+                paid_amount: rsp.paid_amount,
+                membershipId: membershipId,
+                pay_method: rsp.pay_method,
+                status: rsp.status || 'paid'
+            })
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.error(err));
+    }
+</script>
+</body>
+</html>
