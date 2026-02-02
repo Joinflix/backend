@@ -12,9 +12,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // 전체 사용자 조회 (페이지네이션)
-    Slice<User> findAllBy(Pageable pageable);
-
     Boolean existsByEmail(String email);
 
     Boolean existsByNickname(String nickname);
@@ -40,11 +37,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findFriendsByHostAndIds(@Param("host") User host,
         @Param("userIds") List<Long> userIds);
 
-    // 키워드로 이메일 또는 닉네임 검색
-    @Query("""
-        SELECT u FROM User u
-        WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
-           OR LOWER(u.nickname) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        """)
-    Slice<User> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    @Query("select u from User u where u.id < :cursorId order by u.id desc")
+    Slice<User> findUsers(@Param("cursorId") Long cursorId, Pageable pageable);
+
+    List<User> findTop10ByNicknameContainingIgnoreCase(String nickname);
+
+    List<User> findTop10ByEmailContainingIgnoreCase(String email);
 }

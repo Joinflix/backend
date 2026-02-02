@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -98,12 +99,42 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public Slice<UserResponse> getAllUsers(Long cursorId, Pageable pageable) {
+        Slice<User> users = userRepository.findUsers(
+            cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
-    // 사용자 목록 조회 (검색어 있으면 검색, 없으면 전체)
-    public Slice<UserResponse> getUsers(String keyword, Pageable pageable) {
-        if (keyword == null || keyword.isBlank()) {
-            return userRepository.findAllBy(pageable).map(UserResponse::from);
-        }
-        return userRepository.searchByKeyword(keyword.trim(), pageable).map(UserResponse::from);
+        return users.map(user -> UserResponse.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .nickName(user.getNickname())
+            .role(user.getRoleType())
+            .profileImageUrl(user.getProfileImageUrl())
+            .build());
+    }
+
+    public List<UserResponse> getUsersByNickname(String nickname) {
+        return userRepository.findTop10ByNicknameContainingIgnoreCase(nickname)
+            .stream()
+            .map(user -> UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickName(user.getNickname())
+                .role(user.getRoleType())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build())
+            .toList();
+    }
+
+    public List<UserResponse> getUsersByEmail(String email) {
+        return userRepository.findTop10ByEmailContainingIgnoreCase(email)
+            .stream()
+            .map(user -> UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickName(user.getNickname())
+                .role(user.getRoleType())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build())
+            .toList();
     }
 }

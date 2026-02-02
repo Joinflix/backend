@@ -9,13 +9,14 @@ import com.sesac.joinflex.global.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -45,14 +46,29 @@ public class UserController {
         UserResponse response = userService.updateProfile(id, userDetails.getId(), request, httpRequest);
         return ResponseEntity.ok(response);
     }
-
-    // 사용자 목록 조회 (검색 포함)
-    // http://localhost:8080/api/users?keyword={keyword}&page=0&size=20&sort=id,asc
+    // 전체 유저 조회
+    // http://localhost:8080/api/users?cursorId={cursorId}&size={size}
     @GetMapping
-    public ResponseEntity<Slice<UserResponse>> getUsers(
-            @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Slice<UserResponse> response = userService.getUsers(keyword, pageable);
+    public ResponseEntity<Slice<UserResponse>> getAllUsers(
+            @RequestParam(required = false) Long cursorId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        Slice<UserResponse> response = userService.getAllUsers(cursorId, pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    // 닉네임으로 유저 조회
+    // http://localhost:8080/api/users/nickname?nickname={nickname}
+    @GetMapping(ApiPath.NICKNAME)
+    public ResponseEntity<List<UserResponse>> getUsersByNickname(@RequestParam String nickname) {
+        List<UserResponse> response = userService.getUsersByNickname(nickname.trim());
+        return ResponseEntity.ok(response);
+    }
+
+    // 이메일로 유저 조회
+    // http://localhost:8080/api/users/email?email={email}
+    @GetMapping(ApiPath.EMAIL)
+    public ResponseEntity<List<UserResponse>> getUsersByEmail(@RequestParam String email) {
+        List<UserResponse> response = userService.getUsersByEmail(email.trim());
         return ResponseEntity.ok(response);
     }
 }
