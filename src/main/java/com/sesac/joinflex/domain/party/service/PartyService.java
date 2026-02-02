@@ -2,9 +2,14 @@ package com.sesac.joinflex.domain.party.service;
 
 import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.movie.repository.MovieRepository;
+import com.sesac.joinflex.domain.party.dto.request.PartyJoinRequest;
 import com.sesac.joinflex.domain.party.dto.request.PartyRoomRequest;
 import com.sesac.joinflex.domain.party.dto.response.PartyRoomResponse;
+import com.sesac.joinflex.domain.party.entity.MemberRole;
+import com.sesac.joinflex.domain.party.entity.MemberStatus;
+import com.sesac.joinflex.domain.party.entity.PartyMember;
 import com.sesac.joinflex.domain.party.entity.PartyRoom;
+import com.sesac.joinflex.domain.party.repository.PartyMemberRepository;
 import com.sesac.joinflex.domain.party.repository.PartyRoomRepository;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
@@ -31,8 +36,7 @@ public class PartyService {
         Movie movie = movieRepository.findById(request.movieId())
             .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
-        User host = userRepository.findById(userId)
-            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User host = getUser(userId);
 
         // Todo membership 검증 예정 (결제한 사람만 파티 생성 가능)
 
@@ -60,5 +64,10 @@ public class PartyService {
             room.getHost().getNickname(),
             room.getCurrentMemberCount()
         ));
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 }
