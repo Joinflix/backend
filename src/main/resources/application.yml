@@ -94,11 +94,11 @@
 
   # JWT 설정
   jwt:
-    # Access Token: 1 hour (현재 테스트를 위해 1분으로 설정됨)
-    access-expiration: ${JWT_ACCESS_EXPIRATION:60000}
+    # Access Token: 1 hour
+    access-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
     # Refresh Token: 7 days
     refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
-    secret: ${JWT_SECRET:mySecretKeyForJwtTokenGenerationMustBeLongEnough12345678901234567890}
+    secret: ${JWT_SECRET}
 
   # Kakao OAuth 설정
   oauth:
