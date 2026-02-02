@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional(readOnly=true)
@@ -94,5 +95,10 @@ public class UserService {
     private User getUser(Long id){
         return userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    // 멤버쉽 만료 유저 조회
+    public List<User> findAllByMembershipExpiryDateBefore(LocalDateTime now) {
+        return userRepository.findAllByMembershipExpiryDateBefore(now);
     }
 }

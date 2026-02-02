@@ -21,6 +21,8 @@ public enum UserAction {
     REFUND_FAIL,             // 환불 실패
     LOGIN_EXPIRED_MEMBERSHIP, // 멤버십 만료 상태로 로그인
     MEMBERSHIP_UPGRADE,      // 멤버십 등급 변경 완료
+    MEMBERSHIP_AUTO_EXPIRED,  // 스케줄러에 의한 자동 만료
+    MEMBERSHIP_EXTEND,        // 멤버십 연장(추가 결제)
 
     // session & security
     SESSION_FORCED_LOGOUT,   // 동시 접속 제한으로 인해 기존 세션 밀려남 (중요!)

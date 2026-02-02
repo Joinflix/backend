@@ -34,4 +34,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     )
     List<User> findFriendsByHostAndIds(@Param("host") User host,
         @Param("userIds") List<Long> userIds);
+
+    /**
+     * 멤버십이 존재하고(NOT NULL) 만료일이 지정된 시간보다 이전인 유저 목록 조회
+     */
+    @Query("SELECT u FROM User u WHERE u.membership IS NOT NULL AND u.membershipExpiryDate < :now")
+    List<User> findAllByMembershipExpiryDateBefore(@Param("now") LocalDateTime now);
 }
