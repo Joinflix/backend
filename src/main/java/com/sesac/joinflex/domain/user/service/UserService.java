@@ -12,11 +12,12 @@ import com.sesac.joinflex.global.exception.ErrorCode;
 import com.sesac.joinflex.global.util.NetworkUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Transactional(readOnly=true)
@@ -97,19 +98,12 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    // 전체 사용자 조회
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserResponse::from)
-                .toList();
-    }
 
-    // 키워드로 사용자 검색 (이메일 또는 닉네임 부분 일치)
-    public List<UserResponse> searchUsers(String keyword) {
-        return userRepository.searchByKeyword(keyword)
-                .stream()
-                .map(UserResponse::from)
-                .toList();
+    // 사용자 목록 조회 (검색어 있으면 검색, 없으면 전체)
+    public Slice<UserResponse> getUsers(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.isBlank()) {
+            return userRepository.findAllBy(pageable).map(UserResponse::from);
+        }
+        return userRepository.searchByKeyword(keyword, pageable).map(UserResponse::from);
     }
 }

@@ -8,15 +8,21 @@ import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(ApiPath.USER)
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -43,19 +49,13 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // 전체 사용자 조회
-    // http://localhost:8080/api/users
+    // 사용자 목록 조회 (검색 포함)
+    // http://localhost:8080/api/users?keyword={keyword}&page=0&size=20&sort=id,asc
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> response = userService.getAllUsers();
-        return ResponseEntity.ok(response);
-    }
-
-    // 사용자 검색 (키워드로 이메일 또는 닉네임 검색)
-    // http://localhost:8080/api/users/search?keyword={keyword}
-    @GetMapping(ApiPath.SEARCH)
-    public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String keyword) {
-        List<UserResponse> response = userService.searchUsers(keyword);
+    public ResponseEntity<Slice<UserResponse>> getUsers(
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        Slice<UserResponse> response = userService.getUsers(keyword, pageable);
         return ResponseEntity.ok(response);
     }
 }
