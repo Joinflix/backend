@@ -1,6 +1,6 @@
-package com.sesac.joinflex.domain.notification2.controller;
+package com.sesac.joinflex.domain.notification.controller;
 
-import com.sesac.joinflex.domain.notification2.service.NotificationService;
+import com.sesac.joinflex.domain.notification.service.NotificationService;
 import com.sesac.joinflex.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
