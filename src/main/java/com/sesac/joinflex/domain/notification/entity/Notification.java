@@ -1,6 +1,5 @@
 package com.sesac.joinflex.domain.notification.entity;
 
-import com.sesac.joinflex.domain.notification.type.NotificationType;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -23,29 +22,15 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private NotificationType type;
-
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
-    private Boolean isRead;
-
-    private Long targetId;
-    
-    @Builder
-    private Notification(User user, NotificationType type, String message, Long targetId){
+    private Notification(User user, String message) {
         this.user = user;
-        this.type = type;
         this.message = message;
-        this.targetId = targetId;
-        this.isRead = false;
     }
 
-    public void markAsRead() {
-        this.isRead = true;
+    public static Notification create(User user, String message) {
+        return new Notification(user, message);
     }
-
 }

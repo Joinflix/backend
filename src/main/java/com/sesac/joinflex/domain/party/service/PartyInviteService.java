@@ -1,6 +1,6 @@
 package com.sesac.joinflex.domain.party.service;
 
-import com.sesac.joinflex.domain.notification.message.InviteMessageTemplate;
+import com.sesac.joinflex.domain.notification.message.NotificationMessageTemplate;
 import com.sesac.joinflex.domain.notification.service.NotificationService;
 import com.sesac.joinflex.domain.party.entity.PartyInvite;
 import com.sesac.joinflex.domain.party.entity.PartyRoom;
@@ -40,9 +40,9 @@ public class PartyInviteService {
             partyInviteRepository.save(PartyInvite.create(room, guest));
             // 이메일 발송
             sendInviteEmail(guest, room);
-            String notificationMessage = InviteMessageTemplate.notification(
+            String notificationMessage = NotificationMessageTemplate.notification(
                 room.getHost().getNickname(), room.getRoomName(), guest.getNickname());
-            notificationService.send(guest.getId(), notificationMessage);
+            notificationService.sendAndSave(guest.getId(), notificationMessage);
 
         }
     }
@@ -57,7 +57,7 @@ public class PartyInviteService {
 
         String joinUrl = String.format("%s/parties/%d", domainUrl, room.getId());
 
-        String message = InviteMessageTemplate.emailBody(room, joinUrl);
+        String message = NotificationMessageTemplate.emailBody(room, joinUrl);
 
         emailService.sendEmail(guest.getEmail(), subject, message);
     }
