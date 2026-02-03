@@ -5,22 +5,23 @@ import com.sesac.joinflex.domain.friend.dto.response.FriendResponse;
 import com.sesac.joinflex.domain.friend.entity.FriendRequest;
 import com.sesac.joinflex.domain.friend.entity.FriendRequestStatus;
 import com.sesac.joinflex.domain.friend.repository.FriendRequestRepository;
-import com.sesac.joinflex.domain.notification.message.InviteMessageTemplate;
+import com.sesac.joinflex.domain.notification.message.NotificationMessageTemplate;
 import com.sesac.joinflex.domain.notification.service.NotificationService;
-import com.sesac.joinflex.domain.notification.entity.NotificationType;
+import com.sesac.joinflex.domain.notification.type.NotificationType;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FriendRequestService {
+
     private final FriendRequestRepository friendRequestRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
@@ -33,8 +34,10 @@ public class FriendRequestService {
         }
 
         // 양방향 중복 체크: A→B 또는 B→A가 PENDING/ACCEPTED면 신규 생성 금지
-        List<FriendRequestStatus> blockingStatuses = List.of(FriendRequestStatus.PENDING, FriendRequestStatus.ACCEPTED);
-        if (friendRequestRepository.existsBidirectionalRequest(senderId, receiverId, blockingStatuses)) {
+        List<FriendRequestStatus> blockingStatuses = List.of(FriendRequestStatus.PENDING,
+            FriendRequestStatus.ACCEPTED);
+        if (friendRequestRepository.existsBidirectionalRequest(senderId, receiverId,
+            blockingStatuses)) {
             throw new CustomException(ErrorCode.FRIEND_REQUEST_ALREADY_EXISTS);
         }
 
@@ -44,7 +47,9 @@ public class FriendRequestService {
         FriendRequest request = FriendRequest.create(sender, receiver);
         FriendRequest saved = friendRequestRepository.save(request);
 
-        sendNotification(receiverId, InviteMessageTemplate.friendRequest(sender.getNickname()), NotificationType.FRIEND_REQUEST);
+        sendNotification(receiverId,
+            NotificationMessageTemplate.friendRequest(sender.getNickname()),
+            NotificationType.FRIEND_REQUEST);
 
         return FriendRequestResponse.from(saved);
     }
@@ -58,7 +63,8 @@ public class FriendRequestService {
         request.accept();
 
         sendNotification(request.getSender().getId(),
-            InviteMessageTemplate.friendAccept(request.getReceiver().getNickname()), NotificationType.FRIEND_ACCEPT);
+            NotificationMessageTemplate.friendAccept(request.getReceiver().getNickname()),
+            NotificationType.FRIEND_ACCEPT);
 
         return FriendRequestResponse.from(request);
     }
@@ -70,7 +76,8 @@ public class FriendRequestService {
         validatePendingState(request);
 
         sendNotification(request.getSender().getId(),
-            InviteMessageTemplate.friendReject(request.getReceiver().getNickname()), NotificationType.FRIEND_REJECT);
+            NotificationMessageTemplate.friendReject(request.getReceiver().getNickname()),
+            NotificationType.FRIEND_REJECT);
 
         friendRequestRepository.delete(request);
     }
@@ -94,7 +101,8 @@ public class FriendRequestService {
     }
 
     public List<FriendRequestResponse> getIncomingRequests(Long userId) {
-        return friendRequestRepository.findByReceiverIdAndStatus(userId, FriendRequestStatus.PENDING)
+        return friendRequestRepository.findByReceiverIdAndStatus(userId,
+                FriendRequestStatus.PENDING)
             .stream()
             .map(FriendRequestResponse::from)
             .toList();
@@ -110,27 +118,28 @@ public class FriendRequestService {
 
     public List<FriendResponse> getFriends(Long userId) {
         return getFriendUsers(userId).stream()
-                .map(FriendResponse::from)
-                .toList();
+            .map(FriendResponse::from)
+            .toList();
     }
 
     public List<FriendResponse> getOnlineFriends(Long userId) {
         return getFriendUsers(userId).stream()
-                .filter(User::getIsOnline)
-                .map(FriendResponse::from)
-                .toList();
+            .filter(User::getIsOnline)
+            .map(FriendResponse::from)
+            .toList();
     }
 
     private List<User> getFriendUsers(Long userId) {
         return friendRequestRepository.findAcceptedFriends(userId, FriendRequestStatus.ACCEPTED)
-                .stream()
-                .map(request -> extractFriend(request, userId))
-                .toList();
+            .stream()
+            .map(request -> extractFriend(request, userId))
+            .toList();
     }
 
     private User extractFriend(FriendRequest request, Long userId) {
         // 내가 sender면 receiver가 친구, 내가 receiver면 sender가 친구
-        return request.getSender().getId().equals(userId) ? request.getReceiver() : request.getSender();
+        return request.getSender().getId().equals(userId) ? request.getReceiver()
+            : request.getSender();
     }
 
     private User findUserById(Long userId) {
@@ -149,6 +158,7 @@ public class FriendRequestService {
             throw new CustomException(ErrorCode.FRIEND_REQUEST_NOT_AUTHORIZED);
         }
     }
+
     private void validatePendingState(FriendRequest request) {
         if (!request.isPending()) {
             throw new CustomException(ErrorCode.FRIEND_REQUEST_INVALID_STATE);
