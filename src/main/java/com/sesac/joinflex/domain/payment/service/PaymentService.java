@@ -21,6 +21,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import retrofit2.Call;      // call.execute()를 위해 필요
+import retrofit2.Response;  // 응답 객체를 받기 위해 필요
+import retrofit2.Retrofit;  // Retrofit 빌더를 위해 필요
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+
 import java.io.IOException;
 
 @Service
@@ -33,7 +42,17 @@ public class PaymentService {
     private final UserHistoryService userHistoryService;
     private final MembershipService membershipService;
     private final IamportClient iamportClient;
-    private static final Integer MEMBERSHIP_DURATION_DAYS = 30;
+    private static final Long MEMBERSHIP_DURATION_MONTH = 1L;
+
+    //테스트 결제 조회를 위한 커스텀 Iamport API 인터페이스
+    private interface CustomIamportApi {
+        @GET("/payments/{imp_uid}")
+        Call<IamportResponse<com.siot.IamportRestClient.response.Payment>> paymentByImpUid(
+                @Header("Authorization") String token,
+                @Path("imp_uid") String imp_uid,
+                @Query("include_sandbox") boolean includeSandbox
+        );
+    }
 
     @Transactional
     public PaymentResponse complete(PaymentCreateRequest request, Long userId, String ip, String ua) {
@@ -50,37 +69,46 @@ public class PaymentService {
 
         // 3. PortOne API를 통한 실제 결제 정보 검증
         try {
-            IamportResponse<com.siot.IamportRestClient.response.Payment> portoneResponse = iamportClient.paymentByImpUid(request.getImpUid());
+            // 1. 토큰 발급 (기존 SDK 활용)
+            String token = iamportClient.getAuth().getResponse().getToken();
 
-            System.out.println("포트원 결제 ImpUid: " + request.getImpUid());
-            System.out.println("포트원 응답 상태: " + (portoneResponse != null ? portoneResponse.getMessage() : "null"));
+            // 2. 샌드박스 옵션을 포함하여 직접 호출하기 위한 Retrofit 설정
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://api.iamport.kr")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-            if (portoneResponse == null) {
-                System.out.println("포트원 응답 객체가 null입니다.");
+            CustomIamportApi customApi = retrofit.create(CustomIamportApi.class);
+
+            // 3. 조회 실행
+            Call<IamportResponse<com.siot.IamportRestClient.response.Payment>> call =
+                    customApi.paymentByImpUid(token, request.getImpUid(), true);
+
+            Response<IamportResponse<com.siot.IamportRestClient.response.Payment>> retrofitResponse = call.execute();
+
+            if (!retrofitResponse.isSuccessful() || retrofitResponse.body() == null) {
                 throw new CustomException(ErrorCode.PAYMENT_VERIFICATION_FAILED);
             }
 
+            IamportResponse<com.siot.IamportRestClient.response.Payment> portoneResponse = retrofitResponse.body();
             com.siot.IamportRestClient.response.Payment actualPayment = portoneResponse.getResponse();
 
-            // 실제 결제 상태가 'paid'인지 확인
+            // 4. 결제 정보 검증
             if (actualPayment == null || !"paid".equals(actualPayment.getStatus())) {
-                System.out.println("포트원에서 결제 정보를 찾을 수 없습니다. (응답 메시지: {}" + portoneResponse.getMessage() + ")");
                 userHistoryService.saveLog(user.getEmail(), UserAction.PAYMENT_FAIL, ip, ua, false, "실제 결제 미완료");
                 throw new CustomException(ErrorCode.PAYMENT_NOT_PAID);
             }
 
-            // 실제 결제 금액이 우리 DB 가격과 일치하는지 확인 (보안의 핵심)
+            // 5. 결제 금액 검증
             if (!membership.getPrice().equals(actualPayment.getAmount().intValue())) {
                 userHistoryService.saveLog(user.getEmail(), UserAction.PAYMENT_FAIL, ip, ua, false, "금액 위변조 감지");
                 throw new CustomException(ErrorCode.PAYMENT_AMOUNT_MISMATCH);
             }
 
-            System.out.println("포트원 결제 검증 성공: 실제 금액 {" + actualPayment.getAmount() +"}, 상태 {" + actualPayment.getStatus() + "}");
-        } catch (IamportResponseException e) {
-            System.out.println("포트원 API 호출 중 에러 발생: " + e.getMessage() + " (HTTP 상태코드: " + e.getHttpStatusCode() + ")");
-            throw new CustomException(ErrorCode.PAYMENT_VERIFICATION_FAILED);
+            System.out.println("포트원 테스트 결제 검증 성공");
+
         } catch (Exception e) {
-            System.out.println("결제 검증 중 예상치 못한 에러 발생: " + e.getMessage());
+            System.out.println("결제 검증 중 에러 발생: " + e.getMessage());
             throw new CustomException(ErrorCode.PAYMENT_VERIFICATION_FAILED);
         }
 
@@ -108,7 +136,7 @@ public class PaymentService {
 
         // 7. 사용자의 멤버십 권한 업데이트
         if (savedPayment.getStatus() == PaymentStatus.COMPLETED) {
-            user.updateMembership(membership, MEMBERSHIP_DURATION_DAYS);
+            user.updateMembership(membership, MEMBERSHIP_DURATION_MONTH);
         } else {
             userHistoryService.saveLog(user.getEmail(), UserAction.PAYMENT_FAIL, ip, ua, false,
                     "결제 상태 미완료: " + savedPayment.getStatus());

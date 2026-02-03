@@ -85,7 +85,7 @@
     }
 
     function sendToServer(rsp, membershipId) {
-        // 백엔드 API 주소가 /api/v1/payments/complete 인지 다시 확인!
+        // 백엔드 API 주소가 /api/payments/complete 인지 다시 확인!
         fetch("/api/payments/complete", {
             method: "POST",
             headers: {
