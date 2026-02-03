@@ -1,7 +1,7 @@
 package com.sesac.joinflex.domain.notification.dto.response;
 
 import com.sesac.joinflex.domain.notification.entity.Notification;
-import com.sesac.joinflex.domain.notification.type.NotificationType;
+import com.sesac.joinflex.domain.notification.entity.NotificationType;
 import lombok.Builder;
 import lombok.Getter;
 

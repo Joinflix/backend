@@ -7,7 +7,7 @@ import com.sesac.joinflex.domain.friend.entity.FriendRequestStatus;
 import com.sesac.joinflex.domain.friend.repository.FriendRequestRepository;
 import com.sesac.joinflex.domain.notification.message.InviteMessageTemplate;
 import com.sesac.joinflex.domain.notification.service.NotificationService;
-import com.sesac.joinflex.domain.notification.type.NotificationType;
+import com.sesac.joinflex.domain.notification.entity.NotificationType;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;

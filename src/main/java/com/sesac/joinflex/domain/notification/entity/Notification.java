@@ -1,6 +1,5 @@
 package com.sesac.joinflex.domain.notification.entity;
 
-import com.sesac.joinflex.domain.notification.type.NotificationType;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
