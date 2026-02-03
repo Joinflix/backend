@@ -68,6 +68,11 @@ public class NotificationService {
         }
     }
 
+    public void sendAndSave(Long userId, String message) {
+        send(userId, NotificationResponse.from(
+            notificationRepository.save(Notification.create(getUser(userId), message))));
+    }
+
     private User getUser(Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

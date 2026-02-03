@@ -42,7 +42,7 @@ public class PartyInviteService {
             sendInviteEmail(guest, room);
             String notificationMessage = NotificationMessageTemplate.notification(
                 room.getHost().getNickname(), room.getRoomName(), guest.getNickname());
-            notificationService.send(guest.getId(), notificationMessage);
+            notificationService.sendAndSave(guest.getId(), notificationMessage);
 
         }
     }
