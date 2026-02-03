@@ -98,7 +98,7 @@ public class UserService {
     }
 
     // 멤버쉽 만료 유저 조회
-    public List<User> findAllByMembershipExpiryDateBefore(LocalDateTime now) {
-        return userRepository.findAllByMembershipExpiryDateBefore(now);
+    public List<User> findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull() {
+        return userRepository.findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull();
     }
 }

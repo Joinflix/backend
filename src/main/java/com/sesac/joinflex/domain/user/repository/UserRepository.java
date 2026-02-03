@@ -37,7 +37,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * 멤버십이 존재하고(NOT NULL) 만료일이 지정된 시간보다 이전인 유저 목록 조회
+     * server Timezone 이슈로 current_timestamp 사용
      */
-    @Query("SELECT u FROM User u WHERE u.membership IS NOT NULL AND u.membershipExpiryDate < :now")
-    List<User> findAllByMembershipExpiryDateBefore(@Param("now") LocalDateTime now);
+    @Query("SELECT u FROM User u WHERE u.membership IS NOT NULL AND u.membershipExpiryDate < CURRENT_TIMESTAMP")
+    List<User> findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull();
 }
