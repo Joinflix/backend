@@ -13,7 +13,7 @@
       ansi:
         enabled: ${ANSI_ENABLED:always}
     datasource:
-      url: ${DATABASE_URL:jdbc:mysql://localhost:3306/joinflix?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+      url: ${DATABASE_URL:jdbc:mysql://localhost:3306/joinflix?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul}
       username: ${DB_USERNAME:root}
       password: ${DB_PASSWORD:password}
     jpa:
@@ -23,6 +23,7 @@
       properties:
         hibernate:
           dialect: org.hibernate.dialect.MySQLDialect
+          jdbc.time_zone: Asia/Seoul
           format_sql: ${JPA_FORMAT_SQL:true}
           use_sql_comments: ${JPA_SQL_COMMENTS:true}
           generate_statistics: ${JPA_STATISTICS:true}
