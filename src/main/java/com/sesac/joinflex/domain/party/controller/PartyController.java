@@ -43,6 +43,7 @@ public class PartyController {
         return ResponseEntity.ok(partyService.getPartyRooms(cursorId, pageable));
     }
 
+    // http://localhost:8080/api/parties/{partyId}/join
     @PostMapping("/{partyId}/join")
     public ResponseEntity<Void> joinParty(@PathVariable Long partyId,
         @Valid @RequestBody PartyJoinRequest request,
