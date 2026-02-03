@@ -25,9 +25,12 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private String message;
 
-    @Builder
     private Notification(User user, String message) {
         this.user = user;
         this.message = message;
+    }
+
+    public static Notification create(User user, String message) {
+        return new Notification(user, message);
     }
 }
