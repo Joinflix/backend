@@ -1,6 +1,5 @@
 package com.sesac.joinflex.global.config;
 
-import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.JwtAuthenticationEntryPoint;
 import com.sesac.joinflex.global.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +42,9 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                       //결제 테스트용 html
+                        .requestMatchers("/auth-test.html", "/payment-test.html", "/static/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
                         .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").permitAll() //로그인, 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
@@ -62,9 +64,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(List.of("Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -75,5 +75,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

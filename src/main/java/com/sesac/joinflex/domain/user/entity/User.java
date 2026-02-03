@@ -86,13 +86,21 @@ public class User extends BaseEntity {
     }
 
     // 멤버십 업데이트 (결제 완료 후 호출)
-    public void updateMembership(Membership membership, Integer days) {
+    public void updateMembership(Membership membership, Long months) {
         this.membership = membership;
-        if (days <= 0) {
+
+        // 멤버십 회수(null) 시 처리
+        if (membership == null) {
             this.membershipExpiryDate = null;
-        } else {
-            this.membershipExpiryDate = LocalDateTime.now().plusDays(days);
+            return;
         }
+
+        // 현재 멤버십이 남아있다면 그 날짜로부터 더하고, 없다면 지금부터 더함
+        LocalDateTime baseDate = (this.membershipExpiryDate != null && this.membershipExpiryDate.isAfter(LocalDateTime.now()))
+                ? this.membershipExpiryDate
+                : LocalDateTime.now();
+
+        this.membershipExpiryDate = baseDate.plusMonths(months);
     }
 
     // 서비스 이용 가능 여부 확인

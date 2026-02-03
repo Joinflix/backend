@@ -92,7 +92,7 @@ public class AuthController {
         String refresh = cookieUtil.getCookieValue(request, REFRESH_TOKEN_COOKIE_NAME);
         TokenResponse token = authService.reissue(refresh);
         setTokenResponse(response, token);
-        return ResponseEntity.ok(AuthResponse.from(token.getAccessToken()));
+        return ResponseEntity.ok().build();
     }
 
     // 6. 로그아웃

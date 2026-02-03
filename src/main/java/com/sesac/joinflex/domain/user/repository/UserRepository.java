@@ -20,7 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional < User > findByEmailAndIsLockAndIsSocial ( String  email , Boolean  isLock , Boolean  isSocial );
 
-    // 특정 IP로 특정 시간 이후에 가입한 사용자 수 조회
     long countBySignupIpAndCreatedAtAfter(String signupIp, LocalDateTime dateTime);
 
     @Query(
@@ -36,6 +35,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     )
     List<User> findFriendsByHostAndIds(@Param("host") User host,
         @Param("userIds") List<Long> userIds);
+
+    @Query("SELECT u FROM User u WHERE u.membership IS NOT NULL AND u.membershipExpiryDate < CURRENT_TIMESTAMP")
+    List<User> findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull();
 
     @Query("select u from User u where u.id < :cursorId order by u.id desc")
     Slice<User> findUsers(@Param("cursorId") Long cursorId, Pageable pageable);

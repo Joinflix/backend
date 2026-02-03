@@ -17,7 +17,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-
 import java.time.LocalDateTime;
 
 @Service
@@ -97,6 +96,11 @@ public class UserService {
     private User getUser(Long id){
         return userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    // 멤버쉽 만료 유저 조회
+    public List<User> findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull() {
+        return userRepository.findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull();
     }
 
     public Slice<UserResponse> getAllUsers(Long cursorId, Pageable pageable) {

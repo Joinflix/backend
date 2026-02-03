@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JoinFlex | 인증 테스트 (In-Memory)</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f8f9fa; }
+        .container { max-width: 400px; margin: auto; border: 1px solid #ddd; padding: 25px; border-radius: 15px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .section { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #f1f1f1; }
+        input { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; }
+        button { width: 100%; padding: 12px; background: #3182f6; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .status { font-size: 13px; color: #666; margin-top: 10px; text-align: center; }
+        #payBtn { display: none; background: #ff9100; margin-top: 15px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🔐 JoinFlex 인증</h2>
+
+    <div class="section">
+        <h3>1. 회원가입</h3>
+        <input type="email" id="email" placeholder="이메일">
+        <input type="password" id="signupPw" placeholder="비밀번호">
+        <input type="text" id="nickname" placeholder="닉네임">
+        <button onclick="signup()">가입하기</button>
+        <div id="signupStatus" class="status"></div>
+    </div>
+
+    <div class="section">
+        <h3>2. 로그인</h3>
+        <input type="email" id="loginEmail" placeholder="이메일">
+        <input type="password" id="loginPw" placeholder="비밀번호">
+        <button onclick="login()" style="background: #00c853;">로그인</button>
+        <div id="loginStatus" class="status"></div>
+        <button id="payBtn" onclick="goToPayment()">결제 테스트 이동 ➔</button>
+    </div>
+</div>
+
+<script>
+    // 전역 변수에 토큰 저장 (메모리 방식)
+    let accessToken = null;
+
+    async function signup() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('signupPw').value;
+        const nickname = document.getElementById('nickname').value;
+        const res = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, nickname })
+        });
+        const data = await res.json();
+        document.getElementById('signupStatus').innerText = res.ok ? "가입 성공!" : "가입 실패";
+    }
+
+    async function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPw').value;
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        if(res.ok) {
+            const authHeader = res.headers.get("Authorization");
+            if(authHeader) {
+                // 전역 변수에 할당 (보안 강화)
+                accessToken = authHeader.replace("Bearer ", "");
+                document.getElementById('loginStatus').innerText = "✅ 로그인 성공 (토큰 메모리 저장됨)";
+                document.getElementById('payBtn').style.display = "block";
+            }
+        } else {
+            document.getElementById('loginStatus').innerText = "❌ 로그인 실패";
+        }
+    }
+
+    // 페이지 이동 시 토큰을 쿼리 스트링으로 전달
+    function goToPayment() {
+        if(!accessToken) return;
+        location.href = `payment-test.html?token=${accessToken}`;
+    }
+</script>
+</body>
+</html>
