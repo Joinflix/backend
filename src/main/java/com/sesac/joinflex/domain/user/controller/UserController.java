@@ -73,7 +73,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/search")
+    @GetMapping(ApiPath.SEARCH)
     public ResponseEntity<Slice<UserSearchResponse>> getAllUsersWithRelationStatus(
             @RequestParam(required = false) Long cursorId,
             @PageableDefault(size = 10) Pageable pageable,

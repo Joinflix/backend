@@ -54,7 +54,7 @@ public class NotificationService {
     }
 
     // 알림 전송
-    public void send(Long userId, Object data) {
+    private void send(Long userId, Object data) {
         SseEmitter emitter = emitterMap.get(userId);
 
         if (emitter != null) {
