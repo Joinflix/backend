@@ -1,8 +1,12 @@
 package com.sesac.joinflex.domain.user.service;
 
+import com.sesac.joinflex.domain.friend.entity.FriendRequest;
+import com.sesac.joinflex.domain.friend.entity.FriendRequestStatus;
+import com.sesac.joinflex.domain.friend.repository.FriendRequestRepository;
 import com.sesac.joinflex.domain.user.dto.request.ProfileUpdateRequest;
 import com.sesac.joinflex.domain.user.dto.response.UserProfileResponse;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
+import com.sesac.joinflex.domain.user.dto.response.UserSearchResponse;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.domain.userhistory.entity.UserAction;
@@ -18,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly=true)
@@ -25,6 +31,7 @@ import java.time.LocalDateTime;
 public class UserService {
     private final UserRepository userRepository;
     private final UserHistoryService userHistoryService;
+    private final FriendRequestRepository friendRequestRepository;
 
     public User findById(Long id) {
         return userRepository.findById(id)
@@ -140,5 +147,48 @@ public class UserService {
                 .profileImageUrl(user.getProfileImageUrl())
                 .build())
             .toList();
+    }
+
+    public Slice<UserSearchResponse> getAllUsersWithRelationStatus(Long currentUserId, Long cursorId, Pageable pageable) {
+        Slice<User> users = userRepository.findUsers(
+                cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+
+        List<Long> targetIds = users.getContent().stream()
+                .map(User::getId)
+                .toList();
+
+        List<FriendRequest> requests = friendRequestRepository.findAllRelatedRequests(currentUserId, targetIds);
+
+        Map<Long, FriendRequest> requestMap = requests.stream()
+                .collect(Collectors.toMap(
+                        fr -> fr.getSender().getId().equals(currentUserId)
+                                ? fr.getReceiver().getId()
+                                : fr.getSender().getId(),
+                        fr -> fr,
+                        (existing, replacement) -> existing // Keep the first if duplicates exist
+                ));
+        return users.map(user -> {
+            FriendRequest fr = requestMap.get(user.getId());
+            String status = "NONE";
+
+            if (fr != null) {
+                if (fr.getStatus() == FriendRequestStatus.ACCEPTED) {
+                    status = "FRIEND";
+                } else if (fr.getSender().getId().equals(currentUserId)) {
+                    status = "SENT_PENDING";
+                } else {
+                    status = "RECEIVED_PENDING";
+                }
+            }
+
+            return UserSearchResponse.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .nickName(user.getNickname())
+                    .profileImageUrl(user.getProfileImageUrl())
+                    .friendStatus(status)
+                    .build();
+        });
+
     }
 }
