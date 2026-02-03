@@ -47,6 +47,11 @@ public class PartyInviteService {
         }
     }
 
+    public void validateInvitation(PartyRoom partyRoom, User user) {
+        partyInviteRepository.findByPartyRoomAndGuest(partyRoom, user)
+            .orElseThrow(() -> new CustomException(ErrorCode.PARTY_ACCESS_DENIED));
+    }
+
     private void sendInviteEmail(User guest, PartyRoom room) {
         String subject = "[JoinFlex] 파티 초대장이 도착했습니다!";
 
@@ -56,5 +61,4 @@ public class PartyInviteService {
 
         emailService.sendEmail(guest.getEmail(), subject, message);
     }
-
 }

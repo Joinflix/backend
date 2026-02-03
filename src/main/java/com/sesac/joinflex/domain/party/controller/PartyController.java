@@ -1,5 +1,6 @@
 package com.sesac.joinflex.domain.party.controller;
 
+import com.sesac.joinflex.domain.party.dto.request.PartyJoinRequest;
 import com.sesac.joinflex.domain.party.dto.request.PartyRoomRequest;
 import com.sesac.joinflex.domain.party.dto.response.PartyRoomResponse;
 import com.sesac.joinflex.domain.party.service.PartyService;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +41,14 @@ public class PartyController {
         @RequestParam(required = false) Long cursorId,
         @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(partyService.getPartyRooms(cursorId, pageable));
+    }
+
+    // http://localhost:8080/api/parties/{partyId}/join
+    @PostMapping("/{partyId}/join")
+    public ResponseEntity<Void> joinParty(@PathVariable Long partyId,
+        @Valid @RequestBody PartyJoinRequest request,
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
+        partyService.joinParty(partyId, request, userDetails.getId());
+        return ResponseEntity.noContent().build();
     }
 }

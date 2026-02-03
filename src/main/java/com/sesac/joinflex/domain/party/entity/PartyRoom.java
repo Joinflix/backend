@@ -3,6 +3,8 @@ package com.sesac.joinflex.domain.party.entity;
 import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,6 +47,9 @@ public class PartyRoom extends BaseEntity {
 
     private String passCode;
 
+    @Column(nullable = false)
+    private Integer maxCount;
+
     private Integer currentMemberCount;
 
     private PartyRoom(String roomName, User host, Movie movie, Boolean isPublic,
@@ -56,6 +61,7 @@ public class PartyRoom extends BaseEntity {
         this.hostControl = hostControl;
         this.passCode = passCode;
         this.currentMemberCount = 0;
+        this.maxCount = 4;
     }
 
     public static PartyRoom create(String roomName, User host, Movie movie, Boolean isPublic, Boolean hostControl, String passCode) {
@@ -66,4 +72,27 @@ public class PartyRoom extends BaseEntity {
         }
     }
 
+    public boolean isPublicRoom() {
+        return this.isPublic;
+    }
+
+    public boolean isHost(User user) {
+        return this.host.getId().equals(user.getId());
+    }
+
+    public void addMember() {
+        if (isFull()) {
+            throw new CustomException(ErrorCode.PARTY_ROOM_FULL);
+        }
+
+        this.currentMemberCount++;
+    }
+
+    public boolean isPasswordMatch(String passCode) {
+        return this.passCode.equals(passCode);
+    }
+
+    private boolean isFull() {
+        return currentMemberCount >= maxCount;
+    }
 }

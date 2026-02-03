@@ -69,7 +69,13 @@ public enum ErrorCode {
     MOVIE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 영화입니다."),
 
     // Party
+    PARTY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 파티입니다."),
     INVALID_PARTY_INVITE_TARGET(HttpStatus.BAD_REQUEST, "친구가 아니거나 존재하지 않는 사용자는 파티에 초대할 수 없습니다."),
+    PARTY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "참여 권한이 없습니다."),
+    INVALID_PARTY_PASSWORD(HttpStatus.BAD_REQUEST, "파티 입장 코드가 일치하지 않습니다."),
+    PARTY_ROOM_FULL(HttpStatus.CONFLICT, "파티 인원이 모두 찼습니다."),
+    ALREADY_JOINED_PARTY(HttpStatus.CONFLICT, "이미 입장한 파티입니다."),
+
 
     // Friend
     FRIEND_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "친구 요청을 찾을 수 없습니다."),
