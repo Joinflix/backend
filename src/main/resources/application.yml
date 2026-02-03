@@ -98,7 +98,7 @@
     access-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
     # Refresh Token: 7 days
     refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:YourJWTSecretKey}
 
   # Kakao OAuth 설정
   oauth:
