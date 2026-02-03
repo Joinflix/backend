@@ -12,8 +12,11 @@ import com.sesac.joinflex.global.exception.ErrorCode;
 import com.sesac.joinflex.global.util.NetworkUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -100,5 +103,44 @@ public class UserService {
     // 멤버쉽 만료 유저 조회
     public List<User> findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull() {
         return userRepository.findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull();
+    }
+
+    public Slice<UserResponse> getAllUsers(Long cursorId, Pageable pageable) {
+        Slice<User> users = userRepository.findUsers(
+            cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+
+        return users.map(user -> UserResponse.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .nickName(user.getNickname())
+            .role(user.getRoleType())
+            .profileImageUrl(user.getProfileImageUrl())
+            .build());
+    }
+
+    public List<UserResponse> getUsersByNickname(String nickname) {
+        return userRepository.findTop10ByNicknameContainingIgnoreCase(nickname)
+            .stream()
+            .map(user -> UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickName(user.getNickname())
+                .role(user.getRoleType())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build())
+            .toList();
+    }
+
+    public List<UserResponse> getUsersByEmail(String email) {
+        return userRepository.findTop10ByEmailContainingIgnoreCase(email)
+            .stream()
+            .map(user -> UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickName(user.getNickname())
+                .role(user.getRoleType())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build())
+            .toList();
     }
 }

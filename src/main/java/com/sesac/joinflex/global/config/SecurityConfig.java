@@ -1,6 +1,5 @@
 package com.sesac.joinflex.global.config;
 
-import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.JwtAuthenticationEntryPoint;
 import com.sesac.joinflex.global.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +66,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
-
+        configuration.setExposedHeaders(List.of("Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

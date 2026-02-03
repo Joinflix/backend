@@ -1,4 +1,4 @@
-package com.sesac.joinflex.domain.notification2.message;
+package com.sesac.joinflex.domain.notification.message;
 
 import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import lombok.experimental.UtilityClass;
@@ -18,6 +18,18 @@ public class InviteMessageTemplate {
 
     public String notification(String host, String roomName, String guest) {
         return String.format("%s님이 %s님을 '%s' 파티에 초대했습니다.", host, guest, roomName);
+    }
+
+    public String friendRequest(String senderNickname) {
+        return String.format("%s님이 친구 신청을 하였습니다.", senderNickname);
+    }
+
+    public String friendAccept(String receiverNickname) {
+        return String.format("%s님이 친구 신청을 수락하였습니다.", receiverNickname);
+    }
+
+    public String friendReject(String receiverNickname) {
+        return String.format("%s님이 친구 신청을 거절하였습니다.", receiverNickname);
     }
 
 }

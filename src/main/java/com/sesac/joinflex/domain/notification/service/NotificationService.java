@@ -1,4 +1,4 @@
-package com.sesac.joinflex.domain.notification2.service;
+package com.sesac.joinflex.domain.notification.service;
 
 import java.io.IOException;
 import java.util.Map;
