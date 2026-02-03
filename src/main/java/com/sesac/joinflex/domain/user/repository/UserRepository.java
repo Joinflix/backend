@@ -2,6 +2,8 @@ package com.sesac.joinflex.domain.user.repository;
 
 import com.sesac.joinflex.domain.user.entity.User;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    Optional<User> findByEmailAndIsLockAndIsSocial(String email, Boolean isLock, Boolean isSocial);
+    Optional < User > findByEmailAndIsLockAndIsSocial ( String  email , Boolean  isLock , Boolean  isSocial );
 
     // 특정 IP로 특정 시간 이후에 가입한 사용자 수 조회
     long countBySignupIpAndCreatedAtAfter(String signupIp, LocalDateTime dateTime);
@@ -34,4 +36,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     )
     List<User> findFriendsByHostAndIds(@Param("host") User host,
         @Param("userIds") List<Long> userIds);
+
+    @Query("select u from User u where u.id < :cursorId order by u.id desc")
+    Slice<User> findUsers(@Param("cursorId") Long cursorId, Pageable pageable);
+
+    List<User> findTop10ByNicknameContainingIgnoreCase(String nickname);
+
+    List<User> findTop10ByEmailContainingIgnoreCase(String email);
 }

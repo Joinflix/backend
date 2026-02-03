@@ -24,6 +24,9 @@ public final class ApiPath {
     // user
     public static final String USER = API_PREFIX + "/users";
     public static final String ID_PATH = "/{id}";
+    
+    public static final String NICKNAME = "/nickname";
+    public static final String EMAIL = "/email";
 
     // file
     public static final String FILE = API_PREFIX + "/files";
