@@ -21,15 +21,14 @@ public class MembershipScheduler {
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정 실행
     @Transactional
     public void checkMembershipExpiry() {
-        LocalDateTime now = LocalDateTime.now();
-
-        List<User> expiredUsers = userService.findAllByMembershipExpiryDateBefore(now);
+        // 만료일이 지났고, 현재 멤버십이 null이 아닌 유저만 조회
+        List<User> expiredUsers = userService.findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull();
 
         for (User user : expiredUsers) {
             String expiredInfo = String.format("멤버십 만료 처리됨 (이전 만료일: %s)", user.getMembershipExpiryDate());
 
             // 1. 유저 멤버십 정보 초기화
-            user.updateMembership(null, 0);
+            user.updateMembership(null, 0L);
 
             // 2. 히스토리 저장
             userHistoryService.saveLog(
