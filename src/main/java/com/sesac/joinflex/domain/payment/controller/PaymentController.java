@@ -29,9 +29,6 @@ public class PaymentController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             HttpServletRequest servletRequest
     ) {
-        if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         String ip = NetworkUtil.getClientIp(servletRequest);
         String ua = NetworkUtil.getUserAgent(servletRequest);
         PaymentResponse response = paymentService.complete(request, userDetails.getId(), ip, ua);
