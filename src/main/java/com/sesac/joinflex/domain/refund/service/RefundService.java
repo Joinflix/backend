@@ -44,12 +44,8 @@ public class RefundService {
         validateDuplicateRefund(payment); // 중복 환불 요청 검증
 
         // 2. 환불 기록 생성 (초기 상태: REQUESTED)
-        Refund refund = refundRepository.save(Refund.builder()
-                .payment(payment)
-                .reason(request.getReason())
-                .amount(payment.getAmount())
-                .status(RefundStatus.REQUESTED)
-                .build());
+        Refund refund = createRefundEntity(payment, request.getReason());
+        refundRepository.save(refund);
 
         try {
             // 3. 포트원 API 호출
