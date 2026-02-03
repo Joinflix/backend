@@ -22,29 +22,12 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private NotificationType type;
-
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
-    private Boolean isRead;
-
-    private Long targetId;
-    
     @Builder
-    private Notification(User user, NotificationType type, String message, Long targetId){
+    private Notification(User user, String message) {
         this.user = user;
-        this.type = type;
         this.message = message;
-        this.targetId = targetId;
-        this.isRead = false;
     }
-
-    public void markAsRead() {
-        this.isRead = true;
-    }
-
 }
