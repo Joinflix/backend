@@ -3,6 +3,7 @@ package com.sesac.joinflex.domain.notification.service;
 import com.sesac.joinflex.domain.notification.dto.response.NotificationResponse;
 import com.sesac.joinflex.domain.notification.entity.Notification;
 import com.sesac.joinflex.domain.notification.repository.NotificationRepository;
+import com.sesac.joinflex.domain.notification.type.NotificationType;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
@@ -68,9 +69,9 @@ public class NotificationService {
         }
     }
 
-    public void sendAndSave(Long userId, String message) {
+    public void sendAndSave(Long userId, String message, NotificationType notificationType) {
         send(userId, NotificationResponse.from(
-            notificationRepository.save(Notification.create(getUser(userId), message))));
+            notificationRepository.save(Notification.create(getUser(userId), message, notificationType))));
     }
 
     private User getUser(Long userId) {

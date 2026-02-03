@@ -2,6 +2,7 @@ package com.sesac.joinflex.domain.party.service;
 
 import com.sesac.joinflex.domain.notification.message.NotificationMessageTemplate;
 import com.sesac.joinflex.domain.notification.service.NotificationService;
+import com.sesac.joinflex.domain.notification.type.NotificationType;
 import com.sesac.joinflex.domain.party.entity.PartyInvite;
 import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import com.sesac.joinflex.domain.party.repository.PartyInviteRepository;
@@ -42,7 +43,7 @@ public class PartyInviteService {
             sendInviteEmail(guest, room);
             String notificationMessage = NotificationMessageTemplate.notification(
                 room.getHost().getNickname(), room.getRoomName(), guest.getNickname());
-            notificationService.sendAndSave(guest.getId(), notificationMessage);
+            notificationService.sendAndSave(guest.getId(), notificationMessage, NotificationType.PARTY_INVITE);
 
         }
     }
