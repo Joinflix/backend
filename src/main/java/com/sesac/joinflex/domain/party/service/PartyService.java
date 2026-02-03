@@ -109,7 +109,7 @@ public class PartyService {
         }
     }
 
-    private void joinPrivateRoom(PartyRoom partyRoom,  PartyJoinRequest request, User user) {
+    private void joinPrivateRoom(PartyRoom partyRoom, PartyJoinRequest request, User user) {
         // 초대받은 사용자인지 검증
         partyInviteService.validateInvitation(partyRoom, user);
 
