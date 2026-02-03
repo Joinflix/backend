@@ -1,7 +1,6 @@
 package com.sesac.joinflex.domain.refund.service;
 
 import com.sesac.joinflex.domain.payment.entity.Payment;
-import com.sesac.joinflex.domain.payment.entity.PaymentStatus;
 import com.sesac.joinflex.domain.payment.service.PaymentService;
 import com.sesac.joinflex.domain.refund.dto.request.RefundRequest;
 import com.sesac.joinflex.domain.refund.dto.response.RefundResponse;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,45 +35,28 @@ public class RefundService {
     private final IamportClient iamportClient;
 
     public RefundResponse createRefund(RefundRequest request, Long userId, String ip, String ua) {
-        // 1. 주문 및 사용자 조회
+        // 1. 조회 및 엔티티 위임 검증
         User user = userService.findById(userId);
         Payment payment = paymentService.findById(request.getPaymentId());
 
-        // 2. 주문/결제 상태 및 중복 환불 요청 검증
-        if(payment.getStatus() == PaymentStatus.REFUND) {
-            throw new CustomException(ErrorCode.PAYMENT_ALREADY_CANCELED);
-        }
+        payment.validateOwnership(userId); // 본인 소유 결제 검증
+        payment.validateRefundable(); // 환불 가능 상태
+        validateDuplicateRefund(payment); // 중복 환불 요청 검증
 
-        if (refundRepository.existsByPaymentAndStatus(payment, RefundStatus.REQUESTED) ||
-            refundRepository.existsByPaymentAndStatus(payment, RefundStatus.COMPLETED)) {
-            throw new CustomException(ErrorCode.REFUND_ALREADY_PROCESSED);
-        }
-
-        // 3. 환불 엔티티 생성 및 'REQUESTED' 상태로 저장
-        Refund refund = Refund.builder()
+        // 2. 환불 기록 생성 (초기 상태: REQUESTED)
+        Refund refund = refundRepository.save(Refund.builder()
                 .payment(payment)
                 .reason(request.getReason())
                 .amount(payment.getAmount())
                 .status(RefundStatus.REQUESTED)
-                .build();
-        refundRepository.save(refund);
+                .build());
 
-        // 4. 외부 API 호출 및 결과에 따른 상태 업데이트
         try {
-            // 포트원 환불 처리
-            String impUid = payment.getPortonePaymentId();
-            BigDecimal refundAmount = new BigDecimal(payment.getAmount());
-            CancelData cancelData = new CancelData(impUid, true, refundAmount);
-            cancelData.setReason(request.getReason());
+            // 3. 포트원 API 호출
+            callPortOneCancel(payment, request.getReason());
 
-            iamportClient.cancelPaymentByImpUid(cancelData);
-
-            // 성공 시 DB 상태 변경
-            payment.cancel();
-            refund.complete();
-            user.updateMembership(null, null); // 멤버십 정보 초기화
-
-            userHistoryService.saveLog(user.getEmail(), UserAction.REFUND_SUCCESS , ip, ua, true, "환불 처리 완료");
+            // 4. 성공 후속 처리
+            processSuccess(user, payment, refund, ip, ua);
 
             return RefundResponse.builder()
                     .refundId(refund.getId())
@@ -82,21 +65,55 @@ public class RefundService {
                     .message("환불 요청이 성공적으로 처리되었습니다.")
                     .build();
 
-        } catch (IamportResponseException e) {
-            // 외부 API 실패
-            refund.fail();
-            userHistoryService.saveLog(user.getEmail(), UserAction.REFUND_FAIL , ip, ua, false, "환불 처리 실패");
-            throw new CustomException(ErrorCode.REFUND_FAILED);
-        } catch (IOException e) {
-            // 통신 실패
-            refund.fail();
-            userHistoryService.saveLog(user.getEmail(), UserAction.REFUND_FAIL , ip, ua, false, "환불 처리 실패");
+        } catch (IamportResponseException | IOException e) {
+            processFailure(user, refund, ip, ua, "환불 API 통신 실패: " + e.getMessage());
             throw new CustomException(ErrorCode.REFUND_FAILED);
         } catch (Exception e) {
-            // 기타 예외 발생
-            userHistoryService.saveLog(user.getEmail(), UserAction.REFUND_FAIL , ip, ua, false, "환불 처리 실패");
-            refund.fail();
+            processFailure(user, refund, ip, ua, "시스템 오류 발생");
             throw new CustomException(ErrorCode.INTERNAL_ERROR);
         }
+    }
+
+    // 중복 환불 요청 검증
+    private void validateDuplicateRefund(Payment payment) {
+        if (refundRepository.existsByPaymentAndStatusIn(payment,
+                List.of(RefundStatus.REQUESTED, RefundStatus.COMPLETED))) {
+            throw new CustomException(ErrorCode.REFUND_ALREADY_PROCESSED);
+        }
+    }
+
+    // 환불 엔티티 생성
+    private Refund createRefundEntity(Payment payment, String reason) {
+        return Refund.builder()
+                .payment(payment)
+                .reason(reason)
+                .amount(payment.getAmount())
+                .status(RefundStatus.REQUESTED)
+                .build();
+    }
+
+    // 포트원 환불 API 호출
+    private void callPortOneCancel(Payment payment, String reason) throws Exception {
+        CancelData cancelData = new CancelData(
+                payment.getPortonePaymentId(),
+                true,
+                BigDecimal.valueOf(payment.getAmount())
+        );
+        cancelData.setReason(reason);
+        iamportClient.cancelPaymentByImpUid(cancelData);
+    }
+
+    // 환불 성공
+    private void processSuccess(User user, Payment payment, Refund refund, String ip, String ua) {
+        payment.cancel();
+        refund.complete();
+        user.updateMembership(null, null);
+        userHistoryService.saveLog(user.getEmail(), UserAction.REFUND_SUCCESS, ip, ua, true, "환불 처리 완료");
+    }
+
+    // 환불 실패
+    private void processFailure(User user, Refund refund, String ip, String ua, String errorMsg) {
+        refund.fail();
+        userHistoryService.saveLog(user.getEmail(), UserAction.REFUND_FAIL, ip, ua, false, errorMsg);
     }
 }
