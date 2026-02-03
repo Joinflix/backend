@@ -28,7 +28,7 @@ public class MembershipScheduler {
             String expiredInfo = String.format("멤버십 만료 처리됨 (이전 만료일: %s)", user.getMembershipExpiryDate());
 
             // 1. 유저 멤버십 정보 초기화
-            user.updateMembership(null, 0L);
+            user.updateMembership(null, null);
 
             // 2. 히스토리 저장
             userHistoryService.saveLog(
