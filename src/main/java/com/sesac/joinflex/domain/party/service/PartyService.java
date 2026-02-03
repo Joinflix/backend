@@ -79,10 +79,7 @@ public class PartyService {
 
         // Todo membership 검증 예정 (결제한 사람만 파티 참여 가능)
 
-        if (partyMemberRepository.existsByPartyRoomAndMemberAndStatus(partyRoom, user,
-            MemberStatus.JOINED)) {
-            throw new CustomException(ErrorCode.ALREADY_JOINED_PARTY);
-        }
+        validateNotJoined(partyRoom, user);
 
         // 방장이면 바로 입장
         if (partyRoom.isHost(user)) {
@@ -96,6 +93,23 @@ public class PartyService {
             return;
         }
 
+        // 비공개방 입장
+        joinPrivateRoom(partyRoom, request, user);
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private void validateNotJoined(PartyRoom partyRoom, User user) {
+        if (partyMemberRepository.existsByPartyRoomAndMemberAndStatus(partyRoom, user,
+            MemberStatus.JOINED)) {
+            throw new CustomException(ErrorCode.ALREADY_JOINED_PARTY);
+        }
+    }
+
+    private void joinPrivateRoom(PartyRoom partyRoom,  PartyJoinRequest request, User user) {
         // 초대받은 사용자인지 검증
         partyInviteService.validateInvitation(partyRoom, user);
 
@@ -105,11 +119,6 @@ public class PartyService {
         }
 
         addMember(partyRoom, user, MemberRole.GUEST);
-    }
-
-    private User getUser(Long userId) {
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     private void addMember(PartyRoom partyRoom, User user, MemberRole role) {
