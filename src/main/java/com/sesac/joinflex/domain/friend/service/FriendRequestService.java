@@ -167,7 +167,7 @@ public class FriendRequestService {
 
     private void sendNotification(Long userId, String message, NotificationType type) {
         try {
-            notificationService.send(userId, message);
+            notificationService.sendAndSave(userId, message, type);
         } catch (Exception e) {
             switch (type) {
                 // SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정
