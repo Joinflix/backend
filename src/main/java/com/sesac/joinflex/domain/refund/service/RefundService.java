@@ -89,7 +89,7 @@ public class RefundService {
     }
 
     // 포트원 환불 API 호출
-    private void callPortOneCancel(Payment payment, String reason) throws Exception {
+    private void callPortOneCancel(Payment payment, String reason) throws IamportResponseException, IOException {
         CancelData cancelData = new CancelData(
                 payment.getPortonePaymentId(),
                 true,
