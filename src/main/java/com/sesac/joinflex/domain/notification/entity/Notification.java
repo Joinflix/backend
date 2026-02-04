@@ -23,29 +23,20 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private NotificationType type;
-
     @Column(nullable = false)
     private String message;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Boolean isRead;
+    private NotificationType notificationType;
 
-    private Long targetId;
-    
-    @Builder
-    private Notification(User user, NotificationType type, String message, Long targetId){
+    private Notification(User user, String message, NotificationType notificationType) {
         this.user = user;
-        this.type = type;
         this.message = message;
-        this.targetId = targetId;
-        this.isRead = false;
+        this.notificationType = notificationType;
     }
 
-    public void markAsRead() {
-        this.isRead = true;
+    public static Notification create(User user, String message, NotificationType notificationType) {
+        return new Notification(user, message, notificationType);
     }
-
 }

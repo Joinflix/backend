@@ -24,13 +24,18 @@ public final class ApiPath {
     // user
     public static final String USER = API_PREFIX + "/users";
     public static final String ID_PATH = "/{id}";
-    
+    public static final String SEARCH = "/search";
+
     public static final String NICKNAME = "/nickname";
     public static final String EMAIL = "/email";
 
     //payment
     public static final String PAYMENT = API_PREFIX + "/payments";
     public static final String PAYMENT_COMPLETE = "/complete";
+    public static final String PAYMENT_ME = "/me";
+
+    //refund
+    public static final String REFUND = API_PREFIX + "/refunds";
 
     // file
     public static final String FILE = API_PREFIX + "/files";

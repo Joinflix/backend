@@ -4,7 +4,7 @@ import com.sesac.joinflex.domain.party.entity.PartyRoom;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class InviteMessageTemplate {
+public class NotificationMessageTemplate {
 
     public String emailBody(PartyRoom room, String joinUrl) {
         return String.format("""

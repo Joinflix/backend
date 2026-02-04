@@ -3,6 +3,7 @@ package com.sesac.joinflex.domain.user.controller;
 import com.sesac.joinflex.domain.user.dto.request.ProfileUpdateRequest;
 import com.sesac.joinflex.domain.user.dto.response.UserProfileResponse;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
+import com.sesac.joinflex.domain.user.dto.response.UserSearchResponse;
 import com.sesac.joinflex.domain.user.service.UserService;
 import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.CustomUserDetails;
@@ -69,6 +70,15 @@ public class UserController {
     @GetMapping(ApiPath.EMAIL)
     public ResponseEntity<List<UserResponse>> getUsersByEmail(@RequestParam String email) {
         List<UserResponse> response = userService.getUsersByEmail(email.trim());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(ApiPath.SEARCH)
+    public ResponseEntity<Slice<UserSearchResponse>> getAllUsersWithRelationStatus(
+            @RequestParam(required = false) Long cursorId,
+            @PageableDefault(size = 10) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Slice<UserSearchResponse> response = userService.getAllUsersWithRelationStatus(userDetails.getId(), cursorId, pageable);
         return ResponseEntity.ok(response);
     }
 }

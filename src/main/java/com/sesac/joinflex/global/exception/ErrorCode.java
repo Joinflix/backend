@@ -57,9 +57,10 @@ public enum ErrorCode {
     PAYMENT_VERIFICATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제 검증 중 오류가 발생했습니다."),
     ALREADY_PAID(HttpStatus.CONFLICT, "이미 처리가 완료된 결제 건입니다."),
     JSON_SERIALIZATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터를 JSON으로 변환하는 데 실패했습니다."),
+    NOT_PAYMENT_OWNER(HttpStatus.FORBIDDEN, "해당 결제 정보에 대한 접근 권한이 없습니다."),
 
     //REFUND
-    ORDER_ALREADY_CANCELED(HttpStatus.CONFLICT, "이미 취소된 주문입니다."),
+    PAYMENT_ALREADY_CANCELED(HttpStatus.CONFLICT, "이미 취소된 결제입니다."),
     REFUND_ALREADY_PROCESSED(HttpStatus.CONFLICT, "이미 처리된 환불 요청입니다."),
     REFUND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "환불 처리에 실패했습니다. 잠시 후 다시 시도해 주세요."),
     UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "환불 권한이 없습니다."),

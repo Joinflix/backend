@@ -4,12 +4,14 @@ import com.sesac.joinflex.domain.userhistory.entity.UserAction;
 import com.sesac.joinflex.domain.userhistory.entity.UserHistory;
 import com.sesac.joinflex.domain.userhistory.repository.UserHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -19,15 +21,19 @@ public class UserHistoryService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW) // 독립적인 트랜잭션 생성
     public void saveLog(String email, UserAction action, String ip, String userAgent, Boolean isSuccess, String details) {
-        UserHistory log = UserHistory.builder()
-                .email(email)
-                .action(action)
-                .ip(ip)
-                .userAgent(userAgent)
-                .isSuccess(isSuccess)
-                .details(details)
-                .build();
-        userHistoryRepository.save(log);
+        try {
+            UserHistory log = UserHistory.builder()
+                    .email(email)
+                    .action(action)
+                    .ip(ip)
+                    .userAgent(userAgent)
+                    .isSuccess(isSuccess)
+                    .details(details)
+                    .build();
+            userHistoryRepository.save(log);
+        } catch (Exception e) {
+            log.error("History Log 저장 실패: {}", e.getMessage());
+        }
     }
 
     // 로그인 시도 제한 횟수 초과 여부
