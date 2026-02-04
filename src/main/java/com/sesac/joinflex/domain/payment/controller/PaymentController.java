@@ -11,10 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(ApiPath.PAYMENT)
@@ -33,5 +32,13 @@ public class PaymentController {
         String ua = NetworkUtil.getUserAgent(servletRequest);
         PaymentResponse response = paymentService.complete(request, userDetails.getId(), ip, ua);
         return ResponseEntity.ok(response);
+    }
+
+    //api/payments/me
+    @GetMapping(ApiPath.PAYMENT_ME)
+    public ResponseEntity<List<PaymentResponse>> getMyPayments(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<PaymentResponse> responses = paymentService.getMyPaymentHistory(userDetails.getId());
+        return ResponseEntity.ok(responses);
     }
 }

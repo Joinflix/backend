@@ -4,6 +4,8 @@ import com.sesac.joinflex.domain.membership.entity.Membership;
 import com.sesac.joinflex.domain.refund.entity.Refund;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -60,6 +62,20 @@ public class Payment extends BaseEntity {
     // 환불시 주문 상태 변경
     public void cancel() {
         this.status = PaymentStatus.REFUND;
+    }
+
+    // 결제 소유자 검증
+    public void validateOwnership(Long userId) {
+        if (!this.user.getId().equals(userId)) {
+            throw new CustomException(ErrorCode.NOT_PAYMENT_OWNER);
+        }
+    }
+
+    // 환불 가능 여부 검증
+    public void validateRefundable() {
+        if (this.status == PaymentStatus.REFUND) {
+            throw new CustomException(ErrorCode.PAYMENT_ALREADY_CANCELED);
+        }
     }
 
 }

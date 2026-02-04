@@ -32,6 +32,10 @@ public final class ApiPath {
     //payment
     public static final String PAYMENT = API_PREFIX + "/payments";
     public static final String PAYMENT_COMPLETE = "/complete";
+    public static final String PAYMENT_ME = "/me";
+
+    //refund
+    public static final String REFUND = API_PREFIX + "/refunds";
 
     // file
     public static final String FILE = API_PREFIX + "/files";

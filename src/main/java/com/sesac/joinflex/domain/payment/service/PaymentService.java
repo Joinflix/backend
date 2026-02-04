@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -109,5 +111,18 @@ public class PaymentService {
         }
 
         return PaymentResponse.from(payment);
+    }
+
+    public Payment findById(Long id) {
+        return paymentRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
+    }
+
+    // 내 결제 내역 조회
+    public List<PaymentResponse> getMyPaymentHistory(Long userId) {
+        return paymentRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(PaymentResponse::from)
+                .toList();
     }
 }
