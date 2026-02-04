@@ -92,10 +92,13 @@ public class FriendRequestService {
     }
 
     @Transactional
-    public void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Long requestId) {
         FriendRequest request = friendRequestRepository
-            .findAcceptedFriendship(userId, friendId, FriendRequestStatus.ACCEPTED)
+            .findByIdAndStatus(requestId,FriendRequestStatus.ACCEPTED)
             .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_NOT_FOUND));
+
+        if (request.getStatus().equals("ACCEPTED"))
+            throw new CustomException(ErrorCode.FRIEND_NOT_FOUND);
 
         friendRequestRepository.delete(request);
     }

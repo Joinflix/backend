@@ -170,8 +170,10 @@ public class UserService {
         return users.map(user -> {
             FriendRequest fr = requestMap.get(user.getId());
             String status = "NONE";
+            Long requestId = null;
 
             if (fr != null) {
+                requestId = fr.getId();
                 if (fr.getStatus() == FriendRequestStatus.ACCEPTED) {
                     status = "FRIEND";
                 } else if (fr.getSender().getId().equals(currentUserId)) {
@@ -187,6 +189,7 @@ public class UserService {
                     .nickName(user.getNickname())
                     .profileImageUrl(user.getProfileImageUrl())
                     .friendStatus(status)
+                    .requestId(requestId)
                     .build();
         });
 
