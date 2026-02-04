@@ -78,16 +78,6 @@ public class RefundService {
         }
     }
 
-    // 환불 엔티티 생성
-    private Refund createRefundEntity(Payment payment, String reason) {
-        return Refund.builder()
-                .payment(payment)
-                .reason(reason)
-                .amount(payment.getAmount())
-                .status(RefundStatus.REQUESTED)
-                .build();
-    }
-
     // 포트원 환불 API 호출
     private void callPortOneCancel(Payment payment, String reason) throws IamportResponseException, IOException {
         CancelData cancelData = new CancelData(
