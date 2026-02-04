@@ -53,7 +53,7 @@ public final class ApiPath {
     public static final String FRIEND_REQUESTS_REJECT = FRIEND_REQUEST_BY_ID + "/reject";
     public static final String FRIEND_REQUESTS_CANCEL = FRIEND_REQUEST_BY_ID + "/cancel";
 
-    public static final String FRIEND_DELETE = "/{friendId}";
+    public static final String FRIEND_DELETE = "/{requestId}";
     public static final String FRIEND_ONLINE = "/online";
 
     // party
