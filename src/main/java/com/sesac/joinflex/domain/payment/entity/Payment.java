@@ -75,6 +75,8 @@ public class Payment extends BaseEntity {
     public void validateRefundable() {
         if (this.status == PaymentStatus.REFUND) {
             throw new CustomException(ErrorCode.PAYMENT_ALREADY_CANCELED);
+        } else if (this.status != PaymentStatus.COMPLETED) {
+            throw new CustomException(ErrorCode.PAYMENT_NOT_COMPLETED);
         }
     }
 
