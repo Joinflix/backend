@@ -18,6 +18,7 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -48,11 +49,12 @@ public class RefundService {
         refundRepository.save(refund);
 
         try {
-            // 3. 포트원 API 호출
-            callPortOneCancel(payment, request.getReason());
-
-            // 4. 성공 후속 처리
+            // 3. 내부 시스템 로직 성공 처리 (결제 취소 상태 변경, 멤버십 회수)
+            // 여기서 에러 발생 시 전체 롤백되므로 포트원 호출 안 함 (안전)
             processSuccess(user, payment, refund, ip, ua);
+
+            // 4. 포트원 API 호출
+            callPortOneCancel(payment, request.getReason());
 
             return RefundResponse.builder()
                     .refundId(refund.getId())
