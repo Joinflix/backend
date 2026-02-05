@@ -57,6 +57,9 @@ public class User extends BaseEntity {
     @Column(name = "membership_expiry_date")
     private LocalDateTime membershipExpiryDate;
 
+    @Column(name = "last_notification_read_at")
+    private LocalDateTime lastNotificationReadAt;
+
     @Builder
     private User(String email, String password, String nickname, String signupIp,
                  Boolean isLock, Boolean isSocial, SocialProviderType socialProviderType,
@@ -71,6 +74,7 @@ public class User extends BaseEntity {
         this.isOnline = (isOnline != null) ? isOnline : false;
         this.socialProviderType = socialProviderType;
         this.profileImageUrl = profileImageUrl;
+        this.lastNotificationReadAt = null;
     }
 
     // 로그인 시 호출할 메서드
@@ -128,5 +132,10 @@ public class User extends BaseEntity {
     // 계정 잠금 해제
     public void unlockAccount() {
         this.isLock = false;
+    }
+    
+    //알림 읽음 상태 업데이트
+    public void updateLastNotificationReadAt(LocalDateTime clickedAt) {
+        this.lastNotificationReadAt = clickedAt;
     }
 }
