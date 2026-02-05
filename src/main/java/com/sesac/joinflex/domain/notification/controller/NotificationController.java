@@ -22,7 +22,7 @@ public class NotificationController {
     }
     // POST http://localhost:8080/api/notifications/last-read-at
     @PostMapping("/last-read-at")
-    public ResponseEntity<Void> readNotification(
+    public ResponseEntity<Void> updateLastReadTimestamp(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestBody NotificationReadRequest request
     ) {
