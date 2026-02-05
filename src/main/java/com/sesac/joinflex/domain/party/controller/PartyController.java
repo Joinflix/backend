@@ -45,10 +45,10 @@ public class PartyController {
 
     // http://localhost:8080/api/parties/{partyId}/join
     @PostMapping("/{partyId}/join")
-    public ResponseEntity<Void> joinParty(@PathVariable Long partyId,
+    public ResponseEntity<PartyRoomResponse> joinParty(@PathVariable Long partyId,
         @Valid @RequestBody PartyJoinRequest request,
         @AuthenticationPrincipal CustomUserDetails userDetails) {
-        partyService.joinParty(partyId, request, userDetails.getId());
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(partyService.joinParty(partyId, request, userDetails.getId()));
     }
 }

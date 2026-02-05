@@ -69,7 +69,7 @@ public class PartyService {
 
 
     @Transactional
-    public void joinParty(Long partyId, PartyJoinRequest request, Long userId) {
+    public PartyRoomResponse joinParty(Long partyId, PartyJoinRequest request, Long userId) {
         // 파티방 존재 여부 검증
         PartyRoom partyRoom = partyRoomRepository.findById(partyId)
             .orElseThrow(() -> new CustomException(ErrorCode.PARTY_NOT_FOUND));
@@ -81,6 +81,26 @@ public class PartyService {
 
         validateNotJoined(partyRoom, user);
 
+        processEntry(partyRoom, user, request);
+
+        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(),
+            partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
+            partyRoom.getCurrentMemberCount());
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private void validateNotJoined(PartyRoom partyRoom, User user) {
+        if (partyMemberRepository.existsByPartyRoomAndMemberAndStatus(partyRoom, user,
+            MemberStatus.JOINED)) {
+            throw new CustomException(ErrorCode.ALREADY_JOINED_PARTY);
+        }
+    }
+
+    private void processEntry(PartyRoom partyRoom, User user, PartyJoinRequest request) {
         // 방장이면 바로 입장
         if (partyRoom.isHost(user)) {
             addMember(partyRoom, user, MemberRole.HOST);
@@ -95,18 +115,6 @@ public class PartyService {
 
         // 비공개방 입장
         joinPrivateRoom(partyRoom, request, user);
-    }
-
-    private User getUser(Long userId) {
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-    }
-
-    private void validateNotJoined(PartyRoom partyRoom, User user) {
-        if (partyMemberRepository.existsByPartyRoomAndMemberAndStatus(partyRoom, user,
-            MemberStatus.JOINED)) {
-            throw new CustomException(ErrorCode.ALREADY_JOINED_PARTY);
-        }
     }
 
     private void joinPrivateRoom(PartyRoom partyRoom, PartyJoinRequest request, User user) {
