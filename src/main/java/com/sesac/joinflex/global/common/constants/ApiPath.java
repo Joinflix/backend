@@ -59,4 +59,11 @@ public final class ApiPath {
     // party
     public static final String PARTY = API_PREFIX + "/parties";
 
+    // movie
+    public static final String MOVIE = API_PREFIX + "/movies";
+
+    // review
+    public static final String REVIEW = API_PREFIX + "/reviews";
+    public static final String REVIEWS = "/reviews";
+
 }

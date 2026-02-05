@@ -5,7 +5,6 @@ import com.sesac.joinflex.domain.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,13 +20,11 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     @Min(1)
     @Max(5)
     private Integer starRating;
 
-    @NotBlank
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,5 +41,14 @@ public class Review {
         this.content = content;
         this.user = user;
         this.movie = movie;
+    }
+
+    public void updateStarRating(Integer rating){
+        this.starRating = rating;
+
+    }
+
+    public void updateContent(String content){
+        this.content = content;
     }
 }
