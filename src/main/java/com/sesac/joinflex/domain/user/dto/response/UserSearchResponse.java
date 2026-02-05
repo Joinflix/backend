@@ -11,4 +11,5 @@ public class UserSearchResponse {
     private String nickName;
     private String profileImageUrl;
     private String friendStatus;
+    private Long requestId;
 }

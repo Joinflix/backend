@@ -66,4 +66,6 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
        OR (fr.receiver.id = :me AND fr.sender.id IN :targetIds)
     """)
     List<FriendRequest> findAllRelatedRequests(@Param("me") Long me, @Param("targetIds") List<Long> targetIds);
+
+    Optional<FriendRequest> findByIdAndStatus(@Param("requestId") Long requestId, @Param("status") FriendRequestStatus status);
 }

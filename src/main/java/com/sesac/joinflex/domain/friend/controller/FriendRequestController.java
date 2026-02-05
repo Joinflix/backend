@@ -94,11 +94,11 @@ public class FriendRequestController {
     }
 
     // 친구 삭제
-    // http://localhost:8080/api/friends/{friendId}
+    // http://localhost:8080/api/friends/{requestId}
     @DeleteMapping(ApiPath.FRIEND_DELETE)
-    public ResponseEntity<Void> deleteFriend(@PathVariable Long friendId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Void> deleteFriend(@PathVariable Long requestId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long userId = userDetails.getId();
-        friendRequestService.deleteFriend(userId, friendId);
+        friendRequestService.deleteFriend(userId, requestId);
         return ResponseEntity.noContent().build();
     }
 }

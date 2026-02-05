@@ -76,8 +76,8 @@ public class FriendRequestService {
         validatePendingState(request);
 
         sendNotification(request.getSender().getId(),
-            NotificationMessageTemplate.friendReject(request.getReceiver().getNickname()),
-            NotificationType.FRIEND_REJECT);
+            NotificationMessageTemplate.eventReject(),
+            NotificationType.EVENT_REJECT);
 
         friendRequestRepository.delete(request);
     }
@@ -88,14 +88,24 @@ public class FriendRequestService {
         validateAccess(request, userId, true);
         validatePendingState(request);
 
+        sendNotification(request.getReceiver().getId(),
+                NotificationMessageTemplate.eventCancel(),
+                NotificationType.EVENT_CANCEL);
+
         friendRequestRepository.delete(request);
     }
 
     @Transactional
-    public void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Long userId, Long requestId) {
         FriendRequest request = friendRequestRepository
-            .findAcceptedFriendship(userId, friendId, FriendRequestStatus.ACCEPTED)
+            .findByIdAndStatus(requestId, FriendRequestStatus.ACCEPTED)
             .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_NOT_FOUND));
+
+        User target = extractFriend(request, userId);
+
+        sendNotification(target.getId(),
+                NotificationMessageTemplate.eventDelete(),
+                NotificationType.EVENT_DELETE);
 
         friendRequestRepository.delete(request);
     }
@@ -173,7 +183,9 @@ public class FriendRequestService {
                 // SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정
                 case FRIEND_REQUEST -> { /* 친구 요청 알림 실패 시 처리 */ }
                 case FRIEND_ACCEPT -> { /* 친구 수락 알림 실패 시 처리 */ }
-                case FRIEND_REJECT -> { /* 친구 거절 알림 실패 시 처리 */ }
+                case EVENT_REJECT -> { /* 친구 거절 실패 시 처리 */ }
+                case EVENT_DELETE -> { /* 친구 삭제 실패 시 처리 */ }
+                case EVENT_CANCEL -> { /* 친구 신청 취소 실패 시 처리 */ }
             }
         }
     }
