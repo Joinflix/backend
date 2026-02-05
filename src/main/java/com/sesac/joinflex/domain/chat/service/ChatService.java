@@ -21,4 +21,9 @@ public class ChatService {
             partyRoom.getCurrentMemberCount());
     }
 
+    public ChatMessageResponse createTalkMessage(Long partyId, UserResponse user, String message) {
+        PartyRoom partyRoom = partyRoomRepository.findById(partyId).orElseThrow();
+        return new ChatMessageResponse(MessageType.TALK, user.getNickName(),
+            message, partyRoom.getCurrentMemberCount());
+    }
 }
