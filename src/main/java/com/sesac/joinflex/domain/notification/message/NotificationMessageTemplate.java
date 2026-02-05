@@ -28,8 +28,8 @@ public class NotificationMessageTemplate {
         return String.format("%s님이 친구 신청을 수락하였습니다.", receiverNickname);
     }
 
-    public String friendReject(String receiverNickname) {
-        return String.format("%s님이 친구 신청을 거절하였습니다.", receiverNickname);
+    public String eventReject() {
+        return "친구 신청 거절 이벤트 발생";
     }
 
     public String eventCancel() {
