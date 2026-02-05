@@ -74,7 +74,7 @@ public class User extends BaseEntity {
         this.isOnline = (isOnline != null) ? isOnline : false;
         this.socialProviderType = socialProviderType;
         this.profileImageUrl = profileImageUrl;
-        this.lastNotificationReadAt = LocalDateTime.now();  // 가입 시점으로 초기화
+        this.lastNotificationReadAt = null;
     }
 
     // 로그인 시 호출할 메서드
