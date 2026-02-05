@@ -9,6 +9,7 @@ import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +43,19 @@ public class NotificationService {
         // 타임아웃 시 종료
         emitter.onTimeout(() -> emitterMap.remove(user.getId()));
 
-        List<Notification> notifications = notificationRepository.findByUser(user);
+        List<Notification> notifications;
+        if (user.getLastNotificationReadAt() != null) {
+            notifications = notificationRepository.findByUserAndCreatedAtAfter(user, user.getLastNotificationReadAt());
+        } else {
+            notifications = notificationRepository.findByUser(user);
+        }
 
-        if (!notifications.isEmpty()) {
-            send(user.getId(), notifications.stream().map(NotificationResponse::from).toList());
+        List<NotificationResponse> unreadNotifications = notifications.stream()
+            .map(NotificationResponse::from)
+            .toList();
+
+        if (!unreadNotifications.isEmpty()) {
+            send(user.getId(), unreadNotifications);
             return emitter;
         }
 
@@ -77,5 +88,11 @@ public class NotificationService {
     private User getUser(Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void updateLastNotificationReadAt(Long userId, LocalDateTime clickedAt) {
+        User user = getUser(userId);
+        user.updateLastNotificationReadAt(clickedAt);
     }
 }
