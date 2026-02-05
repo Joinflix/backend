@@ -88,17 +88,24 @@ public class FriendRequestService {
         validateAccess(request, userId, true);
         validatePendingState(request);
 
+        sendNotification(request.getReceiver().getId(),
+                NotificationMessageTemplate.eventCancel(),
+                NotificationType.EVENT_CANCEL);
+
         friendRequestRepository.delete(request);
     }
 
     @Transactional
-    public void deleteFriend(Long requestId) {
+    public void deleteFriend(Long userId, Long requestId) {
         FriendRequest request = friendRequestRepository
-            .findByIdAndStatus(requestId,FriendRequestStatus.ACCEPTED)
+            .findByIdAndStatus(requestId, FriendRequestStatus.ACCEPTED)
             .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_NOT_FOUND));
 
-        if (request.getStatus().equals("ACCEPTED"))
-            throw new CustomException(ErrorCode.FRIEND_NOT_FOUND);
+        User target = extractFriend(request, userId);
+
+        sendNotification(target.getId(),
+                NotificationMessageTemplate.eventDelete(),
+                NotificationType.EVENT_DELETE);
 
         friendRequestRepository.delete(request);
     }
@@ -177,6 +184,8 @@ public class FriendRequestService {
                 case FRIEND_REQUEST -> { /* 친구 요청 알림 실패 시 처리 */ }
                 case FRIEND_ACCEPT -> { /* 친구 수락 알림 실패 시 처리 */ }
                 case FRIEND_REJECT -> { /* 친구 거절 알림 실패 시 처리 */ }
+                case EVENT_DELETE -> { /* 친구 취소 실패 시 처리 */ }
+                case EVENT_CANCEL -> { /* 친구 신청 취소 실패 시 처리 */ }
             }
         }
     }

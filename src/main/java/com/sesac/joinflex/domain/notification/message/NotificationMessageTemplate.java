@@ -32,4 +32,12 @@ public class NotificationMessageTemplate {
         return String.format("%s님이 친구 신청을 거절하였습니다.", receiverNickname);
     }
 
+    public String eventCancel() {
+        return "친구 신청 취소 이벤트 발생";
+    }
+    public String eventDelete() {
+        return "친구 삭제 이벤트 발생";
+    }
+
+
 }
