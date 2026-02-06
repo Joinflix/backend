@@ -49,47 +49,23 @@ public class ReviewService {
         }
 
         Review savedReview = reviewRepository.save(review);
-        return ReviewResponse.builder()
-                .id(savedReview.getId())
-                .content(savedReview.getContent())
-                .starRating(savedReview.getStarRating())
-                .userId(savedReview.getUser().getId())
-                .nickname(savedReview.getUser().getNickname())
-                .movieId(review.getMovie().getId())
-                .movieTitle(review.getMovie().getTitle())
-                .build();
+        return ReviewResponse.from(savedReview);
     }
 
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
-        Slice<Review> reviews = reviewRepository.findReviewsByMovieId(
-                movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+        Slice<Review> reviews = reviewRepository.
+                findReviewsByMovieId(movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
-        return reviews.map(review -> ReviewResponse.builder()
-                .id(review.getId())
-                .content(review.getContent())
-                .starRating(review.getStarRating())
-                .userId(review.getUser().getId())
-                .nickname(review.getUser().getNickname())
-                .movieId(review.getMovie().getId())
-                .movieTitle(review.getMovie().getTitle())
-                .build());
+        return reviews.map(ReviewResponse::from);
     }
 
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getUserReviews(Long userId, Long cursorId, Pageable pageable) {
-        Slice<Review> reviews = reviewRepository.findReviewsByUserId(
-                userId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+        Slice<Review> reviews = reviewRepository.
+                findReviewsByUserId(userId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
-        return reviews.map(review -> ReviewResponse.builder()
-                .id(review.getId())
-                .content(review.getContent())
-                .starRating(review.getStarRating())
-                .userId(review.getUser().getId())
-                .nickname(review.getUser().getNickname())
-                .movieId(review.getMovie().getId())
-                .movieTitle(review.getMovie().getTitle())
-                .build());
+        return reviews.map(ReviewResponse::from);
     }
 
     public void deleteReview(Long userId, Long reviewId) {
