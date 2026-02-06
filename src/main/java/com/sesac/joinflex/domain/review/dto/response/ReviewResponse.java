@@ -15,8 +15,9 @@ public class ReviewResponse {
     private Integer starRating;
 
     private Long userId;
-
     private String nickname;
+    private Long movieId;
+    private String movieTitle;
 
     public static ReviewResponse from(Review review) {
         return ReviewResponse.builder()
@@ -25,6 +26,8 @@ public class ReviewResponse {
                 .starRating(review.getStarRating())
                 .userId(review.getUser().getId())
                 .nickname(review.getUser().getNickname())
+                .movieId(review.getMovie().getId())
+                .movieTitle(review.getMovie().getTitle())
                 .build();
     }
 

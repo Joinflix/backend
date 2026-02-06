@@ -55,6 +55,8 @@ public class ReviewService {
                 .starRating(savedReview.getStarRating())
                 .userId(savedReview.getUser().getId())
                 .nickname(savedReview.getUser().getNickname())
+                .movieId(review.getMovie().getId())
+                .movieTitle(review.getMovie().getTitle())
                 .build();
     }
 
@@ -69,6 +71,8 @@ public class ReviewService {
                 .starRating(review.getStarRating())
                 .userId(review.getUser().getId())
                 .nickname(review.getUser().getNickname())
+                .movieId(review.getMovie().getId())
+                .movieTitle(review.getMovie().getTitle())
                 .build());
     }
 
@@ -83,6 +87,8 @@ public class ReviewService {
                 .starRating(review.getStarRating())
                 .userId(review.getUser().getId())
                 .nickname(review.getUser().getNickname())
+                .movieId(review.getMovie().getId())
+                .movieTitle(review.getMovie().getTitle())
                 .build());
     }
 
