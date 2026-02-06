@@ -14,17 +14,17 @@ public class ReviewResponse {
 
     private Integer starRating;
 
-    private Long reviewerId;
+    private Long userId;
 
-    private String reviewerNickname;
+    private String nickname;
 
     public static ReviewResponse from(Review review) {
         return ReviewResponse.builder()
                 .id(review.getId())
                 .content(review.getContent())
                 .starRating(review.getStarRating())
-                .reviewerId(review.getUser().getId())
-                .reviewerNickname(review.getUser().getNickname())
+                .userId(review.getUser().getId())
+                .nickname(review.getUser().getNickname())
                 .build();
     }
 

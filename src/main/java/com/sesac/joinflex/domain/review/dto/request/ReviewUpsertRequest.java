@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewCreateRequest {
+public class ReviewUpsertRequest {
 
     @Size(min = 1, max = 250, message = "250자 이내로 작성해야 합니다.")
     private String content;
