@@ -61,6 +61,8 @@ public class PartyService {
         return rooms.map(room -> new PartyRoomResponse(
             room.getId(),
             room.getMovie().getTitle(),
+            room.getMovie().getBackdrop(),
+            room.getIsPublic(),
             room.getRoomName(),
             room.getHost().getNickname(),
             room.getCurrentMemberCount()
@@ -83,9 +85,8 @@ public class PartyService {
 
         processEntry(partyRoom, user, request);
 
-        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(),
-            partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
-            partyRoom.getCurrentMemberCount());
+        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(), partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
+                partyRoom.getRoomName(), partyRoom.getHost().getNickname(), partyRoom.getCurrentMemberCount());
     }
 
     private User getUser(Long userId) {

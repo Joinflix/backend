@@ -1,11 +1,7 @@
 package com.sesac.joinflex.domain.movie.entity;
 
 import com.sesac.joinflex.global.common.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +17,12 @@ public class Movie extends BaseEntity {
     private Long id;
 
     private String title;
+
+    private String poster;
+
+    private String backdrop;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
 }
