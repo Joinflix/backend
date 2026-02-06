@@ -21,14 +21,11 @@ public class MovieService {
     private final MovieRepository movieRepository;
 
     public Slice<MovieResponse> getMovies(Pageable pageable) {
-        return movieRepository.findAll(pageable)
-                .map(MovieResponse::from);
+        return movieRepository.findAll(pageable).map(MovieResponse::from);
     }
 
     public MovieDetailResponse getMovieDetail(Long movieId) {
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
-        
+        Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
         return MovieDetailResponse.of(movie);
     }
 

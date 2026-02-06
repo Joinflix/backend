@@ -29,7 +29,7 @@ public class MovieController {
     // http://localhost:8080/api/movies
     @GetMapping
     public ResponseEntity<Slice<MovieResponse>> getMovies(
-            @PageableDefault(size = 20) Pageable pageable) {
+        @PageableDefault(size = 20) Pageable pageable) {
         Slice<MovieResponse> response = movieService.getMovies(pageable);
         return ResponseEntity.ok(response);
     }
@@ -37,8 +37,7 @@ public class MovieController {
     // 영화 상세 조회
     // http://localhost:8080/api/movies/{movieId}
     @GetMapping("/{movieId}")
-    public ResponseEntity<MovieDetailResponse> getMovieDetail(
-            @PathVariable Long movieId) {
+    public ResponseEntity<MovieDetailResponse> getMovieDetail(@PathVariable Long movieId) {
         MovieDetailResponse response = movieService.getMovieDetail(movieId);
         return ResponseEntity.ok(response);
     }
@@ -46,10 +45,9 @@ public class MovieController {
     // 영화별 리뷰 목록 조회
     // http://localhost:8080/api/movies/{movieId}/reviews
     @GetMapping("/{movieId}/reviews")
-    public ResponseEntity<Slice<ReviewResponse>> getMovieReviews(
-            @PathVariable Long movieId,
-            @RequestParam(required = false) Long cursorId,
-            @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<Slice<ReviewResponse>> getMovieReviews(@PathVariable Long movieId,
+        @RequestParam(required = false) Long cursorId,
+        @PageableDefault(size = 10) Pageable pageable) {
         Slice<ReviewResponse> response = reviewService.getMovieReviews(movieId, cursorId, pageable);
         return ResponseEntity.ok(response);
     }

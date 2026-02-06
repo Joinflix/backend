@@ -15,11 +15,11 @@ public class MovieDetailResponse {
 
     public static MovieDetailResponse of(Movie movie) {
         return MovieDetailResponse.builder()
-                .id(movie.getId())
-                .title(movie.getTitle())
-                .poster(movie.getPoster())
-                .backdrop(movie.getBackdrop())
-                .description(movie.getDescription())
-                .build();
+            .id(movie.getId())
+            .title(movie.getTitle())
+            .poster(movie.getPoster())
+            .backdrop(movie.getBackdrop())
+            .description(movie.getDescription())
+            .build();
     }
 }
