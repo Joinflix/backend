@@ -54,8 +54,7 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
-        Slice<Review> reviews = reviewRepository.
-                findReviewsByMovieId(
+        Slice<Review> reviews = reviewRepository.findReviewsByMovieId(
                         movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
         return reviews.map(ReviewResponse::from);
@@ -63,8 +62,7 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getUserReviews(Long userId, Long cursorId, Pageable pageable) {
-        Slice<Review> reviews = reviewRepository.
-                findReviewsByUserId(
+        Slice<Review> reviews = reviewRepository.findReviewsByUserId(
                         userId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
         return reviews.map(ReviewResponse::from);
