@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  # 1. Frontend
+  frontend:
+    build: ./frontend
+    image: 123rkdduswn/joinflix-front:latest
+    container_name: frontend-joinflix
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - joinflix-network
+
+  # 2. Backend (Spring Boot)
+  backend:
+    build: ./backend
+    image: 123rkdduswn/joinflix-back:latest
+    container_name: backend-joinflix
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=joinflix
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - uploads:/app/uploads
+    networks:
+      - joinflix-network
+
+  # 3. Redis (Cache/Session)
+  redis:
+    image: "redis:7.2.1-alpine"
+    container_name: redis-joinflix
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    networks:
+      - joinflix-network
+
+  # 4. MySQL (Database)
+  mysql:
+    image: "mysql:8.0"
+    container_name: mysql-joinflix
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: "joinflix"
+      TZ: "Asia/Seoul"
+    ports:
+      - "3308:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - joinflix-network
+
+# 볼륨 및 네트워크 정의
+volumes:
+  mysql_data:
+  uploads:
+
+networks:
+  joinflix-network:
+    driver: bridge
