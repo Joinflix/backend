@@ -30,6 +30,16 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
+    // 리뷰 삭제
+    // http://localhost:8080/api/reviews/{reviewId}
+    @DeleteMapping(ApiPath.REVIEW + "/{reviewId}")
+    public ResponseEntity<Void> deleteReview(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long reviewId) {
+        reviewService.deleteReview(userDetails.getId(), reviewId);
+        return ResponseEntity.noContent().build();
+    }
+
     // 영화별 리뷰 조회
     // http://localhost:8080/api/movies/{movieId}/reviews
     @GetMapping(ApiPath.MOVIE + "/{movieId}/reviews")
@@ -52,15 +62,6 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    // 리뷰 삭제
-    // http://localhost:8080/api/reviews/{reviewId}
-    @DeleteMapping(ApiPath.REVIEW + "/{reviewId}")
-    public ResponseEntity<Void> deleteReview(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long reviewId) {
-        reviewService.deleteReview(userDetails.getId(), reviewId);
-        return ResponseEntity.noContent().build();
-    }
 }
 
 
