@@ -40,17 +40,6 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
-    // 영화별 리뷰 조회
-    // http://localhost:8080/api/movies/{movieId}/reviews
-    @GetMapping(ApiPath.MOVIE + "/{movieId}/reviews")
-    public ResponseEntity<Slice<ReviewResponse>> getMovieReviews(
-            @PathVariable Long movieId,
-            @RequestParam(required = false) Long cursorId,
-            @PageableDefault(size = 10) Pageable pageable) {
-        Slice<ReviewResponse> response = reviewService.getMovieReviews(movieId, cursorId, pageable);
-        return ResponseEntity.ok(response);
-    }
-
     // 사용자별 리뷰 조회
     // http://localhost:8080/api/users/{userId}/reviews
     @GetMapping(ApiPath.USER + "/{userId}/reviews")
