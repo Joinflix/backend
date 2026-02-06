@@ -2,6 +2,8 @@ package com.sesac.joinflex.domain.review.entity;
 
 import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.user.entity.User;
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -44,6 +46,9 @@ public class Review {
     }
 
     public void updateStarRating(Integer rating){
+        if (rating != null && (rating < 1 || rating > 5)) {
+            throw new CustomException(ErrorCode.INVALID_REVIEW_RATING);
+        }
         this.starRating = rating;
 
     }
