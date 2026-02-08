@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewUpsertRequest {
 
-    @Size(min = 1, max = 250, message = "250자 이내로 작성해야 합니다.")
+    @Size(min = 1, max = 250, message = "1자 이상 250자 이하로 작성해야 합니다.")
     private String content;
 
     @Min(1) @Max(5)

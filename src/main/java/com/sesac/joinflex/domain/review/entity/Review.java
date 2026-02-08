@@ -12,7 +12,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "reviews")
+// 동일 사용자가 같은 영화에 중복 리뷰를 작성하지 못하도록 DB 레벨에서 유니크 제약 설정
+@Table(
+        name = "reviews",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "movie_id"})
+        }
+)
 @Entity
 public class Review {
 

@@ -26,7 +26,7 @@ public class ReviewService {
 
     public ReviewResponse upsertReview(Long userId, Long movieId, ReviewUpsertRequest request) {
         if (request.getContent() == null && request.getStarRating() == null) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST);
+            throw new CustomException(ErrorCode.REVIEW_CONTENT_OR_RATING_REQUIRED);
         }
         Movie movie = movieRepository.findById(movieId)
             .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
@@ -71,7 +71,7 @@ public class ReviewService {
     }
 
     public void deleteReview(Long userId, Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
+        Review review = reviewRepository.findByIdWithMovie(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         if (!review.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOT_REVIEW_OWNER);
