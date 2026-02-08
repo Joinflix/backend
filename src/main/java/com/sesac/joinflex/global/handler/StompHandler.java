@@ -1,4 +1,4 @@
-package com.sesac.joinflex.global.security;
+package com.sesac.joinflex.global.handler;
 
 import com.sesac.joinflex.domain.chat.dto.MessageType;
 import com.sesac.joinflex.domain.chat.dto.response.ChatMessageResponse;
@@ -6,6 +6,7 @@ import com.sesac.joinflex.domain.party.service.PartyService;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
+import com.sesac.joinflex.global.security.JwtProvider;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -19,7 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtChannelInterceptor implements ChannelInterceptor {
+public class StompHandler implements ChannelInterceptor {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
@@ -30,7 +31,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
     private final PartyService partyService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    public JwtChannelInterceptor(JwtProvider jwtProvider, PartyService partyService,
+    public StompHandler(JwtProvider jwtProvider, PartyService partyService,
         @Lazy SimpMessagingTemplate messagingTemplate) {
         this.jwtProvider = jwtProvider;
         this.partyService = partyService;
