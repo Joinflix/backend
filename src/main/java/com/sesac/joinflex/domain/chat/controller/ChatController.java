@@ -27,8 +27,7 @@ public class ChatController {
     @SendTo("/sub/party/{partyId}")
     public ChatMessageResponse enterUser(@DestinationVariable Long partyId, Principal principal,
         SimpMessageHeaderAccessor headerAccessor) {
-        Authentication authentication = (Authentication) principal;
-        UserResponse userResponse = (UserResponse) authentication.getPrincipal();
+        UserResponse userResponse = getUser(principal);
 
         headerAccessor.getSessionAttributes().put("partyId", partyId);
 
@@ -39,9 +38,8 @@ public class ChatController {
     @SendTo("/sub/party/{partyId}")
     public ChatMessageResponse talkUser(@DestinationVariable Long partyId, @Payload
     ChatMessageRequest request, Principal principal) {
-        Authentication authentication = (Authentication) principal;
-        UserResponse userResponse = (UserResponse) authentication.getPrincipal();
-        System.out.println(userResponse.getNickName());
+        UserResponse userResponse = getUser(principal);
+
         return chatService.createTalkMessage(partyId, userResponse, request.message());
     }
 
@@ -49,15 +47,18 @@ public class ChatController {
     @SendTo("/sub/party/{partyId}")
     public ChatMessageResponse leaveUser(@DestinationVariable Long partyId, Principal principal,
         SimpMessageHeaderAccessor headerAccessor) {
-        Authentication authentication = (Authentication) principal;
-        UserResponse user = (UserResponse) authentication.getPrincipal();
+        UserResponse user = getUser(principal);
 
         headerAccessor.getSessionAttributes().remove("partyId");
 
         return partyService.leavePartyRoom(partyId, user.getId())
             .map(currentCount -> chatService.createLeaveMessage(partyId, user))
             .orElse(null);
+    }
 
+    private UserResponse getUser(Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        return (UserResponse) authentication.getPrincipal();
     }
 
 }
