@@ -15,6 +15,7 @@ import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -73,8 +74,7 @@ public class PartyService {
     @Transactional
     public PartyRoomResponse joinParty(Long partyId, PartyJoinRequest request, Long userId) {
         // 파티방 존재 여부 검증
-        PartyRoom partyRoom = partyRoomRepository.findById(partyId)
-            .orElseThrow(() -> new CustomException(ErrorCode.PARTY_NOT_FOUND));
+        PartyRoom partyRoom = getPartyRoom(partyId);
 
         // 사용자 검증
         User user = getUser(userId);
@@ -87,6 +87,12 @@ public class PartyService {
 
         return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(), partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
                 partyRoom.getRoomName(), partyRoom.getHost().getNickname(), partyRoom.getCurrentMemberCount());
+    }
+    
+
+    private PartyRoom getPartyRoom(Long partyId) {
+        return partyRoomRepository.findById(partyId)
+            .orElseThrow(() -> new CustomException(ErrorCode.PARTY_NOT_FOUND));
     }
 
     private User getUser(Long userId) {
