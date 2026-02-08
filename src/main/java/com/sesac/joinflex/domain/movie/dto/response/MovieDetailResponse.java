@@ -12,6 +12,7 @@ public class MovieDetailResponse {
     private String poster;
     private String backdrop;
     private String description;
+    private Double averageRating;
 
     public static MovieDetailResponse of(Movie movie) {
         return MovieDetailResponse.builder()
@@ -20,6 +21,8 @@ public class MovieDetailResponse {
             .poster(movie.getPoster())
             .backdrop(movie.getBackdrop())
             .description(movie.getDescription())
+            .averageRating(movie.getAverageRating())
             .build();
     }
 }
+
