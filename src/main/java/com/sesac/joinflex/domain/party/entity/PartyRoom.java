@@ -88,6 +88,10 @@ public class PartyRoom extends BaseEntity {
         this.currentMemberCount++;
     }
 
+    public void leaveMember() {
+        this.currentMemberCount--;
+    }
+
     public boolean isPasswordMatch(String passCode) {
         return this.passCode.equals(passCode);
     }

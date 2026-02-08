@@ -88,7 +88,19 @@ public class PartyService {
         return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(), partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
                 partyRoom.getRoomName(), partyRoom.getHost().getNickname(), partyRoom.getCurrentMemberCount());
     }
-    
+
+    @Transactional
+    public Optional<Integer> leavePartyRoom(Long partyId, Long userId) {
+        PartyRoom partyRoom = getPartyRoom(partyId);
+        User user = getUser(userId);
+
+        return partyMemberRepository.findByPartyRoomAndMemberAndStatus(partyRoom, user, MemberStatus.JOINED)
+            .map(member -> {
+                member.leave();
+                partyRoom.leaveMember();
+                return partyRoom.getCurrentMemberCount(); // 실제 처리가 되었을 때만 인원수 반환
+            });
+    }
 
     private PartyRoom getPartyRoom(Long partyId) {
         return partyRoomRepository.findById(partyId)

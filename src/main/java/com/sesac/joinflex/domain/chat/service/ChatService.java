@@ -23,4 +23,10 @@ public class ChatService {
         partyRoomRepository.findById(partyId).orElseThrow();
         return new ChatMessageResponse(MessageType.TALK, user.getNickName(), message);
     }
+
+    public ChatMessageResponse createLeaveMessage(Long partyId, UserResponse user) {
+        partyRoomRepository.findById(partyId).orElseThrow();
+        return new ChatMessageResponse(MessageType.LEAVE, user.getNickName(),
+            user.getNickName() + "님이 퇴장하셨습니다.");
+    }
 }
