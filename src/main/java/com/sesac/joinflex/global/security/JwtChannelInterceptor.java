@@ -28,19 +28,25 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
             StompHeaderAccessor.class);
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            String token = resolveToken(accessor);
-
-            validateToken(token);
-
-            UserResponse userResponse = jwtProvider.getUserResponse(token);
-
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                userResponse, null, null);
-
-            accessor.setUser(authenticationToken);
+            handleConnect(accessor);
         }
+
         return message;
     }
+
+    private void handleConnect(StompHeaderAccessor accessor) {
+        String token = resolveToken(accessor);
+
+        validateToken(token);
+
+        UserResponse userResponse = jwtProvider.getUserResponse(token);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+            userResponse, null, null);
+
+        accessor.setUser(authenticationToken);
+    }
+
 
     private String resolveToken(StompHeaderAccessor accessor) {
         String rawToken = accessor.getFirstNativeHeader(AUTHORIZATION_HEADER);
