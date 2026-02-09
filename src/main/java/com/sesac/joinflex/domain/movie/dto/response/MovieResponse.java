@@ -25,4 +25,3 @@ public class MovieResponse {
             .build();
     }
 }
-

@@ -38,9 +38,9 @@ public class MovieController {
     // 영화 상세 조회
     // http://localhost:8080/api/movies/{movieId}
     @GetMapping("/{movieId}")
-    public ResponseEntity<MovieDetailResponse> getMovieDetail(@PathVariable Long movieId) {
-        MovieDetailResponse response = movieService.getMovieDetail(movieId);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<MovieResponse> getSingleMovie(@PathVariable Long movieId) {
+        MovieResponse movieResponse = movieService.getSingleMovie(movieId);
+        return ResponseEntity.ok(movieResponse);
     }
 
     // 영화별 리뷰 목록 조회

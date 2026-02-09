@@ -20,15 +20,15 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
 
+    public MovieResponse getSingleMovie(Long movieId){
+        Movie movie = movieRepository.findById(movieId).orElseThrow(()-> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
+        MovieResponse movieResponse = MovieResponse.from(movie);
+        return movieResponse;
+        }
     public Slice<MovieResponse> getMovies(Long cursorId, Pageable pageable) {
         Slice<Movie> movies = movieRepository.findMoviesByCursor(
             cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
         return movies.map(MovieResponse::from);
-    }
-
-    public MovieDetailResponse getMovieDetail(Long movieId) {
-        Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
-        return MovieDetailResponse.of(movie);
     }
 
 }

@@ -31,6 +31,17 @@ public class Movie extends BaseEntity {
     @Column(nullable = false)
     private Integer ratingCount = 0;
 
+    private Movie(String title, String poster, String backdrop, String description) {
+        this.title = title;
+        this.poster = poster;
+        this.backdrop = backdrop;
+        this.description = description;
+    }
+
+    public static Movie create(String title, String poster, String backdrop, String description) {
+        return new Movie(title, poster, backdrop, description);
+    }
+
     public Double getAverageRating() {
         if (ratingCount == 0) {
             return null;
