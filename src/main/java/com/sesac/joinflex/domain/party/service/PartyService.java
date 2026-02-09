@@ -39,8 +39,7 @@ public class PartyService {
             .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
 
         User host = getUser(userId);
-
-        // Todo membership 검증 예정 (결제한 사람만 파티 생성 가능)
+        host.validatePaidMembership();
 
         PartyRoom savedRoom = partyRoomRepository.save(
             PartyRoom.create(request.roomName(), host, movie, request.isPublic(),
@@ -78,8 +77,7 @@ public class PartyService {
 
         // 사용자 검증
         User user = getUser(userId);
-
-        // Todo membership 검증 예정 (결제한 사람만 파티 참여 가능)
+        user.validatePaidMembership();
 
         validateNotJoined(partyRoom, user);
 
