@@ -5,6 +5,7 @@ import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
@@ -29,6 +30,11 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @AssertTrue(message = "리뷰 또는 별점 중 하나는 필수입니다.")
+    private boolean isContentOrRatingRequired() {
+        return starRating != null || content != null;
+    }
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -18,17 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
 
+    @Transactional
     public ReviewResponse upsertReview(Long userId, Long movieId, ReviewUpsertRequest request) {
-        if (request.getContent() == null && request.getStarRating() == null) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST);
-        }
-
         Review review = reviewRepository.findByUserIdAndMovieId(userId, movieId)
             .orElseGet(() -> {
                 User user = userRepository.findById(userId)
@@ -52,7 +49,7 @@ public class ReviewService {
         return ReviewResponse.from(savedReview);
     }
 
-    @Transactional(readOnly = true)
+    
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
         Slice<Review> reviews = reviewRepository.findReviewsByMovieId(
             movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
@@ -60,7 +57,7 @@ public class ReviewService {
         return reviews.map(ReviewResponse::from);
     }
 
-    @Transactional(readOnly = true)
+
     public Slice<ReviewResponse> getUserReviews(Long userId, Long cursorId, Pageable pageable) {
         Slice<Review> reviews = reviewRepository.findReviewsByUserId(
             userId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
@@ -68,6 +65,7 @@ public class ReviewService {
         return reviews.map(ReviewResponse::from);
     }
 
+    @Transactional
     public void deleteReview(Long userId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
