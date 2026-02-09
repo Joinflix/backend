@@ -2,6 +2,8 @@ package com.sesac.joinflex.domain.user.entity;
 
 import com.sesac.joinflex.domain.membership.entity.Membership;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -137,5 +139,11 @@ public class User extends BaseEntity {
     //알림 읽음 상태 업데이트
     public void updateLastNotificationReadAt(LocalDateTime clickedAt) {
         this.lastNotificationReadAt = clickedAt;
+    }
+
+    public void validatePaidMembership() {
+        if (this.membership == null) {
+            throw new CustomException(ErrorCode.MEMBERSHIP_REQUIRED);
+        }
     }
 }

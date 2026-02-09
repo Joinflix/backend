@@ -76,6 +76,7 @@ public enum ErrorCode {
     INVALID_PARTY_PASSWORD(HttpStatus.BAD_REQUEST, "파티 입장 코드가 일치하지 않습니다."),
     PARTY_ROOM_FULL(HttpStatus.CONFLICT, "파티 인원이 모두 찼습니다."),
     ALREADY_JOINED_PARTY(HttpStatus.CONFLICT, "이미 입장한 파티입니다."),
+    MEMBERSHIP_REQUIRED(HttpStatus.FORBIDDEN, "멤버십 사용자만 파티 기능을 이용할 수 있습니다."),
 
 
     // Friend
