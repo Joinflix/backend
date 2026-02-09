@@ -17,6 +17,7 @@
       username: ${DB_USERNAME:root}
       password: ${DB_PASSWORD:password}
     jpa:
+      open-in-view: false
       show-sql: ${JPA_SHOW_SQL:true}
       hibernate:
         ddl-auto: ${JPA_DDL_AUTO:create}
