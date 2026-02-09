@@ -52,4 +52,7 @@ public class PartyMember extends BaseEntity {
         return new PartyMember(partyRoom, member, role, MemberStatus.JOINED);
     }
 
+    public void leave() {
+        this.status = MemberStatus.LEFT;
+    }
 }
