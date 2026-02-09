@@ -30,16 +30,16 @@ public class ReviewService {
         }
 
         Review review = reviewRepository.findByUserIdAndMovieId(userId, movieId)
-                .orElseGet(() -> {
-                    User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-                    Movie movie = movieRepository.findById(movieId)
-                            .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
-                    return Review.builder()
-                            .user(user)
-                            .movie(movie)
-                            .build();
-                });
+            .orElseGet(() -> {
+                User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                Movie movie = movieRepository.findById(movieId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
+                return Review.builder()
+                    .user(user)
+                    .movie(movie)
+                    .build();
+            });
 
         if (request.getStarRating() != null) {
             review.updateStarRating(request.getStarRating());
@@ -55,7 +55,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
         Slice<Review> reviews = reviewRepository.findReviewsByMovieId(
-                        movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+            movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
         return reviews.map(ReviewResponse::from);
     }
@@ -63,14 +63,14 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getUserReviews(Long userId, Long cursorId, Pageable pageable) {
         Slice<Review> reviews = reviewRepository.findReviewsByUserId(
-                        userId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+            userId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
         return reviews.map(ReviewResponse::from);
     }
 
     public void deleteReview(Long userId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         if (!review.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOT_REVIEW_OWNER);
