@@ -11,6 +11,7 @@ import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -52,9 +53,16 @@ public class ReviewService {
         if (request.getContent() != null) {
             review.updateContent(request.getContent());
         }
-        Review savedReview = reviewRepository.save(review);
-        return ReviewResponse.from(savedReview);
+
+        try {
+            Review savedReview = reviewRepository.save(review);
+            return ReviewResponse.from(savedReview);
+        } catch (DataIntegrityViolationException e) {
+            // 동시 요청으로 인한 유니크 제약 위반 시 ALREADY_REVIEWED로 처리
+            throw new CustomException(ErrorCode.ALREADY_REVIEWED);
+        }
     }
+
 
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
