@@ -26,7 +26,13 @@ public class ReviewService {
     private final MovieRepository movieRepository;
 
     public ReviewResponse upsertReview(Long userId, Long movieId, ReviewUpsertRequest request) {
-        if (request.getContent() == null && request.getStarRating() == null) {
+        String content = request.getContent();
+        Integer starRating = request.getStarRating();
+
+        if (content != null && content.isBlank()) {
+            content = null;
+        }
+        if (content == null && starRating == null) {
             throw new CustomException(ErrorCode.REVIEW_CONTENT_OR_RATING_REQUIRED);
         }
         Movie movie = movieRepository.findById(movieId)
@@ -40,18 +46,17 @@ public class ReviewService {
                     .movie(movie)
                     .build();
             });
-        if (request.getStarRating() != null) {
+        if (starRating != null) {
             Integer previousRating = review.getStarRating();
             if (previousRating == null) {
-                movie.addRating(request.getStarRating());
+                movie.addRating(starRating);
             } else {
-                movie.updateRating(previousRating, request.getStarRating());
+                movie.updateRating(previousRating, starRating);
             }
-            review.updateStarRating(request.getStarRating());
+            review.updateStarRating(starRating);
         }
-
-        if (request.getContent() != null) {
-            review.updateContent(request.getContent());
+        if (content != null) {
+            review.updateContent(content.trim());
         }
 
         try {
@@ -63,9 +68,11 @@ public class ReviewService {
         }
     }
 
-
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
+        if (!movieRepository.existsById(movieId)) {
+            throw new CustomException(ErrorCode.MOVIE_NOT_FOUND);
+        }
         Slice<Review> reviews = reviewRepository.
             findReviewsByMovieId(movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
         return reviews.map(ReviewResponse::from);
@@ -73,6 +80,9 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Slice<ReviewResponse> getUserReviews(Long userId, Long cursorId, Pageable pageable) {
+        if (!userRepository.existsById(userId)) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
         Slice<Review> reviews = reviewRepository.
             findReviewsByUserId(userId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
         return reviews.map(ReviewResponse::from);
@@ -84,8 +94,6 @@ public class ReviewService {
         if (!review.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOT_REVIEW_OWNER);
         }
-
-        // 별점이 있는 경우 Movie 집계에서 차감
         if (review.getStarRating() != null) {
             review.getMovie().removeRating(review.getStarRating());
         }

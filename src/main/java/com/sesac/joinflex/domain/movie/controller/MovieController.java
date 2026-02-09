@@ -29,8 +29,9 @@ public class MovieController {
     // http://localhost:8080/api/movies
     @GetMapping
     public ResponseEntity<Slice<MovieResponse>> getMovies(
+        @RequestParam(required = false) Long cursorId,
         @PageableDefault(size = 20) Pageable pageable) {
-        Slice<MovieResponse> response = movieService.getMovies(pageable);
+        Slice<MovieResponse> response = movieService.getMovies(cursorId, pageable);
         return ResponseEntity.ok(response);
     }
 

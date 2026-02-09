@@ -20,8 +20,10 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
 
-    public Slice<MovieResponse> getMovies(Pageable pageable) {
-        return movieRepository.findAll(pageable).map(MovieResponse::from);
+    public Slice<MovieResponse> getMovies(Long cursorId, Pageable pageable) {
+        Slice<Movie> movies = movieRepository.findMoviesByCursor(
+            cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+        return movies.map(MovieResponse::from);
     }
 
     public MovieDetailResponse getMovieDetail(Long movieId) {
