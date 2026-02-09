@@ -79,7 +79,7 @@ public class ReviewService {
     }
 
     public void deleteReview(Long userId, Long reviewId) {
-        Review review = reviewRepository.findByIdWithMovie(reviewId)
+        Review review = reviewRepository.findByIdWithUserAndMovie(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         if (!review.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOT_REVIEW_OWNER);
