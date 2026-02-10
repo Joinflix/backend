@@ -92,7 +92,8 @@ public class PaymentService {
      */
     private PaymentResponse processPaymentCompletion(Payment payment, User user, Membership membership, String ip, String ua) {
         if (payment.getStatus() == PaymentStatus.COMPLETED) {
-            // 멤버십 기간 업데이트
+            // 멤버십 기간 업데이트 및 계정 활성화
+            user.activate(); // PENDING -> ACTIVE
             user.updateMembership(membership, MEMBERSHIP_DURATION_MONTH);
 
             // 성공 로그 저장

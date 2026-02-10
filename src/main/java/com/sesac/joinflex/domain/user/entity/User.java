@@ -35,6 +35,10 @@ public class User extends BaseEntity {
     @Column(name = "role_type", nullable = false)
     private UserRoleType roleType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private UserStatus status = UserStatus.PENDING;
+
     @Column(name = "nickname", nullable = false, unique = true, length = 100)
     private String nickname;
 
@@ -98,6 +102,7 @@ public class User extends BaseEntity {
         // 멤버십 회수(null) 시 처리
         if (membership == null) {
             this.membershipExpiryDate = null;
+            this.status = UserStatus.PENDING;
             return;
         }
 
@@ -109,9 +114,17 @@ public class User extends BaseEntity {
         this.membershipExpiryDate = baseDate.plusMonths(months);
     }
 
+    // 유저 활성화 메서드
+    public void activate() {
+        if (this.status == UserStatus.PENDING) {
+            this.status = UserStatus.ACTIVE;
+        }
+    }
+
     // 서비스 이용 가능 여부 확인
     public Boolean canUseService() {
-        return this.membership != null &&
+        return this.status == UserStatus.ACTIVE &&
+                this.membership != null &&
                 (membershipExpiryDate != null && membershipExpiryDate.isAfter(LocalDateTime.now()));
     }
 

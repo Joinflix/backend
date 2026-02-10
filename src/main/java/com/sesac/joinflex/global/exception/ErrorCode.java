@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     LOCKED_ACCOUNT(HttpStatus.FORBIDDEN, "잠긴 계정입니다. 관리자에게 문의하세요."),
+    USER_NOT_ACTIVE(HttpStatus.FORBIDDEN, "결제가 완료되지 않은 계정입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
     NOT_OWNER(HttpStatus.FORBIDDEN, "본인만 수정 및 조회가 가능합니다."),

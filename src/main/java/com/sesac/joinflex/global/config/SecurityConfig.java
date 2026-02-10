@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //                       //결제 테스트용 html
-                        .requestMatchers("/auth-test.html", "/payment-test.html", "/static/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/auth-test.html", "/payment-test.html", "/upload-test.html", "/static/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
                         .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").permitAll() //로그인, 회원가입
                         .requestMatchers("/ws-stomp/**").permitAll()
@@ -63,7 +63,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost"));
+        configuration.setAllowedOriginPatterns(List.of("*")); // 모든 도메인 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));
