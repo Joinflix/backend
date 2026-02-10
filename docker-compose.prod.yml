@@ -44,10 +44,7 @@ services:
     networks:
       - joinflix-network
 
-# 볼륨 및 네트워크 정의
-volumes:
-  mysql_data:
-
+# 네트워크 정의
 networks:
   joinflix-network:
     driver: bridge
