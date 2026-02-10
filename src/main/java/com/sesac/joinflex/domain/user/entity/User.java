@@ -102,6 +102,7 @@ public class User extends BaseEntity {
         // 멤버십 회수(null) 시 처리
         if (membership == null) {
             this.membershipExpiryDate = null;
+            this.status = UserStatus.PENDING;
             return;
         }
 
