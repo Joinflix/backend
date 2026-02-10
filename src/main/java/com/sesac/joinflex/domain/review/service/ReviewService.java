@@ -27,29 +27,13 @@ public class ReviewService {
     @Transactional
     public ReviewResponse upsertReview(Long userId, Long movieId, ReviewUpsertRequest request) {
         Review review = reviewRepository.findByUserIdAndMovieId(userId, movieId)
-            .orElseGet(() -> {
-                User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-                Movie movie = movieRepository.findById(movieId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
-                return Review.builder()
-                    .user(user)
-                    .movie(movie)
-                    .build();
-            });
-
-        if (request.getStarRating() != null) {
-            review.updateStarRating(request.getStarRating());
-        }
-        if (request.getContent() != null) {
-            review.updateContent(request.getContent());
-        }
+            .orElseGet(() -> getReview(userId, movieId));
+        review.updateReview(review, request);
 
         Review savedReview = reviewRepository.save(review);
         return ReviewResponse.from(savedReview);
     }
 
-    
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
         Slice<Review> reviews = reviewRepository.findReviewsByMovieId(
             movieId, cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
@@ -75,5 +59,16 @@ public class ReviewService {
         }
 
         reviewRepository.delete(review);
+    }
+
+    private Review getReview(Long userId, Long movieId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
+        return Review.builder()
+                .user(user)
+                .movie(movie)
+                .build();
     }
 }
