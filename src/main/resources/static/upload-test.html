@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3 파일 업로드/삭제 테스트</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; background: #f4f7f6; }
+        .container { max-width: 500px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 8px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .preview { margin-top: 20px; max-width: 100%; display: none; border: 1px solid #ddd; border-radius: 5px; }
+        .result-url { word-break: break-all; color: #3182f6; margin-top: 10px; font-size: 0.9em; padding: 10px; background: #eef5ff; border-radius: 5px; display: none; }
+        button { cursor: pointer; background: #3182f6; color: white; border: none; padding: 12px 15px; border-radius: 4px; width: 100%; font-weight: bold; margin-bottom: 10px; }
+        button:disabled { background: #ccc; }
+        button.delete-btn { background: #d32f2f; }
+        .token-status { font-size: 13px; margin-bottom: 15px; padding: 10px; border-radius: 4px; background: #eee; border-left: 4px solid #3182f6; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>S3 파일 업로드/삭제 테스트</h2>
+    <div id="tokenStatus" class="token-status">토큰 확인 중...</div>
+
+    <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" accept="image/*" required>
+        <br><br>
+        <button type="submit" id="submitBtn">업로드 시작</button>
+    </form>
+
+    <button id="deleteBtn" class="delete-btn" style="display:none;">이미지 삭제</button>
+
+    <div id="status" style="margin-top:15px; text-align:center; font-weight:bold;"></div>
+    <img id="imagePreview" class="preview" alt="업로드된 이미지 미리보기">
+    <div id="urlDisplay" class="result-url"></div>
+</div>
+
+<script>
+    // 1. URL 쿼리 파라미터에서 token 추출 (auth-test.html에서 보낸 값)
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const tokenStatus = document.getElementById('tokenStatus');
+
+    // 토큰 존재 여부 시각화
+    if (token) {
+        tokenStatus.innerText = "✅ 인증 토큰이 정상적으로 연동되었습니다.";
+        tokenStatus.style.color = "#2e7d32";
+        console.log("연동된 토큰:", token);
+    } else {
+        tokenStatus.innerText = "⚠️ 토큰이 없습니다! 로그인 페이지를 거쳐서 오세요.";
+        tokenStatus.style.color = "#d32f2f";
+    }
+
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const status = document.getElementById('status');
+    const imagePreview = document.getElementById('imagePreview');
+    const urlDisplay = document.getElementById('urlDisplay');
+    const submitBtn = document.getElementById('submitBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    const UPLOAD_URL = '/api/files/upload';
+    const DELETE_URL = '/api/files';
+
+    // 업로드 처리
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!token) {
+            alert('인증 토큰이 없습니다. 로그인 후 다시 시도하세요.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        status.innerText = '⏳ 업로드 중...';
+        status.style.color = "#333";
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch(UPLOAD_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': "Bearer " + token
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const uploadedUrl = data.url;
+
+                status.innerText = '✅ 업로드 성공!';
+                status.style.color = "#2e7d32";
+
+                // 결과 표시
+                urlDisplay.style.display = 'block';
+                urlDisplay.innerHTML = `<strong>URL:</strong> <a href="${uploadedUrl}" target="_blank">${uploadedUrl}</a>`;
+
+                imagePreview.src = uploadedUrl;
+                imagePreview.style.display = 'block';
+
+                // 삭제 버튼 활성화
+                deleteBtn.style.display = 'block';
+            } else {
+                const errorText = await response.text();
+                status.innerText = `❌ 업로드 실패: ${response.status}`;
+                status.style.color = "#d32f2f";
+                console.error("서버 에러 응답:", errorText);
+            }
+        } catch (error) {
+            console.error('Fetch 에러:', error);
+            status.innerText = '❌ 서버 연결 오류';
+            status.style.color = "#d32f2f";
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
+
+    // 삭제 처리
+    deleteBtn.addEventListener('click', async () => {
+        if (!confirm('정말 이미지를 삭제하시겠습니까?')) return;
+
+        status.innerText = '⏳ 삭제 중...';
+        deleteBtn.disabled = true;
+
+        try {
+            const response = await fetch(DELETE_URL, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': "Bearer " + token
+                }
+            });
+
+            if (response.ok) {
+                status.innerText = '🗑️ 삭제 완료!';
+                status.style.color = "#d32f2f";
+
+                // 화면 초기화
+                imagePreview.style.display = 'none';
+                imagePreview.src = '';
+                urlDisplay.style.display = 'none';
+                urlDisplay.innerHTML = '';
+                deleteBtn.style.display = 'none';
+                fileInput.value = ''; // 파일 선택 초기화
+            } else {
+                status.innerText = `❌ 삭제 실패: ${response.status}`;
+            }
+        } catch (error) {
+            console.error('Delete 에러:', error);
+            status.innerText = '❌ 삭제 중 오류 발생';
+        } finally {
+            deleteBtn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>

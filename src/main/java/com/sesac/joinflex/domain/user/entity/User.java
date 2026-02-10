@@ -119,6 +119,11 @@ public class User extends BaseEntity {
         if (profileImageUrl != null) this.profileImageUrl = profileImageUrl;
     }
 
+    // 프로필 이미지 삭제
+    public void deleteProfileImage() {
+        this.profileImageUrl = null;
+    }
+
     // 사용자 상태 변경(온라인 -> 오프라인)
     public void updateOfflineStatus() {
         this.isOnline = false;
