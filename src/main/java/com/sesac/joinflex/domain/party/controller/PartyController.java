@@ -48,7 +48,12 @@ public class PartyController {
     public ResponseEntity<PartyRoomResponse> joinParty(@PathVariable Long partyId,
         @Valid @RequestBody PartyJoinRequest request,
         @AuthenticationPrincipal CustomUserDetails userDetails) {
-
         return ResponseEntity.ok(partyService.joinParty(partyId, request, userDetails.getId()));
     }
+
+    @GetMapping("/{partyId}")
+    public ResponseEntity<PartyRoomResponse> getPartyRoom(@PathVariable Long partyId) {
+        return ResponseEntity.ok(partyService.getPartyRoomResponse(partyId));
+    }
+
 }
