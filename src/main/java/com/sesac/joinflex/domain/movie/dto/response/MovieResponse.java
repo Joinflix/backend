@@ -7,16 +7,18 @@ public record MovieResponse(
         String title,
         String poster,
         String backdrop,
-        String description
+        String description,
+        Integer averageRating
 ){
 
-    public static MovieResponse from(Movie movie) {
+    public static MovieResponse from(Movie movie, Integer averageRating) {
         return new MovieResponse(
-                movie.getId(),
-                movie.getTitle(),
-                movie.getPoster(),
-                movie.getBackdrop(),
-                movie.getDescription()
+            movie.getId(),
+            movie.getTitle(),
+            movie.getPoster(),
+            movie.getBackdrop(),
+            movie.getDescription(),
+            averageRating
         );
     }
 }
