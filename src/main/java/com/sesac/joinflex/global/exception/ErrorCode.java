@@ -92,7 +92,6 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
     ALREADY_REVIEWED(HttpStatus.CONFLICT, "이미 해당 영화에 대한 리뷰가 존재합니다."),
     INVALID_REVIEW_RATING(HttpStatus.BAD_REQUEST, "별점은 1점에서 5점 사이여야 합니다."),
-    REVIEW_CONTENT_REQUIRED(HttpStatus.BAD_REQUEST, "리뷰 내용은 필수입니다."),
     REVIEW_CONTENT_OR_RATING_REQUIRED(HttpStatus.BAD_REQUEST, "리뷰 내용 또는 별점 중 하나는 필수입니다."),
     NOT_REVIEW_OWNER(HttpStatus.FORBIDDEN, "본인이 작성한 리뷰만 수정 또는 삭제할 수 있습니다.");
 
