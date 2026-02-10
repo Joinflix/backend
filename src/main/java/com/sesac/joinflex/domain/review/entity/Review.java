@@ -1,7 +1,6 @@
 package com.sesac.joinflex.domain.review.entity;
 
 import com.sesac.joinflex.domain.movie.entity.Movie;
-import com.sesac.joinflex.domain.review.dto.request.ReviewUpsertRequest;
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
@@ -16,7 +15,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "reviews")
+// 동일 사용자가 같은 영화에 중복 리뷰를 작성하지 못하도록 DB 레벨에서 유니크 제약 설정
+@Table(
+        name = "reviews",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "movie_id"})
+        }
+)
 @Entity
 public class Review {
 
@@ -62,15 +67,5 @@ public class Review {
 
     public void updateContent(String content){
         this.content = content;
-    }
-
-
-    public void updateReview(Review review, ReviewUpsertRequest request){
-        if (request.getStarRating() != null) {
-            review.updateStarRating(request.getStarRating());
-        }
-        if (request.getContent() != null) {
-            review.updateContent(request.getContent());
-        }
     }
 }

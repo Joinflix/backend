@@ -20,8 +20,8 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // 리뷰 작성 및 수정 (Upsert)
-    // http://localhost:8080/api/reviews/{movieId}
-    @PostMapping(ApiPath.REVIEW + "/{movieId}")
+    // http://localhost:8080/api/movies/{movieId}
+    @PostMapping(ApiPath.MOVIE + "/{movieId}")
     public ResponseEntity<ReviewResponse> upsertReview(
         @AuthenticationPrincipal CustomUserDetails userDetails,
         @PathVariable Long movieId,
@@ -31,8 +31,8 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    // http://localhost:8080/api/reviews/{reviewId}
-    @DeleteMapping(ApiPath.REVIEW + "/{reviewId}")
+    // http://localhost:8080/api/movies/{reviewId}
+    @DeleteMapping(ApiPath.MOVIE + "/{reviewId}")
     public ResponseEntity<Void> deleteReview(
         @AuthenticationPrincipal CustomUserDetails userDetails,
         @PathVariable Long reviewId) {
@@ -63,3 +63,5 @@ public class ReviewController {
     }
 
 }
+
+

@@ -64,6 +64,5 @@ public final class ApiPath {
 
     // review
     public static final String REVIEW = API_PREFIX + "/reviews";
-    public static final String REVIEWS = "/reviews";
 
 }
