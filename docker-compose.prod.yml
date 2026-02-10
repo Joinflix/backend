@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  # 1. Frontend
+  frontend:
+    image: 123rkdduswn/joinflix-front:latest
+    container_name: frontend-joinflix
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - joinflix-network
+
+  # 2. Backend (Spring Boot)
+  backend:
+    image: 123rkdduswn/joinflix-back:latest
+    container_name: backend-joinflix
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=joinflix-db.cx0gg8wewpvh.ap-northeast-2.rds.amazonaws.com
+      - DB_PORT=3306
+      - DB_NAME=joinflix
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - joinflix-network
+
+  # 3. Redis (Cache/Session)
+  redis:
+    image: "redis:7.2.1-alpine"
+    container_name: redis-joinflix
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    networks:
+      - joinflix-network
+
+# 볼륨 및 네트워크 정의
+volumes:
+  mysql_data:
+
+networks:
+  joinflix-network:
+    driver: bridge
