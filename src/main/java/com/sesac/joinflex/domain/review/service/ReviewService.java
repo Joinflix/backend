@@ -27,44 +27,19 @@ public class ReviewService {
 
     @Transactional
     public ReviewResponse upsertReview(Long userId, Long movieId, ReviewUpsertRequest request) {
-        String content = request.getContent();
-        Integer starRating = request.getStarRating();
-
-        if (content != null && content.isBlank()) {
-            content = null;
-        }
-        if (content == null && starRating == null) {
+        if ((request.getContent() == null || request.getContent().isBlank())
+            && request.getStarRating() == null) {
             throw new CustomException(ErrorCode.REVIEW_CONTENT_OR_RATING_REQUIRED);
         }
-        Movie movie = movieRepository.findById(movieId)
-            .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
+
         Review review = reviewRepository.findByUserIdAndMovieId(userId, movieId)
-            .orElseGet(() -> {
-                User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-                return Review.builder()
-                    .user(user)
-                    .movie(movie)
-                    .build();
-            });
-        if (starRating != null) {
-            Integer previousRating = review.getStarRating();
-            if (previousRating == null) {
-                movie.addRating(starRating);
-            } else {
-                movie.updateRating(previousRating, starRating);
-            }
-            review.updateStarRating(starRating);
-        }
-        if (content != null) {
-            review.updateContent(content.trim());
-        }
+            .orElseGet(() -> getReview(userId, movieId));
+        updateReview(review, request);
 
         try {
             Review savedReview = reviewRepository.save(review);
             return ReviewResponse.from(savedReview);
         } catch (DataIntegrityViolationException e) {
-            // 동시 요청으로 인한 유니크 제약 위반 시 ALREADY_REVIEWED로 처리
             throw new CustomException(ErrorCode.ALREADY_REVIEWED);
         }
     }
@@ -95,9 +70,6 @@ public class ReviewService {
         if (!review.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOT_REVIEW_OWNER);
         }
-        if (review.getStarRating() != null) {
-            review.getMovie().removeRating(review.getStarRating());
-        }
         reviewRepository.delete(review);
     }
 
@@ -110,5 +82,15 @@ public class ReviewService {
                 .user(user)
                 .movie(movie)
                 .build();
+    }
+
+    private void updateReview(Review review, ReviewUpsertRequest request) {
+        if (request.getStarRating() != null) {
+            review.updateStarRating(request.getStarRating());
+        }
+        String content = request.getContent();
+        if (content != null && !content.isBlank()) {
+            review.updateContent(content.trim());
+        }
     }
 }

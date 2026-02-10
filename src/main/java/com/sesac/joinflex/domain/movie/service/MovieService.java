@@ -1,7 +1,6 @@
 package com.sesac.joinflex.domain.movie.service;
 
 
-import com.sesac.joinflex.domain.movie.dto.response.MovieDetailResponse;
 import com.sesac.joinflex.domain.movie.dto.response.MovieResponse;
 import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.movie.repository.MovieRepository;

@@ -1,10 +1,7 @@
 package com.sesac.joinflex.domain.movie.controller;
 
-import com.sesac.joinflex.domain.movie.dto.response.MovieDetailResponse;
 import com.sesac.joinflex.domain.movie.dto.response.MovieResponse;
-import com.sesac.joinflex.domain.review.dto.response.ReviewResponse;
 import com.sesac.joinflex.domain.movie.service.MovieService;
-import com.sesac.joinflex.domain.review.service.ReviewService;
 import com.sesac.joinflex.global.common.constants.ApiPath;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MovieController {
 
     private final MovieService movieService;
-    private final ReviewService reviewService;
 
     // 전체 영화 조회
     // http://localhost:8080/api/movies
@@ -43,13 +39,4 @@ public class MovieController {
         return ResponseEntity.ok(movieResponse);
     }
 
-    // 영화별 리뷰 목록 조회
-    // http://localhost:8080/api/movies/{movieId}/reviews
-    @GetMapping("/{movieId}/reviews")
-    public ResponseEntity<Slice<ReviewResponse>> getMovieReviews(@PathVariable Long movieId,
-        @RequestParam(required = false) Long cursorId,
-        @PageableDefault(size = 10) Pageable pageable) {
-        Slice<ReviewResponse> response = reviewService.getMovieReviews(movieId, cursorId, pageable);
-        return ResponseEntity.ok(response);
-    }
 }
