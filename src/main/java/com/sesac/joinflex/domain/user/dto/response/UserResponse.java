@@ -2,6 +2,7 @@ package com.sesac.joinflex.domain.user.dto.response;
 
 import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.entity.UserRoleType;
+import com.sesac.joinflex.domain.user.entity.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ public class UserResponse {
     private String nickName;
     private UserRoleType role;
     private String profileImageUrl;
+    private UserStatus status;
 
     public static UserResponse from(User user) {
         return UserResponse.builder()
@@ -21,6 +23,7 @@ public class UserResponse {
                 .nickName(user.getNickname())
                 .role(user.getRoleType())
                 .profileImageUrl(user.getProfileImageUrl())
+                .status(user.getStatus())
                 .build();
     }
 }
