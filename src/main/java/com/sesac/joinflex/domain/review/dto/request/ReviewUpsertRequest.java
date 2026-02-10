@@ -17,4 +17,8 @@ public class ReviewUpsertRequest {
 
     @Min(1) @Max(5)
     private Integer starRating;
+
+    public boolean hasNoContent() {
+        return (content == null || content.isBlank()) && starRating == null;
+    }
 }

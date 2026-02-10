@@ -1,5 +1,6 @@
 package com.sesac.joinflex.domain.movie.controller;
 
+import com.sesac.joinflex.domain.movie.dto.response.MovieDetailResponse;
 import com.sesac.joinflex.domain.movie.dto.response.MovieResponse;
 import com.sesac.joinflex.domain.movie.service.MovieService;
 import com.sesac.joinflex.global.common.constants.ApiPath;
@@ -34,9 +35,9 @@ public class MovieController {
     // 영화 상세 조회
     // http://localhost:8080/api/movies/{movieId}
     @GetMapping("/{movieId}")
-    public ResponseEntity<MovieResponse> getSingleMovie(@PathVariable Long movieId) {
-        MovieResponse movieResponse = movieService.getSingleMovie(movieId);
-        return ResponseEntity.ok(movieResponse);
+    public ResponseEntity<MovieDetailResponse> getSingleMovie(@PathVariable Long movieId) {
+        MovieDetailResponse response = movieService.getSingleMovie(movieId);
+        return ResponseEntity.ok(response);
     }
 
 }

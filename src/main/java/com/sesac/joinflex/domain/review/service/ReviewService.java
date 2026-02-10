@@ -27,8 +27,7 @@ public class ReviewService {
 
     @Transactional
     public ReviewResponse upsertReview(Long userId, Long movieId, ReviewUpsertRequest request) {
-        if ((request.getContent() == null || request.getContent().isBlank())
-            && request.getStarRating() == null) {
+        if (request.hasNoContent()) {
             throw new CustomException(ErrorCode.REVIEW_CONTENT_OR_RATING_REQUIRED);
         }
 

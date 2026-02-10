@@ -25,4 +25,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("select r from Review r join fetch r.user join fetch r.movie where r.user.id = :userId and r.id < :cursorId order by r.id desc")
     Slice<Review> findReviewsByUserId(@Param("userId") Long userId, @Param("cursorId") Long cursorId, Pageable pageable);
 
+    //coalesce(..., 0): 리뷰가 하나도 없을 경우 null 대신 정수 0을 반환.
+    @Query("select coalesce(cast(avg(r.starRating) as int), 0) from Review r where r.movie.id = :movieId")
+    Integer findAverageRatingByMovieId(@Param("movieId") Long movieId);
+
 }
