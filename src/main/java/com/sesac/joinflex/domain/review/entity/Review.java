@@ -1,8 +1,12 @@
 package com.sesac.joinflex.domain.review.entity;
 
 import com.sesac.joinflex.domain.movie.entity.Movie;
+import com.sesac.joinflex.domain.review.dto.request.ReviewUpsertRequest;
 import com.sesac.joinflex.domain.user.entity.User;
+import com.sesac.joinflex.global.exception.CustomException;
+import com.sesac.joinflex.global.exception.ErrorCode;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
@@ -33,6 +37,11 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @AssertTrue(message = "리뷰 또는 별점 중 하나는 필수입니다.")
+    private boolean isContentOrRatingRequired() {
+        return starRating != null || content != null;
+    }
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -50,11 +59,24 @@ public class Review {
     }
 
     public void updateStarRating(Integer rating){
+        if (rating != null && (rating < 1 || rating > 5)) {
+            throw new CustomException(ErrorCode.INVALID_REVIEW_RATING);
+        }
         this.starRating = rating;
 
     }
 
     public void updateContent(String content){
         this.content = content;
+    }
+
+
+    public void updateReview(Review review, ReviewUpsertRequest request){
+        if (request.getStarRating() != null) {
+            review.updateStarRating(request.getStarRating());
+        }
+        if (request.getContent() != null) {
+            review.updateContent(request.getContent());
+        }
     }
 }

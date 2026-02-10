@@ -23,9 +23,9 @@ public class ReviewController {
     // http://localhost:8080/api/reviews/{movieId}
     @PostMapping(ApiPath.REVIEW + "/{movieId}")
     public ResponseEntity<ReviewResponse> upsertReview(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long movieId,
-            @Valid @RequestBody ReviewUpsertRequest request) {
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @PathVariable Long movieId,
+        @Valid @RequestBody ReviewUpsertRequest request) {
         ReviewResponse response = reviewService.upsertReview(userDetails.getId(), movieId, request);
         return ResponseEntity.ok(response);
     }
@@ -34,19 +34,30 @@ public class ReviewController {
     // http://localhost:8080/api/reviews/{reviewId}
     @DeleteMapping(ApiPath.REVIEW + "/{reviewId}")
     public ResponseEntity<Void> deleteReview(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long reviewId) {
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @PathVariable Long reviewId) {
         reviewService.deleteReview(userDetails.getId(), reviewId);
         return ResponseEntity.noContent().build();
+    }
+
+    // 영화별 리뷰 조회
+    // http://localhost:8080/api/movies/{movieId}/reviews
+    @GetMapping(ApiPath.MOVIE + "/{movieId}/reviews")
+    public ResponseEntity<Slice<ReviewResponse>> getMovieReviews(
+        @PathVariable Long movieId,
+        @RequestParam(required = false) Long cursorId,
+        @PageableDefault(size = 10) Pageable pageable) {
+        Slice<ReviewResponse> response = reviewService.getMovieReviews(movieId, cursorId, pageable);
+        return ResponseEntity.ok(response);
     }
 
     // 사용자별 리뷰 조회
     // http://localhost:8080/api/users/{userId}/reviews
     @GetMapping(ApiPath.USER + "/{userId}/reviews")
     public ResponseEntity<Slice<ReviewResponse>> getUserReviews(
-            @PathVariable Long userId,
-            @RequestParam(required = false) Long cursorId,
-            @PageableDefault(size = 10) Pageable pageable) {
+        @PathVariable Long userId,
+        @RequestParam(required = false) Long cursorId,
+        @PageableDefault(size = 10) Pageable pageable) {
         Slice<ReviewResponse> response = reviewService.getUserReviews(userId, cursorId, pageable);
         return ResponseEntity.ok(response);
     }

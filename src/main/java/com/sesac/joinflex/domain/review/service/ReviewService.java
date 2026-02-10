@@ -19,12 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
 
+    @Transactional
     public ReviewResponse upsertReview(Long userId, Long movieId, ReviewUpsertRequest request) {
         String content = request.getContent();
         Integer starRating = request.getStarRating();
@@ -68,7 +69,6 @@ public class ReviewService {
         }
     }
 
-    @Transactional(readOnly = true)
     public Slice<ReviewResponse> getMovieReviews(Long movieId, Long cursorId, Pageable pageable) {
         if (!movieRepository.existsById(movieId)) {
             throw new CustomException(ErrorCode.MOVIE_NOT_FOUND);
@@ -78,7 +78,7 @@ public class ReviewService {
         return reviews.map(ReviewResponse::from);
     }
 
-    @Transactional(readOnly = true)
+
     public Slice<ReviewResponse> getUserReviews(Long userId, Long cursorId, Pageable pageable) {
         if (!userRepository.existsById(userId)) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -88,6 +88,7 @@ public class ReviewService {
         return reviews.map(ReviewResponse::from);
     }
 
+    @Transactional
     public void deleteReview(Long userId, Long reviewId) {
         Review review = reviewRepository.findByIdWithUserAndMovie(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -99,5 +100,15 @@ public class ReviewService {
         }
         reviewRepository.delete(review);
     }
-}
 
+    private Review getReview(Long userId, Long movieId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MOVIE_NOT_FOUND));
+        return Review.builder()
+                .user(user)
+                .movie(movie)
+                .build();
+    }
+}

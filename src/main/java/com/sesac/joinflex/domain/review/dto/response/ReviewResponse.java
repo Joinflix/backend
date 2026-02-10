@@ -21,14 +21,14 @@ public class ReviewResponse {
 
     public static ReviewResponse from(Review review) {
         return ReviewResponse.builder()
-                .id(review.getId())
-                .content(review.getContent())
-                .starRating(review.getStarRating())
-                .userId(review.getUser().getId())
-                .nickname(review.getUser().getNickname())
-                .movieId(review.getMovie().getId())
-                .movieTitle(review.getMovie().getTitle())
-                .build();
+       .id(review.getId())
+       .content(review.getContent())
+       .starRating(review.getStarRating())
+       .userId(review.getUser().getId())
+       .nickname(review.getUser().getNickname())
+       .movieId(review.getMovie().getId())
+       .movieTitle(review.getMovie().getTitle())
+       .build();
     }
 
 }
