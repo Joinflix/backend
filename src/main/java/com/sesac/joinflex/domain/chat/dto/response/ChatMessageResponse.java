@@ -17,4 +17,9 @@ public record ChatMessageResponse(
     public static ChatMessageResponse talk(String sender, String message, Integer currentCount) {
         return new ChatMessageResponse(MessageType.TALK, sender, message, currentCount);
     }
+
+    public static ChatMessageResponse leave(String sender, Integer currentCount) {
+        return new ChatMessageResponse(MessageType.LEAVE, sender, sender + "님이 퇴장하셨습니다.",
+            currentCount);
+    }
 }

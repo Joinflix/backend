@@ -1,5 +1,6 @@
 package com.sesac.joinflex.domain.party.service;
 
+import com.sesac.joinflex.domain.chat.dto.request.LeaveRequest;
 import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.movie.repository.MovieRepository;
 import com.sesac.joinflex.domain.party.dto.request.PartyJoinRequest;
@@ -83,27 +84,87 @@ public class PartyService {
 
         processEntry(partyRoom, user, request);
 
-        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(), partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
-                partyRoom.getRoomName(), partyRoom.getHost().getNickname(), partyRoom.getCurrentMemberCount());
+        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(),
+            partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
+            partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
+            partyRoom.getCurrentMemberCount());
     }
 
     @Transactional
-    public Optional<Integer> leavePartyRoom(Long partyId, Long userId) {
+    public Optional<Integer> leavePartyRoom(Long partyId, Long userId,
+        LeaveRequest request) {
         PartyRoom partyRoom = getPartyRoom(partyId);
         User user = getUser(userId);
 
-        return partyMemberRepository.findByPartyRoomAndMemberAndStatus(partyRoom, user, MemberStatus.JOINED)
-            .map(member -> {
-                member.leave();
-                partyRoom.leaveMember();
-                return partyRoom.getCurrentMemberCount(); // 실제 처리가 되었을 때만 인원수 반환
-            });
+        PartyMember member = partyMemberRepository.findByPartyRoomAndMemberAndStatus(partyRoom,
+                user, MemberStatus.JOINED)
+            .orElse(null);
+
+        if (member == null) {
+            return Optional.empty();
+        }
+
+        // 일반 사용자
+        if (!member.isHost()) {
+            return leaveAsGuest(partyRoom, member);
+        }
+
+        // 방장 && 공개방
+        if (partyRoom.isPublicRoom()) {
+            return deleteRoomAndReturn(partyRoom);
+        }
+
+        // 방장 && 비공개방
+        Long targetId = (request != null) ? request.targetMemberId() : null;
+        if (targetId != null) {
+            return transferHostAndLeave(partyRoom, member, targetId);
+
+        }
+
+        deletePartyRoom(partyRoom);
+        return Optional.of(0);
     }
 
-    public PartyRoomResponse getPartyRoomResponse(Long partyId){
+    private Optional<Integer> leaveAsGuest(PartyRoom partyRoom, PartyMember member) {
+        member.leave();
+        partyRoom.leaveMember();
+        return Optional.of(partyRoom.getCurrentMemberCount());
+    }
+
+    private Optional<Integer> deleteRoomAndReturn(PartyRoom partyRoom) {
+        deletePartyRoom(partyRoom);
+        return Optional.of(0);
+    }
+
+    private Optional<Integer> transferHostAndLeave(PartyRoom partyRoom,
+        PartyMember currentHost, Long targetId) {
+        delegateHost(partyRoom, getUser(targetId));
+        currentHost.leave();
+        partyRoom.leaveMember();
+        return Optional.of(partyRoom.getCurrentMemberCount());
+    }
+
+    private void deletePartyRoom(PartyRoom partyRoom) {
+        partyInviteService.deleteAllByPartyRoom(partyRoom);
+        partyMemberRepository.deleteAllByPartyRoom(partyRoom);
+        partyRoomRepository.delete(partyRoom);
+    }
+
+    private void delegateHost(PartyRoom partyRoom, User targetMember) {
+        PartyMember nextHost = partyMemberRepository.findByPartyRoomAndMemberAndStatus(partyRoom,
+            targetMember, MemberStatus.JOINED).orElseThrow(() -> new RuntimeException());
+
+        // 방장 위임
+        nextHost.changeRole();
+        partyRoom.changeHost(targetMember);
+    }
+
+    public PartyRoomResponse getPartyRoomResponse(Long partyId) {
         PartyRoom partyRoom = getPartyRoom(partyId);
-        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(), partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
-                partyRoom.getRoomName(), partyRoom.getHost().getNickname(), partyRoom.getCurrentMemberCount());
+        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(),
+            partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
+            partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
+            partyRoom.getCurrentMemberCount());
     }
 
     private PartyRoom getPartyRoom(Long partyId) {
