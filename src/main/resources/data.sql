@@ -8,40 +8,40 @@ VALUES ('STANDARD_WITH_ADS', '광고형 스탠다드', '광고와 함께 즐기�
 -- 2. 사용자 데이터 (Users)
 -- 비밀번호: 'test1234' (BCrypt 암호화)
 -- 멤버십 ID 1번(STANDARD_WITH_ADS)을 기본 할당한다고 가정
-INSERT INTO users (status, email, password, nickname, signup_ip, role_type, is_social, is_lock, is_online, membership_id, last_notification_read_at, created_at, updated_at)
-VALUES ('ACTIVE','test@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'test', '127.0.0.1', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','kim@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '김철수', '127.0.0.2', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','lee@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '이영희', '127.0.0.3', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','park@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '박민수', '127.0.0.4', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','choi@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '최지은', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','jung@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '정우성', '127.0.0.6', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','alpha@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'ALPHA', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','bravo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'BRAVO', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','charlie@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'CHARLIE', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','delta@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'DELTA', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','echo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'ECHO', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','foxtrot@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'FOXTROT', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','golf@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'golf', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','hotel@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'hotel', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','india@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'india', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','juliet@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'juliet', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','kilo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'kilo', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','lima@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'lima', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','mike@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'mike', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','november@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'november', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','oscar@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'oscar', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','papa@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'papa', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','quebec@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'quebec', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','romeo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'ROMEO', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','sierra@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'SIERRA', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','tango@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'TANGO', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','uniform@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'uniform', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','victor@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'victor', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','whisky@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'WHISKY', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','x-ray@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'x-ray', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','yankee@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'yankee', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('ACTIVE','zulu@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'zulu', '127.0.0.5', 'USER', false, false, false, 1,  null, NOW(), NOW()),
-       ('PENDING','pending@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'pending', '127.0.0.1', 'USER', false, false, false, null, null, NOW(), NOW());
+INSERT INTO users (status, email, password, nickname, signup_ip, role_type, is_social, is_lock, is_online, membership_id, created_at, updated_at)
+VALUES ('ACTIVE','test@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'test', '127.0.0.1', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','kim@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '김철수', '127.0.0.2', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','lee@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '이영희', '127.0.0.3', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','park@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '박민수', '127.0.0.4', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','choi@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '최지은', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','jung@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '정우성', '127.0.0.6', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','alpha@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'ALPHA', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','bravo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'BRAVO', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','charlie@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'CHARLIE', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','delta@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'DELTA', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','echo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'ECHO', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','foxtrot@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'FOXTROT', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','golf@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'golf', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','hotel@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'hotel', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','india@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'india', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','juliet@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'juliet', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','kilo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'kilo', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','lima@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'lima', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','mike@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'mike', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','november@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'november', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','oscar@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'oscar', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','papa@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'papa', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','quebec@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'quebec', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','romeo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'ROMEO', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','sierra@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'SIERRA', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','tango@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'TANGO', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','uniform@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'uniform', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','victor@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'victor', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','whisky@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'WHISKY', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','x-ray@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'x-ray', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','yankee@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'yankee', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','zulu@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'zulu', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('PENDING','pending@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'pending', '127.0.0.1', 'USER', false, false, false, null, NOW(), NOW());
 
 -- 3. 친구 요청 (Friend Requests)
 INSERT INTO friend_requests (sender_id, receiver_id, status, created_at, updated_at)
@@ -133,20 +133,20 @@ VALUES (1, 2,  NOW(), NOW()),
 
 -- 7. 알림 (Notifications)
 
-INSERT INTO notifications (user_id, message, notification_type, sender_id, receiver_id, event_id, created_at, updated_at)
+INSERT INTO notifications (user_id, message, notification_type, sender_id, receiver_id, event_id, read_at, created_at, updated_at)
 VALUES
 -- 친구 신청 알림
-(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, null, NOW(), NOW()),          -- 1 → 2
-(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 4, 1, null, NOW(), NOW()),        -- 4 → 1
+(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, null, NOW(), NOW(), NOW()),          -- 1 → 2 (읽음)
+(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 4, 1, null, null, NOW(), NOW()),        -- 4 → 1 (미읽음)
 
 -- 친구 수락 알림
-(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 2, 1, null, NOW(), NOW()),     -- 2 → 1
-(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, null, NOW(), NOW()),     -- 3 → 2
+(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 2, 1, null, NOW(), NOW(), NOW()),     -- 2 → 1 (읽음)
+(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, null, null, NOW(), NOW()),     -- 3 → 2 (미읽음)
 
 -- 파티 초대 알림
-(2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '1', NOW(), NOW()),   -- 방 1
-(3, '김철수님이 이영희님을 \'재밌겠다\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '2', NOW(), NOW()), -- 방 2
-(1, '정우성님이 test님을 \'같이 영화봐요\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '3', NOW(), NOW()); -- 방 3
+(2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '1', null, NOW(), NOW()),   -- 방 1 (미읽음)
+(3, '김철수님이 이영희님을 \'재밌겠다\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '2', NOW(), NOW(), NOW()), -- 방 2 (읽음)
+(1, '정우성님이 test님을 \'같이 영화봐요\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '3', null, NOW(), NOW()); -- 방 3 (미읽음)
 
 -- 8. 리뷰 데이터 (Reviews)
 -- 순서: user_id, movie_id, star_rating, content

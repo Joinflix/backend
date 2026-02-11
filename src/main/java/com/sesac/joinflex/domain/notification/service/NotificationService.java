@@ -43,12 +43,7 @@ public class NotificationService {
         // 타임아웃 시 종료
         emitter.onTimeout(() -> emitterMap.remove(user.getId()));
 
-        List<Notification> notifications;
-        if (user.getLastNotificationReadAt() != null) {
-            notifications = notificationRepository.findByUserAndCreatedAtAfter(user, user.getLastNotificationReadAt());
-        } else {
-            notifications = notificationRepository.findByUser(user);
-        }
+        List<Notification> notifications = notificationRepository.findByUserAndReadAtIsNull(user);
 
         List<NotificationResponse> unreadNotifications = notifications.stream()
             .map(NotificationResponse::from)
@@ -93,8 +88,18 @@ public class NotificationService {
     }
 
     @Transactional
-    public void updateLastNotificationReadAt(Long userId, LocalDateTime clickedAt) {
-        User user = getUser(userId);
-        user.updateLastNotificationReadAt(clickedAt);
+    public void createReadAt(Long userId, Long notificationId) {
+
+        Notification notification = notificationRepository.findById(notificationId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        if (!(notification.getReadAt() == null)) {
+            throw new CustomException(ErrorCode.NOTIFICATION_READ_AT_NOT_NULL);
+        }
+        if (!notification.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.NOTIFICATION_NOT_YOURS);
+        }
+
+        notification.creatReadAt(LocalDateTime.now());
     }
 }
