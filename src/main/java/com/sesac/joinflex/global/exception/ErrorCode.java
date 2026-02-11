@@ -40,6 +40,7 @@ public enum ErrorCode {
     IMAGE_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "이미지 크기는 최대 10MB를 초과할 수 없습니다."),
     UNSUPPORTED_IMAGE_FORMAT(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "이미지는 jpg, jpeg, png, gif, webp 형식만 가능합니다."),
     IMAGE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "프로필 사진 저장 중 서버 오류가 발생했습니다."),
+    DELETE_IMAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "프로필 사진 삭제 중 서버 오류가 발생했습니다."),
 
     // Token
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
