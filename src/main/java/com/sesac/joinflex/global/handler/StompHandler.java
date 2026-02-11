@@ -1,12 +1,13 @@
 package com.sesac.joinflex.global.handler;
 
-import com.sesac.joinflex.domain.chat.dto.MessageType;
-import com.sesac.joinflex.domain.chat.dto.response.ChatMessageResponse;
+import com.sesac.joinflex.domain.chat.service.ChatService;
 import com.sesac.joinflex.domain.party.service.PartyService;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
 import com.sesac.joinflex.global.security.JwtProvider;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -46,10 +47,10 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             handleConnect(accessor);
         }
-//
-//        if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
-//            handleDisconnect(accessor);
-//        }
+
+        if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+            handleDisconnect(accessor);
+        }
 
         return message;
     }
@@ -67,25 +68,6 @@ public class StompHandler implements ChannelInterceptor {
         accessor.setUser(authenticationToken);
     }
 
-//    private void handleDisconnect(StompHeaderAccessor accessor) {
-//
-//        UserResponse user = getUser(accessor);
-//
-//        Long partyId = (Long) accessor.getSessionAttributes().get(PARTY_ID_STR);
-//
-//        if (user != null && partyId != null) {
-//            processLeave(partyId, user);
-//        }
-//    }
-//
-//    private void processLeave(Long partyId, UserResponse user) {
-//        partyService.leavePartyRoom(partyId, user.getId())
-//            .ifPresent(currentCount -> messagingTemplate.convertAndSend(
-//                SUBSCRIBE_PARTY_PREFIX + partyId,
-//                new ChatMessageResponse(MessageType.LEAVE, user.getNickName(), user.getNickName() + "님이 퇴장하셨습니다.")
-//            ));
-//    }
-
     private void handleDisconnect(StompHeaderAccessor accessor) {
 
         UserResponse user = getUser(accessor);
@@ -95,15 +77,18 @@ public class StompHandler implements ChannelInterceptor {
         if (user != null && partyId != null) {
             processLeave(partyId, user);
         }
+
+        accessor.getSessionAttributes().remove("partyId");
     }
 
     private void processLeave(Long partyId, UserResponse user) {
-        partyService.leavePartyRoom(partyId, user.getId(), null)
-            .ifPresent(currentCount -> messagingTemplate.convertAndSend(
-                SUBSCRIBE_PARTY_PREFIX + partyId,
-                new ChatMessageResponse(MessageType.LEAVE, user.getNickName(),
-                    user.getNickName() + "님이 퇴장하셨습니다. (From Handler)")
-            ));
+        Optional<Integer> result = partyService.leavePartyRoom(partyId, user.getId(),
+            null);
+
+        messagingTemplate.convertAndSend(SUBSCRIBE_PARTY_PREFIX + partyId,
+            Objects.requireNonNull(
+                result.map(leaveResult -> ChatService.createLeaveMessage(user, leaveResult))
+                    .orElse(null)));
     }
 
     private static UserResponse getUser(StompHeaderAccessor accessor) {

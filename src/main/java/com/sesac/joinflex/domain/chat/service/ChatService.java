@@ -1,9 +1,7 @@
 package com.sesac.joinflex.domain.chat.service;
 
-import com.sesac.joinflex.domain.chat.dto.MessageType;
 import com.sesac.joinflex.domain.chat.dto.response.ChatMessageResponse;
 import com.sesac.joinflex.domain.party.entity.PartyRoom;
-import com.sesac.joinflex.domain.party.dto.response.PartyLeaveResult;
 import com.sesac.joinflex.domain.party.repository.PartyRoomRepository;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +25,9 @@ public class ChatService {
         return ChatMessageResponse.talk(user.getNickName(), message, party.getCurrentMemberCount());
     }
 
-//    public ChatMessageResponse createLeaveMessage(Long partyId, UserResponse user) {
-//        partyRoomRepository.findById(partyId).orElseThrow();
-//        return new ChatMessageResponse(MessageType.LEAVE, user.getNickName(),
-//            user.getNickName() + "님이 퇴장하셨습니다.");
-//    }
-
-    public ChatMessageResponse createLeaveMessage(UserResponse user, PartyLeaveResult result) {
-        return new ChatMessageResponse(MessageType.LEAVE, user.getNickName(),
-            user.getNickName() + "님이 퇴장하셨습니다.");
+    public static ChatMessageResponse createLeaveMessage(UserResponse user,
+        Integer currentMemberCount) {
+        return ChatMessageResponse.leave(user.getNickName(), currentMemberCount);
     }
 
     private PartyRoom getPartyRoom(Long partyId) {
