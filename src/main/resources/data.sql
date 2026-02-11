@@ -133,20 +133,20 @@ VALUES (1, 2,  NOW(), NOW()),
 
 -- 7. 알림 (Notifications)
 
-INSERT INTO notifications (user_id, message, notification_type, created_at, updated_at)
+INSERT INTO notifications (user_id, message, notification_type, sender_id, receiver_id, event_id, created_at, updated_at)
 VALUES
 -- 친구 신청 알림
-(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', NOW(), NOW()),          -- 1 → 2
-(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', NOW(), NOW()),        -- 4 → 1
+(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, null, NOW(), NOW()),          -- 1 → 2
+(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 4, 1, null, NOW(), NOW()),        -- 4 → 1
 
 -- 친구 수락 알림
-(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', NOW(), NOW()),     -- 2 → 1
-(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', NOW(), NOW()),     -- 3 → 2
+(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 2, 1, null, NOW(), NOW()),     -- 2 → 1
+(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, null, NOW(), NOW()),     -- 3 → 2
 
 -- 파티 초대 알림
-(2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', NOW(), NOW()),   -- 방 1
-(3, '김철수님이 이영희님을 \'재밌겠다\' 파티에 초대했습니다.', 'PARTY_INVITE', NOW(), NOW()), -- 방 2
-(1, '정우성님이 test님을 \'같이 영화봐요\' 파티에 초대했습니다.', 'PARTY_INVITE', NOW(), NOW()); -- 방 3
+(2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '1', NOW(), NOW()),   -- 방 1
+(3, '김철수님이 이영희님을 \'재밌겠다\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '2', NOW(), NOW()), -- 방 2
+(1, '정우성님이 test님을 \'같이 영화봐요\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '3', NOW(), NOW()); -- 방 3
 
 -- 8. 리뷰 데이터 (Reviews)
 -- 순서: user_id, movie_id, star_rating, content
