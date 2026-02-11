@@ -97,8 +97,8 @@ public enum ErrorCode {
 
     // Notification
     NOTIFICATION_NOT_YOURS(HttpStatus.FORBIDDEN, "해당 알림 읽음 요청에 대한 권한이 없습니다."),
-    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림을 찾을 수 없습니다.");
-
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림을 찾을 수 없습니다."),
+    NOTIFICATION_READ_AT_NOT_NULL(HttpStatus.CONFLICT, "이미 읽음 처리가 완료되었습니다.");
     private final HttpStatus status;
     private final String message;
 }

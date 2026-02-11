@@ -93,6 +93,9 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(notificationId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
+        if (!(notification.getReadAt() == null)) {
+            throw new CustomException(ErrorCode.NOTIFICATION_READ_AT_NOT_NULL);
+        }
         if (!notification.getUser().getId().equals(userId)) {
             throw new CustomException(ErrorCode.NOTIFICATION_NOT_YOURS);
         }
