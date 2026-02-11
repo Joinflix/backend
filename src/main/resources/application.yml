@@ -122,3 +122,14 @@
 
   app:
     domain-url: ${APP_DOMAIN_URL:http://localhost:8080}
+    
+  # S3 bucket 설정
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY:}
+        secret-key: ${AWS_SECRET_KEY:}
+      s3:
+        bucket: ${S3_BUCKET:}
+      region:
+        static: ${AWS_REGION:ap-northeast-2}

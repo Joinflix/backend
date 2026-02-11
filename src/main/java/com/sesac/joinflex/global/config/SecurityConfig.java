@@ -43,7 +43,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                       //결제 테스트용 html
+//                       //결제 및 S3 파일 업로드 테스트용 html
                         .requestMatchers("/auth-test.html", "/payment-test.html", "/upload-test.html", "/static/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
                         .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").permitAll() //로그인, 회원가입
@@ -63,7 +63,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*")); // 모든 도메인 허용
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));
