@@ -62,4 +62,8 @@ public class PartyInviteService {
 
         emailService.sendEmail(guest.getEmail(), subject, message);
     }
+
+    public void deleteAllByPartyRoom(PartyRoom partyRoom) {
+        partyInviteRepository.deleteAllByPartyRoom(partyRoom);
+    }
 }

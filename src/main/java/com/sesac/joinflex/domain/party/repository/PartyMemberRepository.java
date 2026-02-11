@@ -15,4 +15,6 @@ public interface PartyMemberRepository extends JpaRepository<PartyMember, Long> 
         MemberStatus memberStatus);
 
     Optional<PartyMember> findByPartyRoomAndMemberAndStatus(PartyRoom partyRoom, User user, MemberStatus memberStatus);
+
+    void deleteAllByPartyRoom(PartyRoom partyRoom);
 }
