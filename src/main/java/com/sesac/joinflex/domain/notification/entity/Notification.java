@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -35,6 +36,8 @@ public class Notification extends BaseEntity {
 
     private String eventId;
 
+    private LocalDateTime lastReadAt;
+
     private Notification(User user, String message, NotificationType notificationType,
                          Long senderId, Long receiverId, String eventId) {
         this.user = user;
@@ -43,10 +46,15 @@ public class Notification extends BaseEntity {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.eventId = eventId;
+        this.lastReadAt = null;
     }
 
     public static Notification create(User user, String message, NotificationType notificationType,
                                       Long senderId, Long receiverId, String eventId) {
         return new Notification(user, message, notificationType, senderId, receiverId, eventId);
+    }
+
+    public void updateLastReadAt(LocalDateTime now) {
+        this.lastReadAt = now;
     }
 }

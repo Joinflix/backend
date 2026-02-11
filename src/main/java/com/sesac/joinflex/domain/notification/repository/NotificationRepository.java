@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findByUser(User user);
-    List<Notification> findByUserAndCreatedAtAfter(User user, LocalDateTime createdAt);
+    List<Notification> findByUserAndLastReadAtIsNull(User user);
 }
