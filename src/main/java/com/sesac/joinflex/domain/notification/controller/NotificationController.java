@@ -26,7 +26,7 @@ public class NotificationController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestBody NotificationReadRequest request
     ) {
-        notificationService.updateLastReadAt(customUserDetails.getId(), request.getNotificationId());
+        notificationService.createReadAt(customUserDetails.getId(), request.getNotificationId());
         return ResponseEntity.noContent().build();
     }
 }

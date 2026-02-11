@@ -133,7 +133,7 @@ VALUES (1, 2,  NOW(), NOW()),
 
 -- 7. 알림 (Notifications)
 
-INSERT INTO notifications (user_id, message, notification_type, sender_id, receiver_id, event_id, last_read_at, created_at, updated_at)
+INSERT INTO notifications (user_id, message, notification_type, sender_id, receiver_id, event_id, read_at, created_at, updated_at)
 VALUES
 -- 친구 신청 알림
 (2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, null, NOW(), NOW(), NOW()),          -- 1 → 2 (읽음)

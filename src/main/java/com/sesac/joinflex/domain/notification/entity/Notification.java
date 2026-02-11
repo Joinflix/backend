@@ -36,7 +36,7 @@ public class Notification extends BaseEntity {
 
     private String eventId;
 
-    private LocalDateTime lastReadAt;
+    private LocalDateTime readAt;
 
     private Notification(User user, String message, NotificationType notificationType,
                          Long senderId, Long receiverId, String eventId) {
@@ -46,7 +46,7 @@ public class Notification extends BaseEntity {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.eventId = eventId;
-        this.lastReadAt = null;
+        this.readAt = null;
     }
 
     public static Notification create(User user, String message, NotificationType notificationType,
@@ -54,7 +54,7 @@ public class Notification extends BaseEntity {
         return new Notification(user, message, notificationType, senderId, receiverId, eventId);
     }
 
-    public void updateLastReadAt(LocalDateTime now) {
-        this.lastReadAt = now;
+    public void creatReadAt(LocalDateTime now) {
+        this.readAt = now;
     }
 }
