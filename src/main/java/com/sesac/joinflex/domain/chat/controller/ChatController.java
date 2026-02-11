@@ -4,7 +4,6 @@ import com.sesac.joinflex.domain.chat.dto.request.ChatMessageRequest;
 import com.sesac.joinflex.domain.chat.dto.request.LeaveRequest;
 import com.sesac.joinflex.domain.chat.dto.response.ChatMessageResponse;
 import com.sesac.joinflex.domain.chat.service.ChatService;
-import com.sesac.joinflex.domain.party.dto.response.PartyLeaveResult;
 import com.sesac.joinflex.domain.party.service.PartyService;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
 import java.security.Principal;
@@ -45,26 +44,13 @@ public class ChatController {
         return chatService.createTalkMessage(partyId, userResponse, request.message());
     }
 
-
-//    @MessageMapping("/party/{partyId}/leave")
-//    @SendTo("/sub/party/{partyId}")
-//    public ChatMessageResponse leaveUser(@DestinationVariable Long partyId, Principal principal,
-//        SimpMessageHeaderAccessor headerAccessor) {
-//        UserResponse user = getUser(principal);
-//
-//        headerAccessor.getSessionAttributes().remove("partyId");
-//
-//        return partyService.leavePartyRoom(partyId, user.getId())
-//            .map(currentCount -> chatService.createLeaveMessage(partyId, user))
-//            .orElse(null);
-//    }
     @MessageMapping("/party/{partyId}/leave")
     @SendTo("/sub/party/{partyId}")
     public ChatMessageResponse leaveUser(@DestinationVariable Long partyId, Principal principal,
         @Payload(required = false) LeaveRequest request, SimpMessageHeaderAccessor headerAccessor) {
         UserResponse user = getUser(principal);
 
-        Optional<PartyLeaveResult> result = partyService.leavePartyRoom(partyId, user.getId(),
+        Optional<Integer> result = partyService.leavePartyRoom(partyId, user.getId(),
             request);
 
         result.ifPresent(r -> headerAccessor.getSessionAttributes().remove("partyId"));

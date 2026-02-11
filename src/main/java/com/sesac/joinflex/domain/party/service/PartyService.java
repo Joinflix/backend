@@ -5,7 +5,6 @@ import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.movie.repository.MovieRepository;
 import com.sesac.joinflex.domain.party.dto.request.PartyJoinRequest;
 import com.sesac.joinflex.domain.party.dto.request.PartyRoomRequest;
-import com.sesac.joinflex.domain.party.dto.response.PartyLeaveResult;
 import com.sesac.joinflex.domain.party.dto.response.PartyRoomResponse;
 import com.sesac.joinflex.domain.party.entity.MemberRole;
 import com.sesac.joinflex.domain.party.entity.MemberStatus;
@@ -92,7 +91,7 @@ public class PartyService {
     }
 
     @Transactional
-    public Optional<PartyLeaveResult> leavePartyRoom(Long partyId, Long userId,
+    public Optional<Integer> leavePartyRoom(Long partyId, Long userId,
         LeaveRequest request) {
         PartyRoom partyRoom = getPartyRoom(partyId);
         User user = getUser(userId);
@@ -123,26 +122,26 @@ public class PartyService {
         }
 
         deletePartyRoom(partyRoom);
-        return Optional.of(PartyLeaveResult.deleted());
+        return Optional.of(0);
     }
 
-    private Optional<PartyLeaveResult> leaveAsGuest(PartyRoom partyRoom, PartyMember member) {
+    private Optional<Integer> leaveAsGuest(PartyRoom partyRoom, PartyMember member) {
         member.leave();
         partyRoom.leaveMember();
-        return Optional.of(PartyLeaveResult.left(partyRoom.getCurrentMemberCount()));
+        return Optional.of(partyRoom.getCurrentMemberCount());
     }
 
-    private Optional<PartyLeaveResult> deleteRoomAndReturn(PartyRoom partyRoom) {
+    private Optional<Integer> deleteRoomAndReturn(PartyRoom partyRoom) {
         deletePartyRoom(partyRoom);
-        return Optional.of(PartyLeaveResult.deleted());
+        return Optional.of(0);
     }
 
-    private Optional<PartyLeaveResult> transferHostAndLeave(PartyRoom partyRoom,
+    private Optional<Integer> transferHostAndLeave(PartyRoom partyRoom,
         PartyMember currentHost, Long targetId) {
         delegateHost(partyRoom, getUser(targetId));
         currentHost.leave();
         partyRoom.leaveMember();
-        return Optional.of((PartyLeaveResult.left(partyRoom.getCurrentMemberCount())));
+        return Optional.of(partyRoom.getCurrentMemberCount());
     }
 
     private void deletePartyRoom(PartyRoom partyRoom) {
@@ -160,10 +159,12 @@ public class PartyService {
         partyRoom.changeHost(targetMember);
     }
 
-    public PartyRoomResponse getPartyRoomResponse(Long partyId){
+    public PartyRoomResponse getPartyRoomResponse(Long partyId) {
         PartyRoom partyRoom = getPartyRoom(partyId);
-        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(), partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
-                partyRoom.getRoomName(), partyRoom.getHost().getNickname(), partyRoom.getCurrentMemberCount());
+        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(),
+            partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
+            partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
+            partyRoom.getCurrentMemberCount());
     }
 
     private PartyRoom getPartyRoom(Long partyId) {
