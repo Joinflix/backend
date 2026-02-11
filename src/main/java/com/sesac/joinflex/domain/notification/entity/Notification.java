@@ -5,7 +5,6 @@ import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,13 +29,24 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private NotificationType notificationType;
 
-    private Notification(User user, String message, NotificationType notificationType) {
+    private Long senderId;
+
+    private Long receiverId;
+
+    private String eventId;
+
+    private Notification(User user, String message, NotificationType notificationType,
+                         Long senderId, Long receiverId, String eventId) {
         this.user = user;
         this.message = message;
         this.notificationType = notificationType;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.eventId = eventId;
     }
 
-    public static Notification create(User user, String message, NotificationType notificationType) {
-        return new Notification(user, message, notificationType);
+    public static Notification create(User user, String message, NotificationType notificationType,
+                                      Long senderId, Long receiverId, String eventId) {
+        return new Notification(user, message, notificationType, senderId, receiverId, eventId);
     }
 }

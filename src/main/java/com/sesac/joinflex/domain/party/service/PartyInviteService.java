@@ -43,7 +43,8 @@ public class PartyInviteService {
             sendInviteEmail(guest, room);
             String notificationMessage = NotificationMessageTemplate.notification(
                 room.getHost().getNickname(), room.getRoomName(), guest.getNickname());
-            notificationService.sendAndSave(guest.getId(), notificationMessage, NotificationType.PARTY_INVITE);
+            notificationService.sendAndSave(guest.getId(), notificationMessage, NotificationType.PARTY_INVITE,
+                null, null, String.valueOf(room.getId()));
 
         }
     }
