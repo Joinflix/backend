@@ -49,7 +49,7 @@ public class FriendRequestService {
 
         sendNotification(receiverId,
             NotificationMessageTemplate.friendRequest(sender.getNickname()),
-            NotificationType.FRIEND_REQUEST);
+            NotificationType.FRIEND_REQUEST, senderId, receiverId);
 
         return FriendRequestResponse.from(saved);
     }
@@ -64,7 +64,7 @@ public class FriendRequestService {
 
         sendNotification(request.getSender().getId(),
             NotificationMessageTemplate.friendAccept(request.getReceiver().getNickname()),
-            NotificationType.FRIEND_ACCEPT);
+            NotificationType.FRIEND_ACCEPT, request.getReceiver().getId(), request.getSender().getId());
 
         return FriendRequestResponse.from(request);
     }
@@ -77,7 +77,7 @@ public class FriendRequestService {
 
         sendNotification(request.getSender().getId(),
             NotificationMessageTemplate.eventReject(),
-            NotificationType.EVENT_REJECT);
+            NotificationType.EVENT_REJECT, request.getReceiver().getId(), request.getSender().getId());
 
         friendRequestRepository.delete(request);
     }
@@ -90,7 +90,7 @@ public class FriendRequestService {
 
         sendNotification(request.getReceiver().getId(),
                 NotificationMessageTemplate.eventCancel(),
-                NotificationType.EVENT_CANCEL);
+                NotificationType.EVENT_CANCEL, request.getSender().getId(), request.getReceiver().getId());
 
         friendRequestRepository.delete(request);
     }
@@ -105,7 +105,7 @@ public class FriendRequestService {
 
         sendNotification(target.getId(),
                 NotificationMessageTemplate.eventDelete(),
-                NotificationType.EVENT_DELETE);
+                NotificationType.EVENT_DELETE, userId, target.getId());
 
         friendRequestRepository.delete(request);
     }
@@ -175,9 +175,10 @@ public class FriendRequestService {
         }
     }
 
-    private void sendNotification(Long userId, String message, NotificationType type) {
+    private void sendNotification(Long userId, String message, NotificationType type,
+                                   Long senderId, Long receiverId) {
         try {
-            notificationService.sendAndSave(userId, message, type);
+            notificationService.sendAndSave(userId, message, type, senderId, receiverId, null);
         } catch (Exception e) {
             switch (type) {
                 // SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정

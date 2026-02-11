@@ -80,9 +80,11 @@ public class NotificationService {
         }
     }
 
-    public void sendAndSave(Long userId, String message, NotificationType notificationType) {
-        send(userId, NotificationResponse.from(
-            notificationRepository.save(Notification.create(getUser(userId), message, notificationType))));
+    public void sendAndSave(Long userId, String message, NotificationType notificationType,
+                            Long senderId, Long receiverId, String eventId) {
+        Notification saved = notificationRepository.save(
+            Notification.create(getUser(userId), message, notificationType, senderId, receiverId, eventId));
+        send(userId, NotificationResponse.from(saved));
     }
 
     private User getUser(Long userId) {

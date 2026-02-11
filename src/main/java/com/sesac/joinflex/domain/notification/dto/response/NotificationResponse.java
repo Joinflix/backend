@@ -14,10 +14,19 @@ public class NotificationResponse {
     private String message;
     private LocalDateTime createdAt;
     private NotificationType notificationType;
+    private Long senderId;
+    private Long receiverId;
+    private String eventId;
 
     public static NotificationResponse from(Notification notification) {
         return NotificationResponse.builder()
             .id(notification.getId())
-            .message(notification.getMessage()).notificationType(notification.getNotificationType()).createdAt(notification.getCreatedAt()).build();
+            .message(notification.getMessage())
+            .notificationType(notification.getNotificationType())
+            .createdAt(notification.getCreatedAt())
+            .senderId(notification.getSenderId())
+            .receiverId(notification.getReceiverId())
+            .eventId(notification.getEventId())
+            .build();
     }
 }
