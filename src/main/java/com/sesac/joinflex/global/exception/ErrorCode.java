@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     LOCKED_ACCOUNT(HttpStatus.FORBIDDEN, "잠긴 계정입니다. 관리자에게 문의하세요."),
+    USER_NOT_ACTIVE(HttpStatus.FORBIDDEN, "결제가 완료되지 않은 계정입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
     NOT_OWNER(HttpStatus.FORBIDDEN, "본인만 수정 및 조회가 가능합니다."),
@@ -85,7 +86,14 @@ public enum ErrorCode {
     FRIEND_REQUEST_SELF(HttpStatus.BAD_REQUEST, "자기 자신에게 친구 요청을 보낼 수 없습니다."),
     FRIEND_REQUEST_INVALID_STATE(HttpStatus.BAD_REQUEST, "유효하지 않은 친구 요청 상태입니다."),
     FRIEND_REQUEST_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "해당 친구 요청에 대한 권한이 없습니다."),
-    FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 친구 관계를 찾을 수 없습니다.");
+    FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 친구 관계를 찾을 수 없습니다."),
+
+    // Review
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
+    ALREADY_REVIEWED(HttpStatus.CONFLICT, "이미 해당 영화에 대한 리뷰가 존재합니다."),
+    INVALID_REVIEW_RATING(HttpStatus.BAD_REQUEST, "별점은 1점에서 5점 사이여야 합니다."),
+    REVIEW_CONTENT_OR_RATING_REQUIRED(HttpStatus.BAD_REQUEST, "리뷰 내용 또는 별점 중 하나는 필수입니다."),
+    NOT_REVIEW_OWNER(HttpStatus.FORBIDDEN, "본인이 작성한 리뷰만 수정 또는 삭제할 수 있습니다.");
 
     private final HttpStatus status;
     private final String message;

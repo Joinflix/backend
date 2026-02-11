@@ -5,6 +5,7 @@ import com.sesac.joinflex.domain.auth.dto.request.SignupRequest;
 import com.sesac.joinflex.domain.auth.dto.response.TokenResponse;
 import com.sesac.joinflex.domain.user.dto.response.UserResponse;
 import com.sesac.joinflex.domain.user.entity.User;
+import com.sesac.joinflex.domain.user.entity.UserStatus;
 import com.sesac.joinflex.domain.user.service.UserService;
 import com.sesac.joinflex.domain.userhistory.entity.UserAction;
 import com.sesac.joinflex.domain.userhistory.service.UserHistoryService;
@@ -99,6 +100,7 @@ public class AuthService {
             }
             // 3. 계정 잠금 여부 체크
             if (user.getIsLock()) throw new CustomException(ErrorCode.LOCKED_ACCOUNT);
+
             // 4. session 및 token 생성 후 Redis 저장
             String sessionId = UUID.randomUUID().toString();
             UserResponse userResponse = UserResponse.from(user);

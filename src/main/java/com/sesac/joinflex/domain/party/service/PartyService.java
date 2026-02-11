@@ -160,6 +160,12 @@ public class PartyService {
         partyRoom.changeHost(targetMember);
     }
 
+    public PartyRoomResponse getPartyRoomResponse(Long partyId){
+        PartyRoom partyRoom = getPartyRoom(partyId);
+        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(), partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
+                partyRoom.getRoomName(), partyRoom.getHost().getNickname(), partyRoom.getCurrentMemberCount());
+    }
+
     private PartyRoom getPartyRoom(Long partyId) {
         return partyRoomRepository.findById(partyId)
             .orElseThrow(() -> new CustomException(ErrorCode.PARTY_NOT_FOUND));
