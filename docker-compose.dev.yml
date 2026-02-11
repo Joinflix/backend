@@ -30,6 +30,8 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+    volumes:
+      - ./backend/build/libs:/app/build/libs
     depends_on:
       mysql:
         condition: service_healthy
