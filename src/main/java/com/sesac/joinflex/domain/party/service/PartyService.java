@@ -115,8 +115,8 @@ public class PartyService {
 
     public List<MemberResponse> getMembers(Long partyId, Long userId) {
         PartyRoom partyRoom = getPartyRoom(partyId);
-        List<PartyMember> members = partyMemberRepository.findByMember_IdNotAndPartyRoomAndStatus(
-            userId, partyRoom, MemberStatus.JOINED);
+        List<PartyMember> members = partyMemberRepository.findOtherMembersWithFetch(userId,
+            partyRoom, MemberStatus.JOINED);
 
         return members.stream().map(member -> new MemberResponse(member.getMember().getId(),
             member.getMember().getNickname())).toList();
