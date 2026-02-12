@@ -4,7 +4,7 @@ services:
   # Redis 서비스 설정
   redis:
     image: 'redis:7.2.1-alpine'
-    container_name: 'redis-joinflex'
+    container_name: 'redis-joinflix'
     ports:
       - '6379:6379'
 #    volumes:
@@ -12,15 +12,15 @@ services:
     # 데이터 영속성을 위해 AOF 모드 활성화
     command: redis-server --appendonly yes
     networks:
-      - joinflex-network
+      - joinflix-network
 
   # MySQL 서비스 설정
   mysql:
     image: 'mysql:8.0'
-    container_name: 'mysql-joinflex'
+    container_name: 'mysql-joinflix'
     environment:
       MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_DATABASE: 'joinflex'
+      MYSQL_DATABASE: 'joinflix'
 #      MYSQL_USER: 'user'
 #      MYSQL_PASSWORD: 'password'
       TZ: 'Asia/Seoul'
@@ -33,7 +33,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     networks:
-      - joinflex-network
+      - joinflix-network
 
 # 데이터 영속성을 위한 볼륨 정의
 #volumes:
@@ -42,5 +42,5 @@ services:
 
 # 컨테이너 간 통신을 위한 네트워크 정의
 networks:
-  joinflex-network:
+  joinflix-network:
     driver: bridge
