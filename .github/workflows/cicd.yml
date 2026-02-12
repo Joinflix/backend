@@ -6,31 +6,32 @@ on:
   pull_request:
     branches: [ "prod" ]
 
+# 테스트 코드가 없어 build -> deploy
 jobs:
   # 1. 테스트 (Backend)
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Run tests
-        run: ./gradlew test
+#  test:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Set up JDK 21
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '21'
+#          distribution: 'temurin'
+#          cache: 'gradle'
+#
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#
+#      - name: Run tests
+#        run: ./gradlew test
 
   # 2. 빌드 및 도커 푸시 (Backend)
   build:
-    needs: test
+#    needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     
@@ -50,7 +51,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: . # 루트 경로 기준 빌드
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/joinflix-back:latest
