@@ -2,11 +2,13 @@ package com.sesac.joinflex.domain.party.controller;
 
 import com.sesac.joinflex.domain.party.dto.request.PartyJoinRequest;
 import com.sesac.joinflex.domain.party.dto.request.PartyRoomRequest;
+import com.sesac.joinflex.domain.party.dto.response.MemberResponse;
 import com.sesac.joinflex.domain.party.dto.response.PartyRoomResponse;
 import com.sesac.joinflex.domain.party.service.PartyService;
 import com.sesac.joinflex.global.common.constants.ApiPath;
 import com.sesac.joinflex.global.security.CustomUserDetails;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -54,6 +56,13 @@ public class PartyController {
     @GetMapping("/{partyId}")
     public ResponseEntity<PartyRoomResponse> getPartyRoom(@PathVariable Long partyId) {
         return ResponseEntity.ok(partyService.getPartyRoomResponse(partyId));
+    }
+
+    // http://localhost:8080/api/parties/{partyId}/members
+    @GetMapping("/{partyId}/members")
+    public ResponseEntity<List<MemberResponse>> getMembers(@PathVariable Long partyId,
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(partyService.getMembers(partyId, userDetails.getId()));
     }
 
 }
