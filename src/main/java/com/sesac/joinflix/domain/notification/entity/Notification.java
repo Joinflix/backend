@@ -1,0 +1,60 @@
+package com.sesac.joinflix.domain.notification.entity;
+
+import com.sesac.joinflix.domain.notification.type.NotificationType;
+import com.sesac.joinflix.domain.user.entity.User;
+import com.sesac.joinflix.global.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+
+@Getter
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "notifications")
+public class Notification extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(nullable = false)
+    private String message;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private NotificationType notificationType;
+
+    private Long senderId;
+
+    private Long receiverId;
+
+    private Long eventId;
+
+    private LocalDateTime readAt;
+
+    private Notification(User user, String message, NotificationType notificationType,
+                         Long senderId, Long receiverId, Long eventId) {
+        this.user = user;
+        this.message = message;
+        this.notificationType = notificationType;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.eventId = eventId;
+        this.readAt = null;
+    }
+
+    public static Notification create(User user, String message, NotificationType notificationType,
+                                      Long senderId, Long receiverId, Long eventId) {
+        return new Notification(user, message, notificationType, senderId, receiverId, eventId);
+    }
+
+    public void creatReadAt(LocalDateTime now) {
+        this.readAt = now;
+    }
+}
