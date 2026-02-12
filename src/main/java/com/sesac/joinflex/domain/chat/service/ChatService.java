@@ -25,11 +25,10 @@ public class ChatService {
         return ChatMessageResponse.talk(user.getNickName(), message, party.getCurrentMemberCount());
     }
 
-//    public ChatMessageResponse createLeaveMessage(Long partyId, UserResponse user) {
-//        partyRoomRepository.findById(partyId).orElseThrow();
-//        return new ChatMessageResponse(MessageType.LEAVE, user.getNickName(),
-//            user.getNickName() + "님이 퇴장하셨습니다.");
-//    }
+    public static ChatMessageResponse createLeaveMessage(UserResponse user,
+        Integer currentMemberCount) {
+        return ChatMessageResponse.leave(user.getNickName(), currentMemberCount);
+    }
 
     private PartyRoom getPartyRoom(Long partyId) {
         return partyRoomRepository.findById(partyId).orElseThrow();

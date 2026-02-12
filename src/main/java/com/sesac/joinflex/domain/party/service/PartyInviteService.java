@@ -44,7 +44,7 @@ public class PartyInviteService {
             String notificationMessage = NotificationMessageTemplate.notification(
                 room.getHost().getNickname(), room.getRoomName(), guest.getNickname());
             notificationService.sendAndSave(guest.getId(), notificationMessage, NotificationType.PARTY_INVITE,
-                null, null, String.valueOf(room.getId()));
+                null, null, room.getId());
 
         }
     }
@@ -62,5 +62,9 @@ public class PartyInviteService {
         String message = NotificationMessageTemplate.emailBody(room, joinUrl);
 
         emailService.sendEmail(guest.getEmail(), subject, message);
+    }
+
+    public void deleteAllByPartyRoom(PartyRoom partyRoom) {
+        partyInviteRepository.deleteAllByPartyRoom(partyRoom);
     }
 }

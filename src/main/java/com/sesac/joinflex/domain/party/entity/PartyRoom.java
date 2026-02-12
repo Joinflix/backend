@@ -92,6 +92,10 @@ public class PartyRoom extends BaseEntity {
         this.currentMemberCount--;
     }
 
+    public void changeHost(User targetMember) {
+        this.host = targetMember;
+    }
+
     public boolean isPasswordMatch(String passCode) {
         return this.passCode.equals(passCode);
     }

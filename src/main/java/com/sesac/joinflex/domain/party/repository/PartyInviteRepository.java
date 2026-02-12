@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface PartyInviteRepository extends JpaRepository<PartyInvite, Long> {
 
     Optional<PartyInvite> findByPartyRoomAndGuest(PartyRoom partyRoom, User user);
+
+    void deleteAllByPartyRoom(PartyRoom partyRoom);
 }

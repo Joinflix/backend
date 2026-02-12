@@ -34,12 +34,12 @@ public class Notification extends BaseEntity {
 
     private Long receiverId;
 
-    private String eventId;
+    private Long eventId;
 
     private LocalDateTime readAt;
 
     private Notification(User user, String message, NotificationType notificationType,
-                         Long senderId, Long receiverId, String eventId) {
+                         Long senderId, Long receiverId, Long eventId) {
         this.user = user;
         this.message = message;
         this.notificationType = notificationType;
@@ -50,7 +50,7 @@ public class Notification extends BaseEntity {
     }
 
     public static Notification create(User user, String message, NotificationType notificationType,
-                                      Long senderId, Long receiverId, String eventId) {
+                                      Long senderId, Long receiverId, Long eventId) {
         return new Notification(user, message, notificationType, senderId, receiverId, eventId);
     }
 

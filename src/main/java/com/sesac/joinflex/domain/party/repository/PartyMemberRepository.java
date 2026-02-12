@@ -30,4 +30,7 @@ public interface PartyMemberRepository extends JpaRepository<PartyMember, Long> 
     List<PartyMember> findOtherMembersWithFetch(@Param("memberId") Long memberId,
         @Param("partyRoom") PartyRoom partyRoom,
         @Param("status") MemberStatus status);
+
+    void deleteAllByPartyRoom(PartyRoom partyRoom);
+
 }

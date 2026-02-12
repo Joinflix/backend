@@ -55,4 +55,12 @@ public class PartyMember extends BaseEntity {
     public void leave() {
         this.status = MemberStatus.LEFT;
     }
+
+    public void changeRole() {
+        this.role = MemberRole.HOST;
+    }
+
+    public boolean isHost() {
+        return this.role.equals(MemberRole.HOST);
+    }
 }
