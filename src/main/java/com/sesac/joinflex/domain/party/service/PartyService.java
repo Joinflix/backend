@@ -5,6 +5,7 @@ import com.sesac.joinflex.domain.movie.entity.Movie;
 import com.sesac.joinflex.domain.movie.repository.MovieRepository;
 import com.sesac.joinflex.domain.party.dto.request.PartyJoinRequest;
 import com.sesac.joinflex.domain.party.dto.request.PartyRoomRequest;
+import com.sesac.joinflex.domain.party.dto.response.MemberResponse;
 import com.sesac.joinflex.domain.party.dto.response.PartyRoomResponse;
 import com.sesac.joinflex.domain.party.entity.MemberRole;
 import com.sesac.joinflex.domain.party.entity.MemberStatus;
@@ -16,6 +17,7 @@ import com.sesac.joinflex.domain.user.entity.User;
 import com.sesac.joinflex.domain.user.repository.UserRepository;
 import com.sesac.joinflex.global.exception.CustomException;
 import com.sesac.joinflex.global.exception.ErrorCode;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -165,6 +167,15 @@ public class PartyService {
             partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
             partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
             partyRoom.getCurrentMemberCount());
+    }
+
+    public List<MemberResponse> getMembers(Long partyId, Long userId) {
+        PartyRoom partyRoom = getPartyRoom(partyId);
+        List<PartyMember> members = partyMemberRepository.findOtherMembersWithFetch(userId,
+            partyRoom, MemberStatus.JOINED);
+
+        return members.stream().map(member -> new MemberResponse(member.getMember().getId(),
+            member.getMember().getNickname())).toList();
     }
 
     private PartyRoom getPartyRoom(Long partyId) {
