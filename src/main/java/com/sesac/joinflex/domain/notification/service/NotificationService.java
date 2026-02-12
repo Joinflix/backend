@@ -76,7 +76,7 @@ public class NotificationService {
     }
 
     public void sendAndSave(Long userId, String message, NotificationType notificationType,
-                            Long senderId, Long receiverId, String eventId) {
+                            Long senderId, Long receiverId, Long eventId) {
         Notification saved = notificationRepository.save(
             Notification.create(getUser(userId), message, notificationType, senderId, receiverId, eventId));
         send(userId, NotificationResponse.from(saved));
