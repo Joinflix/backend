@@ -144,9 +144,9 @@ VALUES
 (2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, null, null, NOW(), NOW()),     -- 3 → 2 (미읽음)
 
 -- 파티 초대 알림
-(2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '1', null, NOW(), NOW()),   -- 방 1 (미읽음)
-(3, '김철수님이 이영희님을 \'재밌겠다\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '2', NOW(), NOW(), NOW()), -- 방 2 (읽음)
-(1, '정우성님이 test님을 \'같이 영화봐요\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, '3', null, NOW(), NOW()); -- 방 3 (미읽음)
+(2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, 1, null, NOW(), NOW()),   -- 방 1 (미읽음)
+(3, '김철수님이 이영희님을 \'재밌겠다\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, 2, NOW(), NOW(), NOW()), -- 방 2 (읽음)
+(1, '정우성님이 test님을 \'같이 영화봐요\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, 3, null, NOW(), NOW()); -- 방 3 (미읽음)
 
 -- 8. 리뷰 데이터 (Reviews)
 -- 순서: user_id, movie_id, star_rating, content

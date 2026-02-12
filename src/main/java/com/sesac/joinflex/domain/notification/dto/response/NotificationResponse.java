@@ -16,7 +16,7 @@ public class NotificationResponse {
     private NotificationType notificationType;
     private Long senderId;
     private Long receiverId;
-    private String eventId;
+    private Long eventId;
 
     public static NotificationResponse from(Notification notification) {
         return NotificationResponse.builder()
