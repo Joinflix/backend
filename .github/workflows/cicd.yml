@@ -10,9 +10,6 @@ jobs:
   # 1. 테스트 (Backend)
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend # 백엔드 폴더에서 실행
 
     steps:
       - name: Checkout
@@ -34,7 +31,7 @@ jobs:
   # 2. 빌드 및 도커 푸시 (Backend)
   build:
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/prod' # prod 브랜치 푸시 시'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     
     steps:
@@ -53,7 +50,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
-          context: ./backend # 백엔드 폴더 기준 빌드
+          context: .
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/joinflix-back:latest
