@@ -1,0 +1,197 @@
+package com.sesac.joinflix.domain.user.service;
+
+import com.sesac.joinflix.domain.friend.entity.FriendRequest;
+import com.sesac.joinflix.domain.friend.entity.FriendRequestStatus;
+import com.sesac.joinflix.domain.friend.repository.FriendRequestRepository;
+import com.sesac.joinflix.domain.user.dto.request.ProfileUpdateRequest;
+import com.sesac.joinflix.domain.user.dto.response.UserProfileResponse;
+import com.sesac.joinflix.domain.user.dto.response.UserResponse;
+import com.sesac.joinflix.domain.user.dto.response.UserSearchResponse;
+import com.sesac.joinflix.domain.user.entity.User;
+import com.sesac.joinflix.domain.user.repository.UserRepository;
+import com.sesac.joinflix.domain.userhistory.entity.UserAction;
+import com.sesac.joinflix.domain.userhistory.service.UserHistoryService;
+import com.sesac.joinflix.global.exception.CustomException;
+import com.sesac.joinflix.global.exception.ErrorCode;
+import com.sesac.joinflix.global.util.NetworkUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional(readOnly=true)
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+    private final UserHistoryService userHistoryService;
+    private final FriendRequestRepository friendRequestRepository;
+
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public User save(User user){
+        return userRepository.save(user);
+    }
+
+    // 인증 시 유저 조회 공통 메서드
+    public User findByEmailForAuth(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    // 닉네임 중복 체크
+    public void validateNickname(String nickname){
+        if(userRepository.existsByNickname(nickname)){
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+    }
+
+    // 사용자 유효성 체크
+    public void validateNewUser(String email, String nickname, String ip) {
+        // IP 기반 가입 횟수 제한 (24시간 내 5회)
+        // 테스트 시 24시간 -> 1분, 5회 -> 2회로 설정
+        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        long signupCount = userRepository.countBySignupIpAndCreatedAtAfter(ip, oneDayAgo);
+
+        if (signupCount >= 5) {
+            throw new CustomException(ErrorCode.TOO_MANY_REGISTRATION_ATTEMPTS);
+        }
+
+        if (userRepository.existsByEmail(email)) throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        if (userRepository.existsByNickname(nickname)) throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+    }
+
+    // 사용자 프로필 조회
+    public UserProfileResponse getProfile(Long id, Long currentUserId) {
+        validateUser(id, currentUserId);
+        return UserProfileResponse.of(getUser(id));
+    }
+
+    // 사용자 프로필 수정
+    public UserResponse updateProfile(Long id, Long currentUserId, ProfileUpdateRequest request, HttpServletRequest httpRequest){
+        validateUser(id, currentUserId);
+        User user = getUser(id);
+        String ip = NetworkUtil.getClientIp(httpRequest);
+        String ua = NetworkUtil.getUserAgent(httpRequest);
+
+        String oldNickname = user.getNickname();
+        user.updateProfile(request.getNickname(), request.getProfileImageUrl());
+
+        // 닉네임 변경 시 기록
+        if (!oldNickname.equals(request.getNickname())) {
+            userHistoryService.saveLog(user.getEmail(), UserAction.NICKNAME_CHG, ip, ua, true, "닉네임 변경: " + oldNickname + " -> " + request.getNickname());
+        }
+        return UserResponse.from(user);
+    }
+
+    // 본인 확인
+    private void validateUser(Long id, Long currentUserId) {
+        if(!id.equals(currentUserId))
+            throw new CustomException(ErrorCode.NOT_OWNER);
+    }
+
+    // 사용자 조회
+    private User getUser(Long id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    // 멤버쉽 만료 유저 조회
+    public List<User> findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull() {
+        return userRepository.findAllByMembershipExpiryDateBeforeAndMembershipIsNotNull();
+    }
+
+    public Slice<UserResponse> getAllUsers(Long cursorId, Pageable pageable) {
+        Slice<User> users = userRepository.findUsers(
+            cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+
+        return users.map(user -> UserResponse.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .nickName(user.getNickname())
+            .role(user.getRoleType())
+            .profileImageUrl(user.getProfileImageUrl())
+            .build());
+    }
+
+    public List<UserResponse> getUsersByNickname(String nickname) {
+        return userRepository.findTop10ByNicknameContainingIgnoreCase(nickname)
+            .stream()
+            .map(user -> UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickName(user.getNickname())
+                .role(user.getRoleType())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build())
+            .toList();
+    }
+
+    public List<UserResponse> getUsersByEmail(String email) {
+        return userRepository.findTop10ByEmailContainingIgnoreCase(email)
+            .stream()
+            .map(user -> UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickName(user.getNickname())
+                .role(user.getRoleType())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build())
+            .toList();
+    }
+
+    public Slice<UserSearchResponse> getAllUsersWithRelationStatus(Long currentUserId, Long cursorId, Pageable pageable) {
+        Slice<User> users = userRepository.findUsers(
+                cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
+
+        List<Long> targetIds = users.getContent().stream()
+                .map(User::getId)
+                .toList();
+
+        List<FriendRequest> requests = friendRequestRepository.findAllRelatedRequests(currentUserId, targetIds);
+
+        Map<Long, FriendRequest> requestMap = requests.stream()
+                .collect(Collectors.toMap(
+                        fr -> fr.getSender().getId().equals(currentUserId)
+                                ? fr.getReceiver().getId()
+                                : fr.getSender().getId(),
+                        fr -> fr,
+                        (existing, replacement) -> existing // Keep the first if duplicates exist
+                ));
+        return users.map(user -> {
+            FriendRequest fr = requestMap.get(user.getId());
+            String status = "NONE";
+            Long requestId = null;
+
+            if (fr != null) {
+                requestId = fr.getId();
+                if (fr.getStatus() == FriendRequestStatus.ACCEPTED) {
+                    status = "FRIEND";
+                } else if (fr.getSender().getId().equals(currentUserId)) {
+                    status = "SENT_PENDING";
+                } else {
+                    status = "RECEIVED_PENDING";
+                }
+            }
+
+            return UserSearchResponse.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .nickName(user.getNickname())
+                    .profileImageUrl(user.getProfileImageUrl())
+                    .friendStatus(status)
+                    .requestId(requestId)
+                    .build();
+        });
+
+    }
+}

@@ -6,7 +6,7 @@
 
   spring:
     application:
-      name: joinflex
+      name: joinflix
     profiles:
       active: ${SPRING_PROFILES_ACTIVE:dev}
     output:
@@ -83,7 +83,7 @@
       org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_PARAM_LOG:TRACE}
       org.springframework.web: ${WEB_LOG_LEVEL:DEBUG}
       org.springframework.transaction: ${TRANSACTION_LOG_LEVEL:DEBUG}
-      com.sesac.joinflex: ${APP_LOG_LEVEL:DEBUG}
+      com.sesac.joinflix: ${APP_LOG_LEVEL:DEBUG}
       org.springframework.web.socket: ${WEBSOCKET_LOG_LEVEL:DEBUG}
       org.springframework.messaging.simp: ${SIMPLE_LOG_LEVEL:DEBUG}
     file:
