@@ -72,6 +72,9 @@ jobs:
           script: |
             cd ~ # docker-compose.yml이 있는 홈 디렉토리로 이동
             
+            # 기존 이미지 삭제
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/joinflix-back:latest
+            
             # 최신 이미지 Pull
             docker pull ${{ secrets.DOCKER_USERNAME }}/joinflix-back:latest
             
