@@ -2,7 +2,9 @@ package com.sesac.joinflix.domain.chat.controller;
 
 import com.sesac.joinflix.domain.chat.dto.request.ChatMessageRequest;
 import com.sesac.joinflix.domain.chat.dto.request.LeaveRequest;
+import com.sesac.joinflix.domain.chat.dto.request.VideoSyncRequest;
 import com.sesac.joinflix.domain.chat.dto.response.ChatMessageResponse;
+import com.sesac.joinflix.domain.chat.dto.response.VideoSyncResponse;
 import com.sesac.joinflix.domain.chat.service.ChatService;
 import com.sesac.joinflix.domain.party.service.PartyService;
 import com.sesac.joinflix.domain.user.dto.response.UserResponse;
@@ -57,6 +59,18 @@ public class ChatController {
 
         return result.map(leaveResult -> chatService.createLeaveMessage(user, leaveResult))
             .orElse(null);
+    }
+
+    @MessageMapping("/party/{partyId}/video")
+    @SendTo("/sub/party/{partyId}/video")
+    public VideoSyncResponse syncVideo(@DestinationVariable Long partyId, Principal principal,
+        @Payload VideoSyncRequest request) {
+        UserResponse user = getUser(principal);
+
+        if (!partyService.canControlVideo(partyId, user.getId())) {
+            return null;
+        }
+        return chatService.createSyncMessage(user, request);
     }
 
     private UserResponse getUser(Principal principal) {

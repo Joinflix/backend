@@ -1,6 +1,8 @@
 package com.sesac.joinflix.domain.chat.service;
 
+import com.sesac.joinflix.domain.chat.dto.request.VideoSyncRequest;
 import com.sesac.joinflix.domain.chat.dto.response.ChatMessageResponse;
+import com.sesac.joinflix.domain.chat.dto.response.VideoSyncResponse;
 import com.sesac.joinflix.domain.party.entity.PartyRoom;
 import com.sesac.joinflix.domain.party.repository.PartyRoomRepository;
 import com.sesac.joinflix.domain.user.dto.response.UserResponse;
@@ -28,6 +30,10 @@ public class ChatService {
     public static ChatMessageResponse createLeaveMessage(UserResponse user,
         Integer currentMemberCount) {
         return ChatMessageResponse.leave(user.getNickName(), currentMemberCount);
+    }
+
+    public VideoSyncResponse createSyncMessage(UserResponse user, VideoSyncRequest request) {
+        return VideoSyncResponse.of(user.getNickName(), request.currentTime(), request.paused());
     }
 
     private PartyRoom getPartyRoom(Long partyId) {
