@@ -33,7 +33,8 @@ public class ChatService {
     }
 
     public VideoSyncResponse createSyncMessage(UserResponse user, VideoSyncRequest request) {
-        return VideoSyncResponse.of(user.getNickName(), request.currentTime(), request.paused());
+        return VideoSyncResponse.of(user.getNickName(), request.currentTime(), request.paused(),
+            request.action());
     }
 
     private PartyRoom getPartyRoom(Long partyId) {
