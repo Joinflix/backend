@@ -5,4 +5,5 @@ public enum MessageType {
     TALK,
     LEAVE,
     SYSTEM
+    // 테스트
 }
