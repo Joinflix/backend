@@ -178,6 +178,21 @@ public class PartyService {
             member.getMember().getNickname())).toList();
     }
 
+    public boolean canControlVideo(Long partyId, Long userId) {
+        PartyRoom partyRoom = getPartyRoom(partyId);
+        User user = getUser(userId);
+
+        PartyMember member = partyMemberRepository.findByPartyRoomAndMemberAndStatus(partyRoom,
+                user, MemberStatus.JOINED)
+            .orElse(null);
+
+        if (member == null) {
+            return false;
+        }
+
+        return !partyRoom.getHostControl() || member.isHost();
+    }
+
     private PartyRoom getPartyRoom(Long partyId) {
         return partyRoomRepository.findById(partyId)
             .orElseThrow(() -> new CustomException(ErrorCode.PARTY_NOT_FOUND));
@@ -228,5 +243,4 @@ public class PartyService {
         partyMemberRepository.save(PartyMember.create(partyRoom, user, role));
         partyRoom.addMember();
     }
-
 }
