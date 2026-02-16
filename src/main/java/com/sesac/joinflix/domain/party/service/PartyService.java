@@ -76,7 +76,8 @@ public class PartyService {
     @Transactional
     public PartyRoomResponse joinParty(Long partyId, PartyJoinRequest request, Long userId) {
         // 파티방 존재 여부 검증
-        PartyRoom partyRoom = getPartyRoom(partyId);
+        PartyRoom partyRoom = partyRoomRepository.findByIdWithLock(partyId)
+            .orElseThrow(() -> new CustomException(ErrorCode.PARTY_NOT_FOUND));
 
         // 사용자 검증
         User user = getUser(userId);
