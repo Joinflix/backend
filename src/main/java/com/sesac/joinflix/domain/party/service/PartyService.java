@@ -8,6 +8,7 @@ import com.sesac.joinflix.domain.party.dto.request.PartyJoinRequest;
 import com.sesac.joinflix.domain.party.dto.request.PartyRoomRequest;
 import com.sesac.joinflix.domain.party.dto.response.MemberResponse;
 import com.sesac.joinflix.domain.party.dto.response.PartyRoomResponse;
+import com.sesac.joinflix.domain.party.dto.response.VideoStatus;
 import com.sesac.joinflix.domain.party.entity.MemberRole;
 import com.sesac.joinflix.domain.party.entity.MemberStatus;
 import com.sesac.joinflix.domain.party.entity.PartyMember;
@@ -89,7 +90,9 @@ public class PartyService {
 
         processEntry(partyRoom, user, request);
 
-        return PartyRoomResponse.of(partyRoom);
+        VideoStatus videoStatus = getCalculatedVideoStatus(partyId);
+
+        return PartyRoomResponse.of(partyRoom, videoStatus);
     }
 
     @Transactional
@@ -252,5 +255,28 @@ public class PartyService {
     private void addMember(PartyRoom partyRoom, User user, MemberRole role) {
         partyMemberRepository.save(PartyMember.create(partyRoom, user, role));
         partyRoom.addMember();
+    }
+
+    private VideoStatus getCalculatedVideoStatus(Long partyId) {
+        String key = VIDEO_KEY_PREFIX + partyId + VIDEO_KEY_SUFFIX;
+
+        Map<String, String> status = redisTemplate.<String, String>opsForHash().entries(key);
+
+        if (status.isEmpty()) {
+            return new VideoStatus(0.0, true); // 0초, 일시정지 상태
+        }
+
+        double savedTime = Double.parseDouble(status.get(REDIS_FIELD_CURRENT_TIME));
+        boolean isPaused = Boolean.parseBoolean(status.get(REDIS_FIELD_PAUSED));
+        long updatedAt = Long.parseLong(status.get(REDIS_FIELD_UPDATED_AT));
+
+        double finalTime = savedTime;
+        if (!isPaused) {
+            // 재생 중이면 현재시간 - 저장 시점 시간
+            double diff = (System.currentTimeMillis() - updatedAt) / 1000.0;
+            finalTime += diff;
+        }
+
+        return new VideoStatus(finalTime, isPaused);
     }
 }
