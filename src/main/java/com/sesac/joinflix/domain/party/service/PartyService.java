@@ -25,7 +25,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +45,7 @@ public class PartyService {
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
     private final PartyInviteService partyInviteService;
-    private final RedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Transactional
     public Long createPartyRoom(PartyRoomRequest request, Long userId) {
@@ -207,9 +207,9 @@ public class PartyService {
     public void saveVideoStatus(Long partyId, VideoSyncRequest request) {
         String key = VIDEO_KEY_PREFIX + partyId + VIDEO_KEY_SUFFIX;
 
-        Map<String, Object> videoStatus = new HashMap<>();
-        videoStatus.put(REDIS_FIELD_CURRENT_TIME, request.currentTime().toString());
-        videoStatus.put(REDIS_FIELD_PAUSED, request.paused());
+        Map<String, String> videoStatus = new HashMap<>();
+        videoStatus.put(REDIS_FIELD_CURRENT_TIME, String.valueOf(request.currentTime()));
+        videoStatus.put(REDIS_FIELD_PAUSED, String.valueOf(request.paused()));
         videoStatus.put(REDIS_FIELD_UPDATED_AT, String.valueOf(System.currentTimeMillis()));
 
         redisTemplate.opsForHash().putAll(key, videoStatus);
