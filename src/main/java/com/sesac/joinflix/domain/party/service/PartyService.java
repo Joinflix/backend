@@ -72,15 +72,7 @@ public class PartyService {
         Slice<PartyRoom> rooms = partyRoomRepository.findPartyRooms(
             cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
-        return rooms.map(room -> new PartyRoomResponse(
-            room.getId(),
-            room.getMovie().getTitle(),
-            room.getMovie().getBackdrop(),
-            room.getIsPublic(),
-            room.getRoomName(),
-            room.getHost().getNickname(),
-            room.getCurrentMemberCount()
-        ));
+        return rooms.map(PartyRoomResponse::of);
     }
 
 
@@ -97,10 +89,7 @@ public class PartyService {
 
         processEntry(partyRoom, user, request);
 
-        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(),
-            partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
-            partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
-            partyRoom.getCurrentMemberCount());
+        return PartyRoomResponse.of(partyRoom);
     }
 
     @Transactional
@@ -174,10 +163,7 @@ public class PartyService {
 
     public PartyRoomResponse getPartyRoomResponse(Long partyId) {
         PartyRoom partyRoom = getPartyRoom(partyId);
-        return new PartyRoomResponse(partyRoom.getId(), partyRoom.getMovie().getTitle(),
-            partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
-            partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
-            partyRoom.getCurrentMemberCount());
+        return PartyRoomResponse.of(partyRoom);
     }
 
     public List<MemberResponse> getMembers(Long partyId, Long userId) {
