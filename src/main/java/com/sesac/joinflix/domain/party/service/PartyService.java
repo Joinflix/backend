@@ -1,6 +1,7 @@
 package com.sesac.joinflix.domain.party.service;
 
 import com.sesac.joinflix.domain.chat.dto.request.LeaveRequest;
+import com.sesac.joinflix.domain.chat.dto.request.VideoSyncRequest;
 import com.sesac.joinflix.domain.movie.entity.Movie;
 import com.sesac.joinflix.domain.movie.repository.MovieRepository;
 import com.sesac.joinflix.domain.party.dto.request.PartyJoinRequest;
@@ -17,11 +18,14 @@ import com.sesac.joinflix.domain.user.entity.User;
 import com.sesac.joinflix.domain.user.repository.UserRepository;
 import com.sesac.joinflix.global.exception.CustomException;
 import com.sesac.joinflix.global.exception.ErrorCode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +34,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PartyService {
 
+    private static final String VIDEO_KEY_PREFIX = "party:";
+    private static final String VIDEO_KEY_SUFFIX = ":video";
+    private static final String REDIS_FIELD_CURRENT_TIME = "currentTime";
+    private static final String REDIS_FIELD_PAUSED = "paused";
+    private static final String REDIS_FIELD_UPDATED_AT = "updatedAt";
+
     private final PartyRoomRepository partyRoomRepository;
     private final PartyMemberRepository partyMemberRepository;
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
     private final PartyInviteService partyInviteService;
+    private final RedisTemplate redisTemplate;
 
     @Transactional
     public Long createPartyRoom(PartyRoomRequest request, Long userId) {
@@ -191,6 +202,19 @@ public class PartyService {
         }
 
         return !partyRoom.getHostControl() || member.isHost();
+    }
+
+    public void saveVideoStatus(Long partyId, VideoSyncRequest request) {
+        String key = VIDEO_KEY_PREFIX + partyId + VIDEO_KEY_SUFFIX;
+
+        Map<String, Object> videoStatus = new HashMap<>();
+        videoStatus.put(REDIS_FIELD_CURRENT_TIME, request.currentTime().toString());
+        videoStatus.put(REDIS_FIELD_PAUSED, request.paused());
+        videoStatus.put(REDIS_FIELD_UPDATED_AT, String.valueOf(System.currentTimeMillis()));
+
+        redisTemplate.opsForHash().putAll(key, videoStatus);
+
+        // Todo redis 만료 시간
     }
 
     private PartyRoom getPartyRoom(Long partyId) {

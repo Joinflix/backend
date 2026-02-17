@@ -70,6 +70,9 @@ public class ChatController {
         if (!partyService.canControlVideo(partyId, user.getId())) {
             return null;
         }
+
+        partyService.saveVideoStatus(partyId, request);
+
         return chatService.createSyncMessage(user, request);
     }
 
