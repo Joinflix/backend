@@ -5,15 +5,16 @@ import com.sesac.joinflix.domain.notification.service.NotificationService;
 import com.sesac.joinflix.domain.notification.type.NotificationType;
 import com.sesac.joinflix.domain.party.entity.PartyInvite;
 import com.sesac.joinflix.domain.party.entity.PartyRoom;
+import com.sesac.joinflix.domain.party.event.PartyInviteEvent;
 import com.sesac.joinflix.domain.party.repository.PartyInviteRepository;
 import com.sesac.joinflix.domain.user.entity.User;
 import com.sesac.joinflix.domain.user.repository.UserRepository;
 import com.sesac.joinflix.global.exception.CustomException;
 import com.sesac.joinflix.global.exception.ErrorCode;
-import com.sesac.joinflix.global.infra.mail.EmailService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public class PartyInviteService {
 
     private final PartyInviteRepository partyInviteRepository;
     private final UserRepository userRepository;
-    private final EmailService emailService;
+    private final ApplicationEventPublisher eventPublisher;
     private final NotificationService notificationService;
 
     @Value("${app.domain-url}")
@@ -44,11 +45,15 @@ public class PartyInviteService {
         partyInviteRepository.saveAll(invites);
 
         for (User guest : guests) {
-            // 이메일 발송
-            sendInviteEmail(guest, room);
+            // 파티 초대 이벤트 발행
+            eventPublisher.publishEvent(
+                new PartyInviteEvent(guest.getEmail(), room.getHost().getNickname(),
+                    room.getRoomName(), String.format("%s/parties/%d", domainUrl, room.getId())
+                ));
             String notificationMessage = NotificationMessageTemplate.notification(
                 room.getHost().getNickname(), room.getRoomName(), guest.getNickname());
-            notificationService.sendAndSave(guest.getId(), notificationMessage, NotificationType.PARTY_INVITE,
+            notificationService.sendAndSave(guest.getId(), notificationMessage,
+                NotificationType.PARTY_INVITE,
                 null, null, room.getId());
 
         }
@@ -57,16 +62,6 @@ public class PartyInviteService {
     public void validateInvitation(PartyRoom partyRoom, User user) {
         partyInviteRepository.findByPartyRoomAndGuest(partyRoom, user)
             .orElseThrow(() -> new CustomException(ErrorCode.PARTY_ACCESS_DENIED));
-    }
-
-    private void sendInviteEmail(User guest, PartyRoom room) {
-        String subject = "[JoinFlix] 파티 초대장이 도착했습니다!";
-
-        String joinUrl = String.format("%s/parties/%d", domainUrl, room.getId());
-
-        String message = NotificationMessageTemplate.emailBody(room, joinUrl);
-
-        emailService.sendEmail(guest.getEmail(), subject, message);
     }
 
     public void deleteAllByPartyRoom(PartyRoom partyRoom) {
