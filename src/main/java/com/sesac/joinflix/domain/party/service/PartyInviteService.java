@@ -37,8 +37,13 @@ public class PartyInviteService {
             throw new CustomException(ErrorCode.INVALID_PARTY_INVITE_TARGET);
         }
 
+        List<PartyInvite> invites = guests.stream()
+            .map(guest -> PartyInvite.create(room, guest))
+            .toList();
+
+        partyInviteRepository.saveAll(invites);
+
         for (User guest : guests) {
-            partyInviteRepository.save(PartyInvite.create(room, guest));
             // 이메일 발송
             sendInviteEmail(guest, room);
             String notificationMessage = NotificationMessageTemplate.notification(
