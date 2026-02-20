@@ -3,6 +3,7 @@ package com.sesac.joinflix.domain.chat.controller;
 import com.sesac.joinflix.domain.chat.dto.request.ChatMessageRequest;
 import com.sesac.joinflix.domain.chat.dto.request.LeaveRequest;
 import com.sesac.joinflix.domain.chat.dto.request.VideoSyncRequest;
+import com.sesac.joinflix.domain.chat.dto.request.VoiceSignalRequest;
 import com.sesac.joinflix.domain.chat.dto.response.ChatMessageResponse;
 import com.sesac.joinflix.domain.chat.dto.response.VideoSyncResponse;
 import com.sesac.joinflix.domain.chat.service.ChatService;
@@ -70,12 +71,24 @@ public class ChatController {
         if (!partyService.canControlVideo(partyId, user.getId())) {
             return null;
         }
+
+        partyService.saveVideoStatus(partyId, request);
+
         return chatService.createSyncMessage(user, request);
     }
 
     private UserResponse getUser(Principal principal) {
         Authentication authentication = (Authentication) principal;
         return (UserResponse) authentication.getPrincipal();
+    }
+
+    @MessageMapping("/party/{partyId}/voice")
+    @SendTo("/sub/party/{partyId}/voice")
+    public VoiceSignalRequest relayVoiceSignal(
+            @DestinationVariable Long partyId,
+            @Payload VoiceSignalRequest signal,
+            Principal principal) {
+        return signal;
     }
 
 }

@@ -1,19 +1,20 @@
 package com.sesac.joinflix.domain.notification.message;
 
-import com.sesac.joinflix.domain.party.entity.PartyRoom;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class NotificationMessageTemplate {
 
-    public String emailBody(PartyRoom room, String joinUrl) {
+    public String emailSubject() {
+        return "[JoinFlix] 파티 초대장이 도착했습니다!";
+    }
+
+    public String emailBody(String hostNickname, String roomName, String joinUrl) {
         return String.format("""
                 %s님이 '%s' 파티에 초대했습니다.
                 링크를 클릭해서 입장하세요: %s
                 """,
-            room.getHost().getNickname(),
-            room.getRoomName(),
-            joinUrl);
+            hostNickname, roomName, joinUrl);
     }
 
     public String notification(String host, String roomName, String guest) {
