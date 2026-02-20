@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PartyInviteRepository extends JpaRepository<PartyInvite, Long> {
+public interface PartyInviteRepository extends JpaRepository<PartyInvite, Long>, PartyInviteRepositoryCustom {
 
     Optional<PartyInvite> findByPartyRoomAndGuest(PartyRoom partyRoom, User user);
 
