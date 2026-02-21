@@ -47,7 +47,7 @@ public class JwtProvider {
         // Access 토큰에만 닉네임을 포함
         // 닉네임 변경 후 기존 Refresh 토큰으로 재발급하면 변경 전 닉네임을 들고 올 수 있음
         if (category.equals("access")) {
-            builder.claim("nickName", userResponse.getNickName());
+            builder.claim("nickname", userResponse.getNickname());
         }
 
         return builder.compact();
@@ -71,9 +71,9 @@ public class JwtProvider {
         return getClaims(token).get("email", String.class);
     }
 
-    public String getNickName(String token) {
-        Object nickName = getClaims(token).get("nickName");
-        return nickName != null ? nickName.toString() : null;
+    public String getNickname(String token) {
+        Object nickname = getClaims(token).get("nickname");
+        return nickname != null ? nickname.toString() : null;
     }
 
     public UserRoleType getRole(String token) {
@@ -87,7 +87,7 @@ public class JwtProvider {
         return UserResponse.builder()
                 .id(Long.valueOf(claims.getSubject()))
                 .email(claims.get("email", String.class))
-                .nickName(claims.get("nickName", String.class)) // Refresh일 경우 null 가능
+                .nickname(claims.get("nickname", String.class)) // Refresh일 경우 null 가능
                 .role(UserRoleType.valueOf(claims.get("role", String.class)))
                 .build();
     }

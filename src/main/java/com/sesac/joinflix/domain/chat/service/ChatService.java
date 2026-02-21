@@ -18,22 +18,22 @@ public class ChatService {
     public ChatMessageResponse createEnterMessage(Long partyId, UserResponse user) {
         PartyRoom party = getPartyRoom(partyId);
 
-        return ChatMessageResponse.enter(user.getNickName(), party.getCurrentMemberCount(), user.getId());
+        return ChatMessageResponse.enter(user.getNickname(), party.getCurrentMemberCount(), user.getId());
     }
 
     public ChatMessageResponse createTalkMessage(Long partyId, UserResponse user, String message) {
         PartyRoom party = getPartyRoom(partyId);
 
-        return ChatMessageResponse.talk(user.getNickName(), message, party.getCurrentMemberCount(), user.getId());
+        return ChatMessageResponse.talk(user.getNickname(), message, party.getCurrentMemberCount(), user.getId());
     }
 
     public static ChatMessageResponse createLeaveMessage(UserResponse user,
         Integer currentMemberCount) {
-        return ChatMessageResponse.leave(user.getNickName(), currentMemberCount, user.getId());
+        return ChatMessageResponse.leave(user.getNickname(), currentMemberCount, user.getId());
     }
 
     public VideoSyncResponse createSyncMessage(UserResponse user, VideoSyncRequest request) {
-        return VideoSyncResponse.of(user.getNickName(), request.currentTime(), request.paused(),
+        return VideoSyncResponse.of(user.getNickname(), request.currentTime(), request.paused(),
             request.action(), user.getId());
     }
 

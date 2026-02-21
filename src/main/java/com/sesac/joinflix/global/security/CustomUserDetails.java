@@ -14,7 +14,7 @@ public class CustomUserDetails implements UserDetails {
 
     private final Long id;
     private final String email;
-    private final String nickName;
+    private final String nickname;
     private final String password;
     private final Boolean isLock;
     private final String role;
@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
-        this.nickName = user.getNickname();
+        this.nickname = user.getNickname();
         this.password = user.getPassword();
         this.isLock = user.getIsLock();
         this.role = user.getRoleType().name();
