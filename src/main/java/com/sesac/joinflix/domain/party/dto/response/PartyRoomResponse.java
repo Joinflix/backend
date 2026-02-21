@@ -12,7 +12,9 @@ public record PartyRoomResponse(
     String hostNickname,
     Integer currentMemberCount,
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    VideoStatus videoStatus
+    VideoStatus videoStatus,
+    Boolean hostControl,
+    Long hostId
 ) {
 
     public static PartyRoomResponse of(PartyRoom partyRoom, VideoStatus videoStatus) {
@@ -20,7 +22,7 @@ public record PartyRoomResponse(
             partyRoom.getId(), partyRoom.getMovie().getTitle(),
             partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
             partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
-            partyRoom.getCurrentMemberCount(), videoStatus
+            partyRoom.getCurrentMemberCount(), videoStatus, partyRoom.getHostControl(), partyRoom.getHost().getId()
         );
     }
 
@@ -29,7 +31,7 @@ public record PartyRoomResponse(
             partyRoom.getId(), partyRoom.getMovie().getTitle(),
             partyRoom.getMovie().getBackdrop(), partyRoom.getIsPublic(),
             partyRoom.getRoomName(), partyRoom.getHost().getNickname(),
-            partyRoom.getCurrentMemberCount(), null
+            partyRoom.getCurrentMemberCount(), null, partyRoom.getHostControl(), partyRoom.getHost().getId()
         );
     }
 
