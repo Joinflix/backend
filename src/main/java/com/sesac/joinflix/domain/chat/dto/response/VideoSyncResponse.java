@@ -5,24 +5,26 @@ import com.sesac.joinflix.domain.chat.dto.MessageType;
 
 public record VideoSyncResponse(
     MessageType messageType,
-    String sender,
+    String senderNickname,
     Double currentTime,
     Boolean paused,
-    String message
+    String message,
+    Long senderId,
+    Action action
 ) {
 
-    public static VideoSyncResponse of(String sender, Double currentTime, Boolean paused,
-        Action action) {
+    public static VideoSyncResponse of(String senderNickname, Double currentTime, Boolean paused,
+        Action action, Long senderId) {
 
         String formattedTime = formatTime(currentTime);
 
         String message = switch (action) {
-            case PLAY -> sender + "님이 재생했습니다.";
-            case PAUSE -> sender + "님이 일시정지했습니다.";
-            case SEEK -> sender + "님이 " + formattedTime + "으로 이동했습니다.";
+            case PLAY -> senderNickname + "님이 재생했습니다.";
+            case PAUSE -> senderNickname + "님이 일시정지했습니다.";
+            case SEEK -> senderNickname + "님이 " + formattedTime + "으로 이동했습니다.";
         };
 
-        return new VideoSyncResponse(MessageType.SYSTEM, sender, currentTime, paused, message);
+        return new VideoSyncResponse(MessageType.SYSTEM, senderNickname, currentTime, paused, message, senderId, action);
     }
 
     private static String formatTime(Double seconds) {

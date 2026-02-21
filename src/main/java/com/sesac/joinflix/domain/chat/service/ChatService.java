@@ -34,7 +34,7 @@ public class ChatService {
 
     public VideoSyncResponse createSyncMessage(UserResponse user, VideoSyncRequest request) {
         return VideoSyncResponse.of(user.getNickName(), request.currentTime(), request.paused(),
-            request.action());
+            request.action(), user.getId());
     }
 
     private PartyRoom getPartyRoom(Long partyId) {
