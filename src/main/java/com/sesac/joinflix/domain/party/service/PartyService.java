@@ -58,11 +58,14 @@ public class PartyService {
 
         PartyRoom savedRoom = partyRoomRepository.save(
             PartyRoom.create(request.roomName(), host, movie, request.isPublic(),
-                request.hostControl(),
-                request.passCode()));
+                request.hostControl(), request.passCode(), request.scheduledAt()));
 
-        // 친구 초대
-        partyInviteService.inviteUsers(savedRoom, host, request.invitedUserIds());
+        if (request.scheduledAt() == null) {
+            // 친구 초대
+            partyInviteService.inviteUsers(savedRoom, host, request.invitedUserIds());
+        } else {
+            partyInviteService.saveInvites(savedRoom, host, request.invitedUserIds());
+        }
 
         return savedRoom.getId();
     }
