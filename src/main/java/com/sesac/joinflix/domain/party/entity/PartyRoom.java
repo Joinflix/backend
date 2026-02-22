@@ -116,6 +116,10 @@ public class PartyRoom extends BaseEntity {
         return this.passCode.equals(passCode);
     }
 
+    public void activate() {
+        this.status = PartyStatus.ACTIVE;
+    }
+
     private boolean isFull() {
         return currentMemberCount >= maxCount;
     }
