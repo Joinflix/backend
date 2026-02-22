@@ -47,7 +47,7 @@ public record PartyRoomRequest(
         return passCode != null && !passCode.isBlank();
     }
 
-    @AssertTrue(message = "예약 시간은 30분 단위의 미래 시간이어야 합니다.")
+    @AssertTrue(message = "예약 시간은 현재 시간 이후 1주일 이내의 30분 단위 시간이어야 합니다.")
     private boolean isScheduledAtValid() {
         if (scheduledAt == null) {
             return true;
