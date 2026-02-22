@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record PartyRoomRequest(
@@ -28,7 +29,9 @@ public record PartyRoomRequest(
     @Pattern(regexp = "\\d{4}")
     String passCode,
 
-    List<Long> invitedUserIds
+    List<Long> invitedUserIds,
+
+    LocalDateTime scheduledAt
 ) {
 
     public PartyRoomRequest {
@@ -42,5 +45,20 @@ public record PartyRoomRequest(
         }
 
         return passCode != null && !passCode.isBlank();
+    }
+
+    @AssertTrue(message = "예약 시간은 30분 단위의 미래 시간이어야 합니다.")
+    private boolean isScheduledAtValid() {
+        if (scheduledAt == null) {
+            return true;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oneWeekLater = now.plusWeeks(1);
+
+        return scheduledAt.isAfter(now) && scheduledAt.isBefore(oneWeekLater)
+            && scheduledAt.getMinute() % 30 == 0
+            && scheduledAt.getSecond() == 0
+            && scheduledAt.getNano() == 0;
     }
 }

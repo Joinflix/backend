@@ -31,7 +31,18 @@ public class PartyInviteService {
     @Value("${app.domain-url}")
     private String domainUrl;
 
+    @Transactional
     public void inviteUsers(PartyRoom room, User host, List<Long> userIds) {
+        saveInvites(room, host, userIds);
+        sendInviteNotifications(room);
+    }
+
+    @Transactional
+    public void saveInvites(PartyRoom room, User host, List<Long> userIds) {
+        if (userIds.isEmpty()) {
+            return;
+        }
+
         List<User> guests = userRepository.findFriendsByHostAndIds(host, userIds);
 
         if (guests.size() != userIds.size()) {
@@ -43,8 +54,14 @@ public class PartyInviteService {
             .toList();
 
         partyInviteRepository.saveAll(invites);
+    }
 
-        for (User guest : guests) {
+    public void sendInviteNotifications(PartyRoom room) {
+        List<PartyInvite> invites = partyInviteRepository.findByPartyRoom(room);
+
+        for (PartyInvite invite : invites) {
+            User guest = invite.getGuest();
+
             // 파티 초대 이벤트 발행
             eventPublisher.publishEvent(
                 new PartyInviteEvent(guest.getEmail(), room.getHost().getNickname(),
@@ -55,7 +72,6 @@ public class PartyInviteService {
             notificationService.sendAndSave(guest.getId(), notificationMessage,
                 NotificationType.PARTY_INVITE,
                 null, null, room.getId());
-
         }
     }
 
