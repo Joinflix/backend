@@ -90,6 +90,8 @@ public class PartyService {
         User user = getUser(userId);
         user.validatePaidMembership();
 
+        partyRoom.validateScheduledAccess();
+
         validateNotJoined(partyRoom, user);
 
         processEntry(partyRoom, user, request);
