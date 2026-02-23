@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //                       //결제 및 S3 파일 업로드 테스트용 html
                         .requestMatchers("/upload-test.html", "/static/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/hc", "/env").permitAll()
                         .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").permitAll() //로그인, 회원가입
                         .requestMatchers("/ws-stomp/**").permitAll()
