@@ -61,7 +61,7 @@ public enum ErrorCode {
     JSON_SERIALIZATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터를 JSON으로 변환하는 데 실패했습니다."),
     NOT_PAYMENT_OWNER(HttpStatus.FORBIDDEN, "해당 결제 정보에 대한 접근 권한이 없습니다."),
 
-    //REFUND
+    // REFUND
     PAYMENT_ALREADY_CANCELED(HttpStatus.CONFLICT, "이미 취소된 결제입니다."),
     REFUND_ALREADY_PROCESSED(HttpStatus.CONFLICT, "이미 처리된 환불 요청입니다."),
     REFUND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "환불 처리에 실패했습니다. 잠시 후 다시 시도해 주세요."),
@@ -79,7 +79,7 @@ public enum ErrorCode {
     PARTY_ROOM_FULL(HttpStatus.CONFLICT, "파티 인원이 모두 찼습니다."),
     ALREADY_JOINED_PARTY(HttpStatus.CONFLICT, "이미 입장한 파티입니다."),
     MEMBERSHIP_REQUIRED(HttpStatus.FORBIDDEN, "멤버십 사용자만 파티 기능을 이용할 수 있습니다."),
-
+    PARTY_NOT_YET_SCHEDULED(HttpStatus.FORBIDDEN, "예약된 파티는 예약 시간 이후에만 입장할 수 있습니다."),
 
     // Friend
     FRIEND_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "친구 요청을 찾을 수 없습니다."),
@@ -100,6 +100,7 @@ public enum ErrorCode {
     NOTIFICATION_NOT_YOURS(HttpStatus.FORBIDDEN, "해당 알림 읽음 요청에 대한 권한이 없습니다."),
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림을 찾을 수 없습니다."),
     NOTIFICATION_READ_AT_NOT_NULL(HttpStatus.CONFLICT, "이미 읽음 처리가 완료되었습니다.");
+
     private final HttpStatus status;
     private final String message;
 }

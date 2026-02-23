@@ -120,6 +120,12 @@ public class PartyRoom extends BaseEntity {
         this.status = PartyStatus.ACTIVE;
     }
 
+    public void validateScheduledAccess() {
+        if (this.status != PartyStatus.ACTIVE) {
+            throw new CustomException(ErrorCode.PARTY_NOT_YET_SCHEDULED);
+        }
+    }
+
     private boolean isFull() {
         return currentMemberCount >= maxCount;
     }
