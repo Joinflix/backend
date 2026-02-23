@@ -11,7 +11,7 @@ import lombok.Getter;
 public class UserResponse {
     private Long id;
     private String email;
-    private String nickName;
+    private String nickname;
     private UserRoleType role;
     private String profileImageUrl;
     private UserStatus status;
@@ -20,7 +20,7 @@ public class UserResponse {
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .nickName(user.getNickname())
+                .nickname(user.getNickname())
                 .role(user.getRoleType())
                 .profileImageUrl(user.getProfileImageUrl())
                 .status(user.getStatus())
