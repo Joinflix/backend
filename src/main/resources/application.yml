@@ -1,3 +1,86 @@
+spring:
+  profiles:
+    active: local
+    group:
+      local: local, common, secret
+      blue: blue, common, secret
+      green: green, common, secret
+
+---
+# ==========================================
+# Local Profile
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  # Spring Security OAuth2 설정 (Local)
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://localhost:3000/oauth/kakao/callback
+
+server:
+  port: 8080
+  serverAddress: localhost
+  env: local
+
+---
+# ==========================================
+# Blue Profile
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: blue
+
+  # Spring Security OAuth2 설정 (Prod - Blue)
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: https://www.joinflix.store/oauth/kakao/callback
+
+server:
+  port: 8080
+  serverAddress: 54.116.57.185 # EC2 Public IP
+  env: blue
+
+---
+# ==========================================
+# Green Profile
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: green
+
+  # Spring Security OAuth2 설정 (Prod - Green)
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: https://www.joinflix.store/oauth/kakao/callback
+
+server:
+  port: 8081
+  serverAddress: 54.116.57.185 # EC2 Public IP
+  env: green
+
+---
+# ==========================================
+# Common Profile
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: common
+
   server:
     port: ${SERVER_PORT:8080}
     error:

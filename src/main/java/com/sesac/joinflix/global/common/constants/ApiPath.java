@@ -65,4 +65,8 @@ public final class ApiPath {
     // review
     public static final String REVIEW = API_PREFIX + "/reviews";
 
+    // healthCkeck
+    public static final String HEALTHCEHCK = API_PREFIX + "/hc";
+    public static final String ENV = API_PREFIX + "/env";
+
 }
