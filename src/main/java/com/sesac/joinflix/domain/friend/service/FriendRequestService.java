@@ -49,7 +49,7 @@ public class FriendRequestService {
 
         sendNotification(receiverId,
             NotificationMessageTemplate.friendRequest(sender.getNickname()),
-            NotificationType.FRIEND_REQUEST, senderId, receiverId);
+            NotificationType.FRIEND_REQUEST, senderId, receiverId, saved.getId());
 
         return FriendRequestResponse.from(saved);
     }
@@ -64,7 +64,7 @@ public class FriendRequestService {
 
         sendNotification(request.getSender().getId(),
             NotificationMessageTemplate.friendAccept(request.getReceiver().getNickname()),
-            NotificationType.FRIEND_ACCEPT, request.getReceiver().getId(), request.getSender().getId());
+            NotificationType.FRIEND_ACCEPT, request.getReceiver().getId(), request.getSender().getId(), request.getId());
 
         return FriendRequestResponse.from(request);
     }
@@ -77,7 +77,7 @@ public class FriendRequestService {
 
         sendNotification(request.getSender().getId(),
             NotificationMessageTemplate.eventReject(),
-            NotificationType.EVENT_REJECT, request.getReceiver().getId(), request.getSender().getId());
+            NotificationType.EVENT_REJECT, request.getReceiver().getId(), request.getSender().getId(), request.getId());
 
         friendRequestRepository.delete(request);
     }
@@ -90,7 +90,7 @@ public class FriendRequestService {
 
         sendNotification(request.getReceiver().getId(),
                 NotificationMessageTemplate.eventCancel(),
-                NotificationType.EVENT_CANCEL, request.getSender().getId(), request.getReceiver().getId());
+                NotificationType.EVENT_CANCEL, request.getSender().getId(), request.getReceiver().getId(), request.getId());
 
         friendRequestRepository.delete(request);
     }
@@ -105,7 +105,7 @@ public class FriendRequestService {
 
         sendNotification(target.getId(),
                 NotificationMessageTemplate.eventDelete(),
-                NotificationType.EVENT_DELETE, userId, target.getId());
+                NotificationType.EVENT_DELETE, userId, target.getId(), request.getId());
 
         friendRequestRepository.delete(request);
     }
@@ -176,9 +176,9 @@ public class FriendRequestService {
     }
 
     private void sendNotification(Long userId, String message, NotificationType type,
-                                   Long senderId, Long receiverId) {
+                                   Long senderId, Long receiverId, Long eventId) {
         try {
-            notificationService.sendAndSave(userId, message, type, senderId, receiverId, null);
+            notificationService.sendAndSave(userId, message, type, senderId, receiverId, eventId);
         } catch (Exception e) {
             switch (type) {
                 // SSE 메시지 관련 예외 처리가 필요할 때 추가할 예정
