@@ -8,6 +8,11 @@ import com.sesac.joinflix.global.exception.ErrorCode;
 import com.sesac.joinflix.global.security.JwtProvider;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -31,12 +36,16 @@ public class StompHandler implements ChannelInterceptor {
     private final JwtProvider jwtProvider;
     private final PartyService partyService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ScheduledExecutorService scheduledExecutorService;
+    private final ConcurrentHashMap<String, ScheduledFuture<?>> pendingLeaveMap;
 
     public StompHandler(JwtProvider jwtProvider, PartyService partyService,
         @Lazy SimpMessagingTemplate messagingTemplate) {
         this.jwtProvider = jwtProvider;
         this.partyService = partyService;
         this.messagingTemplate = messagingTemplate;
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        this.pendingLeaveMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -75,7 +84,13 @@ public class StompHandler implements ChannelInterceptor {
         Long partyId = (Long) accessor.getSessionAttributes().get(PARTY_ID_STR);
 
         if (user != null && partyId != null) {
-            processLeave(partyId, user);
+            String key = String.format("%s:%s", partyId, user.getId());
+            pendingLeaveMap.put(key,
+                scheduledExecutorService.schedule(() -> {
+                    processLeave(partyId, user);
+                    pendingLeaveMap.remove(key);
+                }, 10, TimeUnit.SECONDS));
+
         }
 
         accessor.getSessionAttributes().remove("partyId");
