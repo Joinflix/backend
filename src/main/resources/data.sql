@@ -135,13 +135,13 @@ VALUES (1, 2,  NOW(), NOW()),
 
 INSERT INTO notifications (user_id, message, notification_type, sender_id, receiver_id, event_id, read_at, created_at, updated_at)
 VALUES
--- 친구 신청 알림
-(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, null, NOW(), NOW(), NOW()),          -- 1 → 2 (읽음)
-(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 4, 1, null, null, NOW(), NOW()),        -- 4 → 1 (미읽음)
+-- 친구 신청 알림 (event_id = friend_requests의 ID)
+(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, 1, NOW(), NOW(), NOW()),          -- 1 → 2 (읽음), FR#1
+(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 4, 1, 16, null, NOW(), NOW()),        -- 4 → 1 (미읽음), FR#16
 
--- 친구 수락 알림
-(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 2, 1, null, NOW(), NOW(), NOW()),     -- 2 → 1 (읽음)
-(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, null, null, NOW(), NOW()),     -- 3 → 2 (미읽음)
+-- 친구 수락 알림 (event_id = friend_requests의 ID)
+(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 2, 1, 1, NOW(), NOW(), NOW()),     -- 2 → 1 (읽음), FR#1
+(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, 2, null, NOW(), NOW()),     -- 3 → 2 (미읽음), FR#2
 
 -- 파티 초대 알림
 (2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, 1, null, NOW(), NOW()),   -- 방 1 (미읽음)
