@@ -57,11 +57,34 @@ public class StompHandler implements ChannelInterceptor {
             handleConnect(accessor);
         }
 
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+            handleSubscribe(accessor);
+        }
+
         if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
             handleDisconnect(accessor);
         }
 
         return message;
+    }
+
+    private void handleSubscribe(StompHeaderAccessor accessor) {
+        String destination = accessor.getDestination();
+
+        if (!destination.startsWith(SUBSCRIBE_PARTY_PREFIX)) {
+            return;
+        }
+
+        String[] parts = destination.split("/");
+        String partyId = parts[parts.length - 1];
+
+        UserResponse user = getUser(accessor);
+        String key = String.format("%s:%d", partyId, user.getId());
+
+        ScheduledFuture<?> future = pendingLeaveMap.remove(key);
+        if (future != null) {
+            future.cancel(false);
+        }
     }
 
     private void handleConnect(StompHeaderAccessor accessor) {
