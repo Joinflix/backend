@@ -8,6 +8,11 @@ import com.sesac.joinflix.global.exception.ErrorCode;
 import com.sesac.joinflix.global.security.JwtProvider;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -31,12 +36,16 @@ public class StompHandler implements ChannelInterceptor {
     private final JwtProvider jwtProvider;
     private final PartyService partyService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ScheduledExecutorService scheduledExecutorService;
+    private final ConcurrentHashMap<String, ScheduledFuture<?>> pendingLeaveMap;
 
     public StompHandler(JwtProvider jwtProvider, PartyService partyService,
         @Lazy SimpMessagingTemplate messagingTemplate) {
         this.jwtProvider = jwtProvider;
         this.partyService = partyService;
         this.messagingTemplate = messagingTemplate;
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        this.pendingLeaveMap = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -48,11 +57,34 @@ public class StompHandler implements ChannelInterceptor {
             handleConnect(accessor);
         }
 
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+            handleSubscribe(accessor);
+        }
+
         if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
             handleDisconnect(accessor);
         }
 
         return message;
+    }
+
+    private void handleSubscribe(StompHeaderAccessor accessor) {
+        String destination = accessor.getDestination();
+
+        if (!destination.startsWith(SUBSCRIBE_PARTY_PREFIX)) {
+            return;
+        }
+
+        String[] parts = destination.split("/");
+        String partyId = parts[parts.length - 1];
+
+        UserResponse user = getUser(accessor);
+        String key = String.format("%s:%d", partyId, user.getId());
+
+        ScheduledFuture<?> future = pendingLeaveMap.remove(key);
+        if (future != null) {
+            future.cancel(false);
+        }
     }
 
     private void handleConnect(StompHeaderAccessor accessor) {
@@ -75,7 +107,13 @@ public class StompHandler implements ChannelInterceptor {
         Long partyId = (Long) accessor.getSessionAttributes().get(PARTY_ID_STR);
 
         if (user != null && partyId != null) {
-            processLeave(partyId, user);
+            String key = String.format("%s:%s", partyId, user.getId());
+            pendingLeaveMap.put(key,
+                scheduledExecutorService.schedule(() -> {
+                    processLeave(partyId, user);
+                    pendingLeaveMap.remove(key);
+                }, 10, TimeUnit.SECONDS));
+
         }
 
         accessor.getSessionAttributes().remove("partyId");
