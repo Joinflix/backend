@@ -55,6 +55,13 @@ public class UserService {
         }
     }
 
+    // 이메일 중복 체크
+    public void validateEmail(String email){
+        if(userRepository.existsByEmail(email)){
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        }
+    }
+
     // 사용자 유효성 체크
     public void validateNewUser(String email, String nickname, String ip) {
         // IP 기반 가입 횟수 제한 (24시간 내 5회)
