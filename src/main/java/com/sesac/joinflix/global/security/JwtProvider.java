@@ -2,6 +2,7 @@ package com.sesac.joinflix.global.security;
 
 import com.sesac.joinflix.domain.user.dto.response.UserResponse;
 import com.sesac.joinflix.domain.user.entity.UserRoleType;
+import com.sesac.joinflix.domain.user.entity.UserStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -40,6 +41,7 @@ public class JwtProvider {
                 .claim("sessionId", sessionId) // 동시 접속 제어 (요구사항 4번 핵심)
                 .claim("email", userResponse.getEmail())
                 .claim("role", userResponse.getRole().toString())
+                .claim("status", userResponse.getStatus().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + targetExpiration))
                 .signWith(key);
@@ -76,6 +78,10 @@ public class JwtProvider {
         return nickname != null ? nickname.toString() : null;
     }
 
+    public UserStatus getUserStatus(String token){
+        String status = getClaims(token).get("status", String.class);
+        return UserStatus.valueOf(status);
+    }
     public UserRoleType getRole(String token) {
         String role = getClaims(token).get("role", String.class);
         return UserRoleType.valueOf(role);
@@ -89,6 +95,7 @@ public class JwtProvider {
                 .email(claims.get("email", String.class))
                 .nickname(claims.get("nickname", String.class)) // Refresh일 경우 null 가능
                 .role(UserRoleType.valueOf(claims.get("role", String.class)))
+                .status(UserStatus.valueOf(claims.get("status", String.class)))
                 .build();
     }
 
