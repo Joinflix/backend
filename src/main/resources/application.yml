@@ -121,7 +121,7 @@
     apiSecret: ${PORTONE_SECRET}
 
   app:
-    domain-url: ${APP_DOMAIN_URL:http://localhost:8080}
+    domain-url: ${APP_DOMAIN_URL:http://localhost:5173}
     
   # S3 bucket 설정
   cloud:
