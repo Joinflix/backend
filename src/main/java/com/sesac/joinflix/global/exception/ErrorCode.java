@@ -29,7 +29,7 @@ public enum ErrorCode {
 
     // Email Verification
     EMAIL_VERIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "이메일 인증 정보가 없거나 이미 처리되었습니다."),
-    EMAIL_NOT_VERIFIED(HttpStatus.BAD_REQUEST, "이메일 인증이 완료되지 않았습니다."),
+    EMAIL_NOT_VERIFIED(HttpStatus.BAD_REQUEST, "이메일 인증이 만료되었거나 완료되지 않았습니다. 다시 인증해주세요."),
     EXPIRED_VERIFICATION_CODE(HttpStatus.GONE, "인증 번호가 만료되었습니다."),
     INVALID_VERIFICATION_CODE(HttpStatus.BAD_REQUEST, "인증 번호가 일치하지 않습니다."),
     EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송 중 오류가 발생했습니다."),
