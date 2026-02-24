@@ -1,7 +1,10 @@
 package com.sesac.joinflix.domain.party.repository;
 
 import com.sesac.joinflix.domain.party.entity.PartyRoom;
+import com.sesac.joinflix.domain.party.entity.PartyStatus;
 import jakarta.persistence.LockModeType;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -34,4 +37,7 @@ public interface PartyRoomRepository extends JpaRepository<PartyRoom, Long> {
             """
     )
     Optional<PartyRoom> findByIdWithLock(@Param("partyId") Long partyId);
+
+    List<PartyRoom> findByStatusAndScheduledAtLessThanEqual(PartyStatus status,
+        LocalDateTime dateTime);
 }

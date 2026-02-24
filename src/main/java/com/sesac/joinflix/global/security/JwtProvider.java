@@ -2,6 +2,7 @@ package com.sesac.joinflix.global.security;
 
 import com.sesac.joinflix.domain.user.dto.response.UserResponse;
 import com.sesac.joinflix.domain.user.entity.UserRoleType;
+import com.sesac.joinflix.domain.user.entity.UserStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -40,6 +41,7 @@ public class JwtProvider {
                 .claim("sessionId", sessionId) // 동시 접속 제어 (요구사항 4번 핵심)
                 .claim("email", userResponse.getEmail())
                 .claim("role", userResponse.getRole().toString())
+                .claim("status", userResponse.getStatus().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + targetExpiration))
                 .signWith(key);
@@ -47,7 +49,7 @@ public class JwtProvider {
         // Access 토큰에만 닉네임을 포함
         // 닉네임 변경 후 기존 Refresh 토큰으로 재발급하면 변경 전 닉네임을 들고 올 수 있음
         if (category.equals("access")) {
-            builder.claim("nickName", userResponse.getNickName());
+            builder.claim("nickname", userResponse.getNickname());
         }
 
         return builder.compact();
@@ -71,11 +73,15 @@ public class JwtProvider {
         return getClaims(token).get("email", String.class);
     }
 
-    public String getNickName(String token) {
-        Object nickName = getClaims(token).get("nickName");
-        return nickName != null ? nickName.toString() : null;
+    public String getNickname(String token) {
+        Object nickname = getClaims(token).get("nickname");
+        return nickname != null ? nickname.toString() : null;
     }
 
+    public UserStatus getUserStatus(String token){
+        String status = getClaims(token).get("status", String.class);
+        return UserStatus.valueOf(status);
+    }
     public UserRoleType getRole(String token) {
         String role = getClaims(token).get("role", String.class);
         return UserRoleType.valueOf(role);
@@ -87,8 +93,9 @@ public class JwtProvider {
         return UserResponse.builder()
                 .id(Long.valueOf(claims.getSubject()))
                 .email(claims.get("email", String.class))
-                .nickName(claims.get("nickName", String.class)) // Refresh일 경우 null 가능
+                .nickname(claims.get("nickname", String.class)) // Refresh일 경우 null 가능
                 .role(UserRoleType.valueOf(claims.get("role", String.class)))
+                .status(UserStatus.valueOf(claims.get("status", String.class)))
                 .build();
     }
 

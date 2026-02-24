@@ -20,6 +20,7 @@ public final class ApiPath {
     public static final String EMAIL_SEND = "/email-send";
     public static final String EMAIL_VERIFY = "/email-verify";
     public static final String NICKNAME_DUPLICATE = "/nickname-duplicate";
+    public static final String EMAIL_DUPLICATE = "/email-duplicate";
 
     // user
     public static final String USER = API_PREFIX + "/users";

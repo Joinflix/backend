@@ -115,15 +115,15 @@ VALUES
 
 
 -- 5. 파티방 (Party Rooms)
-INSERT INTO party_rooms (host_id, movie_id, room_name, is_public, host_control, max_count, current_member_count, created_at, updated_at)
-VALUES (4, 4, '재밌겠다', true, true, 4, 2, NOW(), NOW()), -- ID 4: 박민수 방
-       (2, 5, '리메이크 기념', false, true, 4, 2, NOW(), NOW()), -- ID 2: 이영희 방
-       (2, 7, '키튼', true, true, 4, 2, NOW(), NOW()), -- ID 2: 이영희 방
-        (1, 8, '귀여워', false, true, 4, 2, NOW(), NOW()), -- ID 1: 김철수 방
-       (1, 3, '징그러워', true, true, 4, 2, NOW(), NOW()), -- ID 1: 김철수 방
-       (2, 2, '오데사', false, true, 4, 2, NOW(), NOW()), -- ID 2: 이영희 방
-       (3, 6, '흥미진진', true, true, 4, 2, NOW(), NOW()), -- ID 3: 정우성 방
-       (5, 1, '같이 영화봐요', true, true, 4, 2,NOW(), NOW()); -- ID 5:  최지은 방
+INSERT INTO party_rooms (host_id, movie_id, room_name, is_public, host_control, max_count, current_member_count, status, created_at, updated_at)
+VALUES (4, 4, '재밌겠다', true, true, 4, 2,'ACTIVE', NOW(), NOW()), -- ID 4: 박민수 방
+       (2, 5, '리메이크 기념', false, true, 4, 2, 'ACTIVE', NOW(), NOW()), -- ID 2: 이영희 방
+       (2, 7, '키튼', true, true, 4, 2, 'ACTIVE', NOW(), NOW()), -- ID 2: 이영희 방
+        (1, 8, '귀여워', false, true, 4, 2, 'ACTIVE', NOW(), NOW()), -- ID 1: 김철수 방
+       (1, 3, '징그러워', true, true, 4, 2, 'ACTIVE', NOW(), NOW()), -- ID 1: 김철수 방
+       (2, 2, '오데사', false, true, 4, 2, 'ACTIVE', NOW(), NOW()), -- ID 2: 이영희 방
+       (3, 6, '흥미진진', true, true, 4, 2, 'ACTIVE', NOW(), NOW()), -- ID 3: 정우성 방
+       (5, 1, '같이 영화봐요', true, true, 4, 2, 'ACTIVE', NOW(), NOW()); -- ID 5:  최지은 방
 
 -- 6. 파티 초대 (Party Invites)
 INSERT INTO party_invites (party_room_id, guest_id, created_at, updated_at)
@@ -135,13 +135,13 @@ VALUES (1, 2,  NOW(), NOW()),
 
 INSERT INTO notifications (user_id, message, notification_type, sender_id, receiver_id, event_id, read_at, created_at, updated_at)
 VALUES
--- 친구 신청 알림
-(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, null, NOW(), NOW(), NOW()),          -- 1 → 2 (읽음)
-(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 4, 1, null, null, NOW(), NOW()),        -- 4 → 1 (미읽음)
+-- 친구 신청 알림 (event_id = friend_requests의 ID)
+(2, 'test님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 1, 2, 1, NOW(), NOW(), NOW()),          -- 1 → 2 (읽음), FR#1
+(1, '박민수님이 친구 신청을 하였습니다.', 'FRIEND_REQUEST', 4, 1, 16, null, NOW(), NOW()),        -- 4 → 1 (미읽음), FR#16
 
--- 친구 수락 알림
-(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 2, 1, null, NOW(), NOW(), NOW()),     -- 2 → 1 (읽음)
-(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, null, null, NOW(), NOW()),     -- 3 → 2 (미읽음)
+-- 친구 수락 알림 (event_id = friend_requests의 ID)
+(1, '김철수님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 2, 1, 1, NOW(), NOW(), NOW()),     -- 2 → 1 (읽음), FR#1
+(2, '이영희님이 친구 신청을 수락하였습니다.', 'FRIEND_ACCEPT', 3, 2, 2, null, NOW(), NOW()),     -- 3 → 2 (미읽음), FR#2
 
 -- 파티 초대 알림
 (2, 'test님이 김철수님을 \'흥미진진\' 파티에 초대했습니다.', 'PARTY_INVITE', null, null, 1, null, NOW(), NOW()),   -- 방 1 (미읽음)

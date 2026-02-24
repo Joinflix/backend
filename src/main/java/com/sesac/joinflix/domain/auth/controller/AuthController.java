@@ -61,6 +61,14 @@ public class AuthController {
         return ResponseEntity.ok("사용 가능한 닉네임입니다.");
     }
 
+    // 4. 이메일 중복 체크
+    // /api/auth/email-duplicate
+    @PostMapping(ApiPath.EMAIL_DUPLICATE)
+    public ResponseEntity<String> emailDuplicate(@Valid @RequestBody EmailSendRequest request, HttpServletRequest httpRequest) {
+        userService.validateEmail(request.getEmail());
+        return ResponseEntity.ok("사용 가능한 이메일입니다.");
+    }
+
     // 3. 최종 회원가입
     @PostMapping(ApiPath.SIGNUP)
     public ResponseEntity<UserResponse> signup(@Valid @RequestBody SignupRequest request, HttpServletRequest httpRequest) {

@@ -55,6 +55,13 @@ public class UserService {
         }
     }
 
+    // 이메일 중복 체크
+    public void validateEmail(String email){
+        if(userRepository.existsByEmail(email)){
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        }
+    }
+
     // 사용자 유효성 체크
     public void validateNewUser(String email, String nickname, String ip) {
         // IP 기반 가입 횟수 제한 (24시간 내 5회)
@@ -117,7 +124,7 @@ public class UserService {
         return users.map(user -> UserResponse.builder()
             .id(user.getId())
             .email(user.getEmail())
-            .nickName(user.getNickname())
+            .nickname(user.getNickname())
             .role(user.getRoleType())
             .profileImageUrl(user.getProfileImageUrl())
             .build());
@@ -129,7 +136,7 @@ public class UserService {
             .map(user -> UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .nickName(user.getNickname())
+                .nickname(user.getNickname())
                 .role(user.getRoleType())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build())
@@ -142,7 +149,7 @@ public class UserService {
             .map(user -> UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .nickName(user.getNickname())
+                .nickname(user.getNickname())
                 .role(user.getRoleType())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build())
@@ -186,7 +193,7 @@ public class UserService {
             return UserSearchResponse.builder()
                     .id(user.getId())
                     .email(user.getEmail())
-                    .nickName(user.getNickname())
+                    .nickname(user.getNickname())
                     .profileImageUrl(user.getProfileImageUrl())
                     .friendStatus(status)
                     .requestId(requestId)
