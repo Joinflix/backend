@@ -72,6 +72,9 @@ jobs:
           script: |
             cd ~ # docker-compose.yml이 있는 홈 디렉토리로 이동
             
+            # 컨테이너 종료
+            docker-compose down -v
+            
             # 기존 이미지 삭제
             docker rmi ${{ secrets.DOCKER_USERNAME }}/joinflix-back:latest
             
@@ -79,7 +82,6 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/joinflix-back:latest
             
             # 컨테이너 재시작 (기본 파일명 docker-compose.yml 사용)
-            docker-compose down
             docker-compose up -d
             
             # 불필요한 이미지 정리
