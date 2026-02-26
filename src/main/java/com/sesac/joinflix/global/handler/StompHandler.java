@@ -112,7 +112,7 @@ public class StompHandler implements ChannelInterceptor {
                 scheduledExecutorService.schedule(() -> {
                     processLeave(partyId, user);
                     pendingLeaveMap.remove(key);
-                }, 10, TimeUnit.SECONDS));
+                }, 2, TimeUnit.SECONDS));
 
         }
 
