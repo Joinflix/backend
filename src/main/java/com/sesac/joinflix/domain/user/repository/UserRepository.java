@@ -45,4 +45,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findTop10ByNicknameContainingIgnoreCase(String nickname);
 
     List<User> findTop10ByEmailContainingIgnoreCase(String email);
+
+    @Query("""
+    SELECT u FROM User u 
+    WHERE u.id NOT IN :excludeIds 
+    AND (u.nickname LIKE %:word% OR u.email LIKE %:word%)
+    """)
+    List<User> findAllExcludingIds(@Param("word") String word, @Param("excludeIds") List<Long> excludeIds);
+
 }

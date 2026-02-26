@@ -3,7 +3,6 @@ package com.sesac.joinflix.domain.user.controller;
 import com.sesac.joinflix.domain.user.dto.request.ProfileUpdateRequest;
 import com.sesac.joinflix.domain.user.dto.response.UserProfileResponse;
 import com.sesac.joinflix.domain.user.dto.response.UserResponse;
-import com.sesac.joinflix.domain.user.dto.response.UserSearchResponse;
 import com.sesac.joinflix.domain.user.service.UserService;
 import com.sesac.joinflix.global.common.constants.ApiPath;
 import com.sesac.joinflix.global.security.CustomUserDetails;
@@ -73,12 +72,5 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(ApiPath.SEARCH)
-    public ResponseEntity<Slice<UserSearchResponse>> getAllUsersWithRelationStatus(
-            @RequestParam(required = false) Long cursorId,
-            @PageableDefault(size = 10) Pageable pageable,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Slice<UserSearchResponse> response = userService.getAllUsersWithRelationStatus(userDetails.getId(), cursorId, pageable);
-        return ResponseEntity.ok(response);
-    }
+
 }

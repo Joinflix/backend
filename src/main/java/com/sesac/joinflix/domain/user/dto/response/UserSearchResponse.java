@@ -6,10 +6,11 @@ import lombok.Getter;
 @Getter
 @Builder
 public class UserSearchResponse {
-    private Long id;
+    private Long userId;
     private String email;
     private String nickname;
     private String profileImageUrl;
-    private String friendStatus;
+    private String status; // "FRIEND", "PENDING", "REQUESTED", "NONE"
     private Long requestId;
+    private Integer priority; // 1:신청받음, 2:대기중, 3:친구, 4:생판남
 }

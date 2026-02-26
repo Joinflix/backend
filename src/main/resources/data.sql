@@ -9,12 +9,26 @@ VALUES ('STANDARD_WITH_ADS', '광고형 스탠다드', '광고와 함께 즐기�
 -- 비밀번호: 'test1234' (BCrypt 암호화)
 -- 멤버십 ID 1번(STANDARD_WITH_ADS)을 기본 할당한다고 가정
 INSERT INTO users (status, email, password, nickname, signup_ip, role_type, is_social, is_lock, is_online, membership_id, created_at, updated_at)
-VALUES ('ACTIVE','test@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'test', '127.0.0.1', 'USER', false, false, false, 1, NOW(), NOW()),
+VALUES ('ACTIVE','adam@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'adam', '127.0.0.1', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','kim@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '김철수', '127.0.0.2', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','lee@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '이영희', '127.0.0.3', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','park@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '박민수', '127.0.0.4', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','choi@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '최지은', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','jung@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '정우성', '127.0.0.6', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','garam@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '가람', '127.1.0.1', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','nabijam@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '나비잠', '127.1.0.2', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','doubledodam@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '도담도담', '127.1.0.3', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','raon@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '라온', '127.1.0.4', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','mir@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '미르', '127.1.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','baram@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '바람', '127.1.0.6', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','saja@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '사자', '127.1.0.7', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','babytiger@joinflix.com',  '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '아기호랑이', '127.1.0.8', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','jayu@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '자유', '127.1.0.9', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','cha@joinflix.com','$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '차', '127.1.0.10', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','kium@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '키움', '127.1.0.11', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','party@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '푸르미르', '127.1.0.12', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','tamil@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '타래', '127.1.0.13', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','haru@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', '하루', '127.1.0.14', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','alpha@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'ALPHA', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','bravo@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'BRAVO', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','charlie@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'CHARLIE', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
@@ -37,30 +51,61 @@ VALUES ('ACTIVE','test@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNe
        ('ACTIVE','tango@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'TANGO', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','uniform@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'uniform', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','victor@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'victor', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
-       ('ACTIVE','whisky@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'WHISKY', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
+       ('ACTIVE','whiskey@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'WHISKEY', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','x-ray@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'x-ray', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','yankee@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'yankee', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
        ('ACTIVE','zulu@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'zulu', '127.0.0.5', 'USER', false, false, false, 1, NOW(), NOW()),
-       ('PENDING','pending@test.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'pending', '127.0.0.1', 'USER', false, false, false, null, NOW(), NOW());
+       ('PENDING','eve@joinflix.com', '$2a$10$hpAUduYxqdeK8L9Ft0Ud7.6Mf89EhSSiyrnuNeBjynJrq64sNZ5Hq', 'eve', '127.0.0.1', 'USER', false, false, false, null, NOW(), NOW());
 
 -- 3. 친구 요청 (Friend Requests)
 INSERT INTO friend_requests (sender_id, receiver_id, status, created_at, updated_at)
 VALUES (1, 2, 'ACCEPTED', NOW(), NOW()),
-       (2, 3, 'ACCEPTED', NOW(), NOW()),
-       (1, 29, 'ACCEPTED', NOW(), NOW()),
-       (1, 26, 'ACCEPTED', NOW(), NOW()),
-       (1, 12, 'ACCEPTED', NOW(), NOW()),
-       (1, 5, 'PENDING', NOW(), NOW()),
        (1, 3, 'ACCEPTED', NOW(), NOW()),
-       (1, 32, 'ACCEPTED', NOW(), NOW()),
+       (1, 5, 'PENDING', NOW(), NOW()),
+       (1, 12, 'ACCEPTED', NOW(), NOW()),
        (1, 15, 'ACCEPTED', NOW(), NOW()),
-       (1, 25, 'ACCEPTED', NOW(), NOW()),
        (1, 11, 'ACCEPTED', NOW(), NOW()),
        (1, 18, 'ACCEPTED', NOW(), NOW()),
        (1, 19, 'ACCEPTED', NOW(), NOW()),
        (1, 20, 'ACCEPTED', NOW(), NOW()),
+       (1, 25, 'ACCEPTED', NOW(), NOW()),
+       (1, 26, 'ACCEPTED', NOW(), NOW()),
        (1, 27, 'ACCEPTED', NOW(), NOW()),
+       (1, 29, 'ACCEPTED', NOW(), NOW()),
+       (1, 32, 'ACCEPTED', NOW(), NOW()),
+       (2, 3, 'ACCEPTED', NOW(), NOW()),
        (4, 1, 'PENDING', NOW(), NOW());
+
+INSERT INTO friendships (user_id, friend_id, created_at, updated_at)
+VALUES
+    -- (1:test, 2:김철수) 친구 수락
+    (1, 2, NOW(), NOW()), (2, 1, NOW(), NOW()),
+    -- (1, 3:이영희) 친구 수락
+    (1, 3, NOW(), NOW()), (3, 1, NOW(), NOW()),
+    -- (1, 11:마음) 친구 수락
+    (1, 11, NOW(), NOW()), (11, 1, NOW(), NOW()),
+    -- (1, 12:바나나) 친구 수락
+    (1, 12, NOW(), NOW()), (12, 1, NOW(), NOW()),
+    -- (1, 15:자두) 친구 수락
+    (1, 15, NOW(), NOW()), (15, 1, NOW(), NOW()),
+    -- (1, 18:파티) 친구 수락
+    (1, 18, NOW(), NOW()), (18, 1, NOW(), NOW()),
+    -- (1, 19:타조) 친구 수락
+    (1, 19, NOW(), NOW()), (19, 1, NOW(), NOW()),
+    -- (1, 20:하마) 친구 수락
+    (1, 20, NOW(), NOW()), (20, 1, NOW(), NOW()),
+    -- (1, 25:ECHO) 친구 수락
+    (1, 25, NOW(), NOW()), (25, 1, NOW(), NOW()),
+    -- (1, 26:FOXTROT) 친구 수락
+    (1, 26, NOW(), NOW()), (26, 1, NOW(), NOW()),
+    -- (1, 27:golf) 친구 수락
+    (1, 27, NOW(), NOW()), (27, 1, NOW(), NOW()),
+    -- (1, 29:india) 친구 수락
+    (1, 29, NOW(), NOW()), (29, 1, NOW(), NOW()),
+    -- (1, 32:lima) 친구 수락
+    (1, 32, NOW(), NOW()), (32, 1, NOW(), NOW()),
+    -- (2, 3) 친구 수락
+    (2, 3, NOW(), NOW()), (3, 2, NOW(), NOW());
 
 -- 4. 영화 (Movies)
 INSERT INTO movies (title, poster, backdrop, description, created_at, updated_at)
