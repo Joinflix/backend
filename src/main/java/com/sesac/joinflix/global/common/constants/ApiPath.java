@@ -57,6 +57,9 @@ public final class ApiPath {
     public static final String FRIEND_DELETE = "/{requestId}";
     public static final String FRIEND_ONLINE = "/online";
 
+    // friendship
+    public static final String FRIENDSHIP = API_PREFIX + "/friendships";
+
     // party
     public static final String PARTY = API_PREFIX + "/parties";
 

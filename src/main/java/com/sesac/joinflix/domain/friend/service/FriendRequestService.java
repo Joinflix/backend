@@ -4,7 +4,9 @@ import com.sesac.joinflix.domain.friend.dto.response.FriendRequestResponse;
 import com.sesac.joinflix.domain.friend.dto.response.FriendResponse;
 import com.sesac.joinflix.domain.friend.entity.FriendRequest;
 import com.sesac.joinflix.domain.friend.entity.FriendRequestStatus;
+import com.sesac.joinflix.domain.friend.entity.Friendship;
 import com.sesac.joinflix.domain.friend.repository.FriendRequestRepository;
+import com.sesac.joinflix.domain.friend.repository.FriendshipRepository;
 import com.sesac.joinflix.domain.notification.message.NotificationMessageTemplate;
 import com.sesac.joinflix.domain.notification.service.NotificationService;
 import com.sesac.joinflix.domain.notification.type.NotificationType;
@@ -25,6 +27,7 @@ public class FriendRequestService {
     private final FriendRequestRepository friendRequestRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final FriendshipRepository friendshipRepository;
 
     @Transactional
     public FriendRequestResponse createRequest(Long senderId, Long receiverId) {
@@ -61,6 +64,15 @@ public class FriendRequestService {
         validatePendingState(request);
 
         request.accept();
+
+        // Friendship 관계 생성 (양방향 저장)
+        User sender = request.getSender();
+        User receiver = request.getReceiver();
+
+        if (!friendshipRepository.existsByUserAndFriend(sender, receiver)) {
+            friendshipRepository.save(Friendship.create(sender, receiver)); // A -> B
+            friendshipRepository.save(Friendship.create(receiver, sender)); // B -> A
+        }
 
         sendNotification(request.getSender().getId(),
             NotificationMessageTemplate.friendAccept(request.getReceiver().getNickname()),
@@ -102,6 +114,12 @@ public class FriendRequestService {
             .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_NOT_FOUND));
 
         User target = extractFriend(request, userId);
+
+        Long myId = request.getSender().getId();
+        Long friendId = request.getReceiver().getId();
+
+        friendshipRepository.deleteByUserIdAndFriendId(myId, friendId);
+        friendshipRepository.deleteByUserIdAndFriendId(friendId, myId);
 
         sendNotification(target.getId(),
                 NotificationMessageTemplate.eventDelete(),

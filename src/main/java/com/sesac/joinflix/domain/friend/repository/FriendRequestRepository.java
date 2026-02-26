@@ -68,4 +68,21 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     List<FriendRequest> findAllRelatedRequests(@Param("me") Long me, @Param("targetIds") List<Long> targetIds);
 
     Optional<FriendRequest> findByIdAndStatus(@Param("requestId") Long requestId, @Param("status") FriendRequestStatus status);
+
+    // 1. 나에게 온 신청 (상대방은 Sender의 닉네임/이메일 검색)
+    @Query("SELECT fr FROM FriendRequest fr JOIN FETCH fr.sender " +
+            "WHERE fr.receiver.id = :myId AND fr.status = 'PENDING' " +
+            "AND (:word IS NULL OR :word = '' OR fr.sender.nickname LIKE %:word% OR fr.sender.email LIKE %:word%)")
+    List<FriendRequest> findAllReceivedPending(@Param("myId") Long myId, @Param("word") String word);
+
+    // 2. 내가 보낸 신청 (상대방은 Receiver의 닉네임/이메일 검색)
+    @Query("SELECT fr FROM FriendRequest fr JOIN FETCH fr.receiver " +
+            "WHERE fr.sender.id = :myId AND fr.status = 'PENDING' " +
+            "AND (:word IS NULL OR :word = '' OR fr.receiver.nickname LIKE %:word% OR fr.receiver.email LIKE %:word%)")
+    List<FriendRequest> findAllSentPending(@Param("myId") Long myId, @Param("word") String word);
+
+    @Query("SELECT fr FROM FriendRequest fr " +
+            "WHERE (fr.sender.id = :myId OR fr.receiver.id = :myId) " +
+            "AND fr.status = 'ACCEPTED'")
+    List<FriendRequest> findAllAcceptedByUserId(@Param("myId") Long myId);
 }

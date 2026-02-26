@@ -1,12 +1,9 @@
 package com.sesac.joinflix.domain.user.service;
 
-import com.sesac.joinflix.domain.friend.entity.FriendRequest;
-import com.sesac.joinflix.domain.friend.entity.FriendRequestStatus;
 import com.sesac.joinflix.domain.friend.repository.FriendRequestRepository;
 import com.sesac.joinflix.domain.user.dto.request.ProfileUpdateRequest;
 import com.sesac.joinflix.domain.user.dto.response.UserProfileResponse;
 import com.sesac.joinflix.domain.user.dto.response.UserResponse;
-import com.sesac.joinflix.domain.user.dto.response.UserSearchResponse;
 import com.sesac.joinflix.domain.user.entity.User;
 import com.sesac.joinflix.domain.user.repository.UserRepository;
 import com.sesac.joinflix.domain.userhistory.entity.UserAction;
@@ -22,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly=true)
@@ -156,49 +151,5 @@ public class UserService {
             .toList();
     }
 
-    public Slice<UserSearchResponse> getAllUsersWithRelationStatus(Long currentUserId, Long cursorId, Pageable pageable) {
-        Slice<User> users = userRepository.findUsers(
-                cursorId == null ? Long.MAX_VALUE : cursorId, pageable);
 
-        List<Long> targetIds = users.getContent().stream()
-                .map(User::getId)
-                .toList();
-
-        List<FriendRequest> requests = friendRequestRepository.findAllRelatedRequests(currentUserId, targetIds);
-
-        Map<Long, FriendRequest> requestMap = requests.stream()
-                .collect(Collectors.toMap(
-                        fr -> fr.getSender().getId().equals(currentUserId)
-                                ? fr.getReceiver().getId()
-                                : fr.getSender().getId(),
-                        fr -> fr,
-                        (existing, replacement) -> existing // Keep the first if duplicates exist
-                ));
-        return users.map(user -> {
-            FriendRequest fr = requestMap.get(user.getId());
-            String status = "NONE";
-            Long requestId = null;
-
-            if (fr != null) {
-                requestId = fr.getId();
-                if (fr.getStatus() == FriendRequestStatus.ACCEPTED) {
-                    status = "FRIEND";
-                } else if (fr.getSender().getId().equals(currentUserId)) {
-                    status = "SENT_PENDING";
-                } else {
-                    status = "RECEIVED_PENDING";
-                }
-            }
-
-            return UserSearchResponse.builder()
-                    .id(user.getId())
-                    .email(user.getEmail())
-                    .nickname(user.getNickname())
-                    .profileImageUrl(user.getProfileImageUrl())
-                    .friendStatus(status)
-                    .requestId(requestId)
-                    .build();
-        });
-
-    }
 }
