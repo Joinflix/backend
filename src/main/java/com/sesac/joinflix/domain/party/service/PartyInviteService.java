@@ -65,7 +65,7 @@ public class PartyInviteService {
             // 파티 초대 이벤트 발행
             eventPublisher.publishEvent(
                 new PartyInviteEvent(guest.getEmail(), room.getHost().getNickname(),
-                    room.getRoomName(), String.format("%s/parties/%d", domainUrl, room.getId())
+                    room.getRoomName(), String.format("%s/watch/party/%d", domainUrl, room.getId())
                 ));
             String notificationMessage = NotificationMessageTemplate.notification(
                 room.getHost().getNickname(), room.getRoomName(), guest.getNickname());
