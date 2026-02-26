@@ -46,7 +46,7 @@ public class PartyController {
     }
 
     // http://localhost:8080/api/parties/{partyId}/join
-    @PostMapping("/{partyId}/join")
+    @PostMapping(ApiPath.PARTY_JOIN)
     public ResponseEntity<PartyRoomResponse> joinParty(@PathVariable Long partyId,
         @Valid @RequestBody PartyJoinRequest request,
         @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -59,7 +59,7 @@ public class PartyController {
     }
 
     // http://localhost:8080/api/parties/{partyId}/members
-    @GetMapping("/{partyId}/members")
+    @GetMapping(ApiPath.PARTY_MEMBERS)
     public ResponseEntity<List<MemberResponse>> getMembers(@PathVariable Long partyId,
         @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(partyService.getMembers(partyId, userDetails.getId()));

@@ -62,6 +62,8 @@ public final class ApiPath {
 
     // party
     public static final String PARTY = API_PREFIX + "/parties";
+    public static final String PARTY_JOIN = "/{partyId}/join";
+    public static final String PARTY_MEMBERS = "/{partyId}/members";
 
     // movie
     public static final String MOVIE = API_PREFIX + "/movies";
